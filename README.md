@@ -1,7 +1,7 @@
 
 # NexAuth
 
-(formerly LibreLogin) is an open-source, multiplatform, and highly customizable authentication plugin with outstanding features and API.
+An updated fork of LibreLogin is an open-source, multiplatform, and highly customizable authentication plugin with outstanding features and API.
 
 # Quick information
 
