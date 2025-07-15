@@ -39,7 +39,7 @@ mcupload {
         }
         github {
             token = System.getenv("GITHUB_TOKEN")
-            repository = "kyngs/LibreLogin"
+            repository = "xreatlabs/NexAuth"
         }
         discord {
             webhookUrl = System.getenv("DISCORD_WEBHOOK_URL")
@@ -75,7 +75,7 @@ blossom {
 }
 
 tasks.withType<ShadowJar> {
-    archiveFileName.set("LibreLogin.jar")
+    archiveFileName.set("NexAuth.jar")
 
     dependencies {
         exclude(dependency("org.slf4j:.*:.*"))
@@ -84,20 +84,20 @@ tasks.withType<ShadowJar> {
         exclude(dependency("com.google.protobuf:.*:.*"))
     }
 
-    relocate("co.aikar.acf", "xyz.kyngs.librelogin.lib.acf")
-    relocate("com.github.benmanes.caffeine", "xyz.kyngs.librelogin.lib.caffeine")
-    relocate("com.typesafe.config", "xyz.kyngs.librelogin.lib.hocon")
-    relocate("com.zaxxer.hikari", "xyz.kyngs.librelogin.lib.hikari")
-    relocate("org.mariadb", "xyz.kyngs.librelogin.lib.mariadb")
-    relocate("org.bstats", "xyz.kyngs.librelogin.lib.metrics")
-    relocate("org.intellij", "xyz.kyngs.librelogin.lib.intellij")
-    relocate("org.jetbrains", "xyz.kyngs.librelogin.lib.jetbrains")
-    relocate("io.leangen.geantyref", "xyz.kyngs.librelogin.lib.reflect")
-    relocate("org.spongepowered.configurate", "xyz.kyngs.librelogin.lib.configurate")
-    relocate("net.byteflux.libby", "xyz.kyngs.librelogin.lib.libby")
-    relocate("org.postgresql", "xyz.kyngs.librelogin.lib.postgresql")
-    relocate("com.github.retrooper.packetevents", "xyz.kyngs.librelogin.lib.packetevents.api")
-    relocate("io.github.retrooper.packetevents", "xyz.kyngs.librelogin.lib.packetevents.platform")
+    relocate("co.aikar.acf", "xyz.xreatlabs.nexauth.lib.acf")
+    relocate("com.github.benmanes.caffeine", "xyz.xreatlabs.nexauth.lib.caffeine")
+    relocate("com.typesafe.config", "xyz.xreatlabs.nexauth.lib.hocon")
+    relocate("com.zaxxer.hikari", "xyz.xreatlabs.nexauth.lib.hikari")
+    relocate("org.mariadb", "xyz.xreatlabs.nexauth.lib.mariadb")
+    relocate("org.bstats", "xyz.xreatlabs.nexauth.lib.metrics")
+    relocate("org.intellij", "xyz.xreatlabs.nexauth.lib.intellij")
+    relocate("org.jetbrains", "xyz.xreatlabs.nexauth.lib.jetbrains")
+    relocate("io.leangen.geantyref", "xyz.xreatlabs.nexauth.lib.reflect")
+    relocate("org.spongepowered.configurate", "xyz.xreatlabs.nexauth.lib.configurate")
+    relocate("net.byteflux.libby", "xyz.xreatlabs.nexauth.lib.libby")
+    relocate("org.postgresql", "xyz.xreatlabs.nexauth.lib.postgresql")
+    relocate("com.github.retrooper.packetevents", "xyz.xreatlabs.nexauth.lib.packetevents.api")
+    relocate("io.github.retrooper.packetevents", "xyz.xreatlabs.nexauth.lib.packetevents.platform")
 }
 
 java {
@@ -140,7 +140,7 @@ dependencies {
     //Velocity
     annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
     compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
-    compileOnly("com.velocitypowered:velocity-proxy:3.2.0-SNAPSHOT-277")
+    compileOnly("com.velocitypowered:velocity-proxy:3.4.0-SNAPSHOT")
 
     //MySQL
     libby("org.mariadb.jdbc:mariadb-java-client:3.5.1")
@@ -185,10 +185,10 @@ dependencies {
     libby("org.bstats:bstats-bukkit:3.0.2")
 
     //Paper
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
     //compileOnly "com.comphenix.protocol:ProtocolLib:5.1.0"
     libby("com.github.retrooper:packetevents-spigot:2.7.0")
-    compileOnly("io.netty:netty-transport:4.1.108.Final")
+    compileOnly("io.netty:netty-transport:4.1.122.Final")
     compileOnly("com.mojang:datafixerupper:5.0.28") //I hate this so much
     compileOnly("org.apache.logging.log4j:log4j-core:2.23.1")
 

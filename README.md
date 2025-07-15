@@ -1,7 +1,7 @@
 
-# LibreLogin
+# NexAuth
 
-(formerly LibrePremium) is an open-source, multiplatform, and highly customizable authentication plugin with outstanding features and API.
+(formerly LibreLogin) is an open-source, multiplatform, and highly customizable authentication plugin with outstanding features and API.
 
 # Quick information
 
@@ -12,11 +12,11 @@ alt="Plugin requires Java 17 or newer"></img>
 <img src="https://img.shields.io/badge/Discord-%20SUPPORT-blue?style=for-the-badge&logo=discord&logoColor=white" 
 alt="Support available on Discord"></img>
 </a>
-<a href="https://github.com/kyngs/LibreLogin/wiki">
+<a href="https://github.com/xreatlabs/NexAuth/wiki">
 <img src="https://img.shields.io/badge/Documentation-555555?style=for-the-badge&logo=wikipedia" alt="Documentation on the Wiki"></img>
 </a>
 
-<a href="https://github.com/kyngs/LibreLogin/graphs/contributors">
+<a href="https://github.com/xreatlabs/NexAuth/graphs/contributors">
 <img src="https://img.shields.io/badge/Contributors-Credits-blue?style=for-the-badge" 
 alt="Contributors listed"></img>
 </a>
@@ -24,12 +24,12 @@ alt="Contributors listed"></img>
 ## Basic set of features
 
 - AutoLogin for premium players
-- TOTP 2FA (Authy, Google Authenticator...) [details](https://github.com/kyngs/LibreLogin/wiki/2FA)
+- TOTP 2FA (Authy, Google Authenticator...) [details](https://github.com/xreatlabs/NexAuth/wiki/2FA)
 - Session system
 - Name validation (including case sensitivity check)
 - Automatic data migration for premium players
 - Migration of a player's data by using one command
-- Geyser (Bedrock) support using [Floodgate](https://github.com/kyngs/LibreLogin/wiki/Floodgate)
+- Geyser (Bedrock) support using [Floodgate](https://github.com/xreatlabs/NexAuth/wiki/Floodgate)
 
 ## Considerations
 
@@ -43,7 +43,7 @@ alt="Contributors listed"></img>
 
 ## References
 
-- check out [reviews](https://www.spigotmc.org/resources/librelogin-authorization-plugin-automatic-login-2fa.101040/reviews) on spigotmc.org  
+- check out [reviews](https://www.spigotmc.org/resources/nexauth-authorization-plugin-automatic-login-2fa.101040/reviews) on spigotmc.org  
 
 # Special thanks
 
@@ -54,8 +54,8 @@ alt="Contributors listed"></img>
 
 # License
 
-LibrePremium is [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software), licensed under the Mozilla Public License 2.0.
+NexAuth is [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software), licensed under the Mozilla Public License 2.0.
 
-[Read the license here.](https://github.com/kyngs/LibreLogin/blob/master/LICENSE)
+[Read the license here.](https://github.com/xreatlabs/NexAuth/blob/master/LICENSE)
 
 The plugin **is and always will be** completely open-source, so you don't need to worry about malicous copies.

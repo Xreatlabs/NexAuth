@@ -33,9 +33,9 @@ java {
 publishing {
     repositories {
         maven {
-            name = "kyngsRepo"
+            name = "xreatlabsRepo"
             url = uri(
-                "https://repo.kyngs.xyz/" + (if (project.version.toString()
+                "https://repo.xreatlabs.xyz/" + (if (project.version.toString()
                         .contains("SNAPSHOT")
                 ) "snapshots" else "releases") + "/"
             )

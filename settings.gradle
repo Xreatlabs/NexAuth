@@ -7,6 +7,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'LibreLogin'
+rootProject.name = 'NexAuth'
 include 'Plugin'
 include 'API'

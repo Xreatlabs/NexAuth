@@ -1,7 +1,7 @@
-name: "LibreLogin"
-author: "kyngs"
+name: "NexAuth"
+author: "xreatlabs"
 version: '${version}'
-main: "xyz.kyngs.librelogin.bungeecord.BungeeCordBootstrap"
+main: "xyz.xreatlabs.nexauth.bungeecord.BungeeCordBootstrap"
 softDepends:
   - "RedisBungee"
   - "floodgate"

@@ -1,7 +1,7 @@
-name: "LibreLogin"
-author: "kyngs"
+name: "NexAuth"
+author: "xreatlabs"
 version: '${version}'
-main: "xyz.kyngs.librelogin.paper.PaperBootstrap"
+main: "xyz.xreatlabs.nexauth.paper.PaperBootstrap"
 api-version: "1.19"
 
 dependencies:
