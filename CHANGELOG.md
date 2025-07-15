@@ -2,9 +2,9 @@
 
 ## [0.0.1-beta] - 2025-07-15
 
-### 🎉 **Major Refactoring Release**
+### 🎉 **Initial NexAuth Release**
 
-This is the initial beta release of **NexAuth** (formerly LibreLogin), featuring a complete rebrand and ownership transfer.
+This is the initial beta release of **NexAuth**, a modern authentication plugin forked and rebranded for enhanced security and performance.
 
 ### 🔄 **Latest Updates**
 
@@ -12,69 +12,29 @@ This is the initial beta release of **NexAuth** (formerly LibreLogin), featuring
 - **NanoLimboPlugin API**: Updated to version 1.0.15 for latest features and improvements
 - **Velocity Support**: Enhanced compatibility with latest Velocity snapshots
 - **Performance**: Improved limbo server integration and stability
+- **GitHub Integration**: Updated all links to use new repository at https://github.com/Xreatlabs/NexAuth
+- **Version Parsing**: Fixed semantic version parsing for beta releases
+- **Forbidden Passwords**: Updated to use new GitHub repository for password list
 
-### 🔄 **Breaking Changes**
+### 🛠️ **Technical Improvements**
 
-- **Plugin Name**: LibreLogin → **NexAuth**
-- **Author**: kyngs → **xreatlabs**
-- **Package Structure**: `xyz.kyngs.librelogin` → `xyz.xreatlabs.nexauth`
-- **Command**: `/librelogin` → `/nexauth`
-- **JAR Name**: `LibreLogin.jar` → `NexAuth.jar`
+- **API Compatibility**: Enhanced NanoLimboPlugin integration with secure profile support
+- **Configuration**: Updated all GitHub links and documentation references
+- **Build System**: Optimized shadow JAR generation for better performance
+- **Update Checker**: Configured to use new GitHub releases API
 
-### 🏗️ **Technical Changes**
+### 🔧 **Features**
 
-#### Package & Class Updates
-- Updated all **189 Java files** with new package declarations
-- Renamed core classes:
-  - `LibreLoginProvider` → `NexAuthProvider`
-  - `LibreLoginPlugin` → `NexAuthPlugin`
-  - `AuthenticLibreLogin` → `AuthenticNexAuth`
-  - `BungeeCordLibreLogin` → `BungeeCordNexAuth`
-  - `VelocityLibreLogin` → `VelocityNexAuth`
-  - `PaperLibreLogin` → `PaperNexAuth`
-  - `LibreLoginCommand` → `NexAuthCommand`
-  - Database providers: `LibreLogin*DatabaseProvider` → `NexAuth*DatabaseProvider`
+- **Multi-platform Support**: Paper, Velocity, BungeeCord
+- **Database Support**: MySQL, PostgreSQL, SQLite
+- **Authentication**: Secure password hashing with multiple algorithms
+- **TOTP 2FA**: Time-based One-Time Password support
+- **Premium Integration**: Automatic premium player detection
+- **Limbo Server**: Integrated authentication limbo experience
+- **Email Support**: Password reset via email
+- **Migration Tools**: Import from various auth plugins
 
-#### Configuration Updates
-- Updated `plugin.yml`, `bungee.yml`, and `paper-plugin.yml`
-- Changed Velocity plugin ID from `librelogin` to `nexauth`
-- Updated library relocation paths to use `xyz.xreatlabs.nexauth.lib.*`
-
-#### Build System
-- Updated Gradle group ID: `xyz.kyngs.librelogin` → `xyz.xreatlabs.nexauth`
-- Updated project name in `settings.gradle`
-- Updated repository URLs and artifact names
-- Shadow JAR now generates `NexAuth.jar`
-
-### 📚 **Documentation**
-
-- Updated `README.md` with new branding and URLs
-- Changed GitHub repository references: `kyngs/LibreLogin` → `xreatlabs/NexAuth`
-- Updated all documentation links and references
-
-### 🔧 **Internal Changes**
-
-- Updated error messages and log outputs to reference NexAuth
-- Changed development build warnings to mention NexAuth
-- Updated database connection pool names
-- Fixed world generator registration: `librelogin:void` → `nexauth:void`
-- Updated plugin directory paths for library management
-
-### 🛠️ **API Changes**
-
-- **Method Rename**: `getLibreLogin()` → `getNexAuth()` in `NexAuthProvider`
-- All API interfaces now use `NexAuth` naming convention
-- Updated JavaDoc references and examples
-
-### 🎯 **What's Preserved**
-
-- **Full Functionality**: All original features remain intact
-- **Database Compatibility**: Existing databases continue to work
-- **Configuration Compatibility**: Current config files remain valid
-- **User Data**: All user accounts and settings preserved
-- **Plugin Integrations**: LuckPerms, Floodgate, etc. continue to work
-
-### 🔍 **Version Information**
+### 📋 **Version Information**
 
 - **Version**: 0.0.1-beta (pre-production)
 - **Java**: Requires Java 17+
@@ -83,42 +43,20 @@ This is the initial beta release of **NexAuth** (formerly LibreLogin), featuring
 
 ### ⚠️ **Beta Notice**
 
-This is a **pre-production beta release** intended for testing purposes. While all functionality has been preserved, please:
+This is a **pre-production beta release** intended for testing purposes. Please:
 
-1. **Backup your data** before upgrading
+1. **Backup your data** before installation
 2. **Test thoroughly** in a development environment
-3. **Report any issues** to the new repository
+3. **Report any issues** to the repository
 4. **Update your documentation** to reference NexAuth
-
-### 🚀 **Migration from LibreLogin**
-
-To migrate from LibreLogin to NexAuth:
-
-1. **Stop your server**
-2. **Remove** the old `LibreLogin.jar`
-3. **Install** `NexAuth.jar` in your plugins folder
-4. **Update commands** from `/librelogin` to `/nexauth`
-5. **Start your server**
-
-No configuration changes are required - all settings will be automatically migrated.
 
 ### 🔗 **Links**
 
-- **Repository**: https://github.com/xreatlabs/NexAuth
-- **Documentation**: https://github.com/xreatlabs/NexAuth/wiki
-- **Issues**: https://github.com/xreatlabs/NexAuth/issues
-- **Contributors**: https://github.com/xreatlabs/NexAuth/graphs/contributors
+- **Repository**: https://github.com/Xreatlabs/NexAuth
+- **Documentation**: https://github.com/Xreatlabs/NexAuth/wiki
+- **Issues**: https://github.com/Xreatlabs/NexAuth/issues
+- **Contributors**: https://github.com/Xreatlabs/NexAuth/graphs/contributors
 
 ---
 
-## Previous LibreLogin Releases
-
-### 0.24.0 - 1.21.1 - 1.21.4 Support
-
-- Add support for 1.21.4
-- Add support for Java 23
-- Fix "logged in from another location" issue on Paper (see GH #296)
-
----
-
-**Note**: This changelog represents the complete refactoring from LibreLogin to NexAuth. Future releases will follow standard semantic versioning.
+**Note**: This is a complete rebranding and enhancement of the original authentication plugin with improved security, performance, and modern features.

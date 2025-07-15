@@ -591,7 +591,7 @@ public abstract class AuthenticNexAuth<P, S> implements NexAuthPlugin<P, S> {
 
         if (!file.exists()) {
             logger.info("Forbidden passwords list doesn't exist, downloading...");
-            try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/kyngs/NexAuth/dev/forbidden-passwords.txt").openStream())) {
+            try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/Xreatlabs/NexAuth/refs/heads/master/forbidden-passwords.txt").openStream())) {
                 if (!file.createNewFile()) {
                     throw new IOException("Failed to create file");
                 }
@@ -625,7 +625,7 @@ public abstract class AuthenticNexAuth<P, S> implements NexAuthPlugin<P, S> {
         logger.info("Checking for updates...");
 
         try {
-            var connection = new URL("https://api.github.com/repos/kyngs/NexAuth/releases").openConnection();
+            var connection = new URL("https://api.github.com/repos/XreatLabs/NexAuth/releases").openConnection();
 
             connection.setRequestProperty("User-Agent", "NexAuth");
 

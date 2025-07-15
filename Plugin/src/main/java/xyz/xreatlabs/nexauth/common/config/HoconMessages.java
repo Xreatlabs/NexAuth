@@ -82,7 +82,7 @@ public class HoconMessages implements Messages {
                           This file contains all of the messages used by the plugin, you are welcome to fit it to your needs.
                           The messages can be written both in the legacy format and in the MiniMessage format. For example, the following message is completely valid: <bold>&aReloaded!</bold>
                           You can find more information about NexAuth on the github page:
-                          https://github.com/kyngs/NexAuth
+                          https://github.com/Xreatlabs/NexAuth
                         """,
                 logger,
                 new FirstMessagesMigrator(),

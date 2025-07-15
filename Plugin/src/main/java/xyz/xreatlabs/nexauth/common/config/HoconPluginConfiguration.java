@@ -51,7 +51,7 @@ public class HoconPluginConfiguration {
                           ----------------------------------------------------------------------------------------
                           This is the configuration file for NexAuth.
                           You can find more information about NexAuth on the github page:
-                          https://github.com/kyngs/NexAuth
+                          https://github.com/Xreatlabs/NexAuth
                         """,
                 logger,
                 new FirstConfigurationMigrator(),

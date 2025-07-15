@@ -18,14 +18,16 @@ package xyz.xreatlabs.nexauth.api.util;
 public record SemanticVersion(int major, int minor, int patch, boolean dev) {
 
     /**
-     * Parses a semantic version from a string with format major.minor.patch(-SNAPSHOT)
+     * Parses a semantic version from a string with format major.minor.patch(-SNAPSHOT|-beta)
      *
      * @param version The string to parse.
      * @return The parsed semantic version.
      */
     public static SemanticVersion parse(String version) {
-        String[] split = version.replace("-SNAPSHOT", "").split("\\.");
-        return new SemanticVersion(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), version.endsWith("-SNAPSHOT"));
+        boolean isDev = version.endsWith("-SNAPSHOT") || version.contains("-beta") || version.contains("-alpha") || version.contains("-rc");
+        String cleanVersion = version.replaceAll("-.*$", "");
+        String[] split = cleanVersion.split("\\.");
+        return new SemanticVersion(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), isDev);
     }
 
     /**
@@ -52,6 +54,6 @@ public record SemanticVersion(int major, int minor, int patch, boolean dev) {
 
     @Override
     public String toString() {
-        return major + "." + minor + "." + patch + (dev ? "-SNAPSHOT" : "");
+        return major + "." + minor + "." + patch + (dev ? "-dev" : "");
     }
 }
