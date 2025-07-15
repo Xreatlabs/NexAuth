@@ -237,7 +237,7 @@ public abstract class AuthenticNexAuth<P, S> implements NexAuthPlugin<P, S> {
 
         var folder = getDataFolder();
         if (!folder.exists()) {
-            var oldFolder = new File(folder.getParentFile(), folder.getName().equals("librelogin") ? "librepremium" : "LibrePremium");
+            var oldFolder = new File(folder.getParentFile(), folder.getName().equals("nexauth") ? "librepremium" : "LibrePremium");
             if (oldFolder.exists()) {
                 logger.info("Migrating configuration and messages from old folder...");
                 if (!oldFolder.renameTo(folder)) {
@@ -480,17 +480,17 @@ public abstract class AuthenticNexAuth<P, S> implements NexAuthPlugin<P, S> {
 
         registerReadProvider(new ReadDatabaseProviderRegistration<>(
                 connector -> new NexAuthMySQLDatabaseProvider(connector, this),
-                "librelogin-mysql",
+                "nexauth-mysql",
                 MySQLDatabaseConnector.class
         ));
         registerReadProvider(new ReadDatabaseProviderRegistration<>(
                 connector -> new NexAuthSQLiteDatabaseProvider(connector, this),
-                "librelogin-sqlite",
+                "nexauth-sqlite",
                 SQLiteDatabaseConnector.class
         ));
         registerReadProvider(new ReadDatabaseProviderRegistration<>(
                 connector -> new NexAuthPostgreSQLDatabaseProvider(connector, this),
-                "librelogin-postgresql",
+                "nexauth-postgresql",
                 PostgreSQLDatabaseConnector.class
         ));
         registerReadProvider(new ReadDatabaseProviderRegistration<>(
@@ -625,53 +625,202 @@ public abstract class AuthenticNexAuth<P, S> implements NexAuthPlugin<P, S> {
         logger.info("Checking for updates...");
 
         try {
-            var connection = new URL("https://api.github.com/repos/XreatLabs/NexAuth/releases").openConnection();
-
-            connection.setRequestProperty("User-Agent", "NexAuth");
-
-            var in = connection.getInputStream();
-
-            var root = GSON.fromJson(new InputStreamReader(in), JsonArray.class);
-
-            in.close(); //Not the safest way, but a slight leak isn't a big deal
+            // Use multiple endpoints for better reliability
+            var updateInfo = checkLatestRelease();
+            
+            if (updateInfo == null) {
+                logger.warn("Unable to check for updates - all methods failed");
+                return;
+            }
 
             List<Release> behind = new ArrayList<>();
-            SemanticVersion latest = null;
-
-            for (JsonElement raw : root) {
-                var release = raw.getAsJsonObject();
-
-                var version = SemanticVersion.parse(release.get("tag_name").getAsString());
-
-                if (latest == null) latest = version;
-
-                var shouldBreak = switch (this.version.compare(version)) {
-                    case 0, 1 -> true;
-                    default -> {
-                        behind.add(new Release(version, release.get("name").getAsString()));
-                        yield false;
+            SemanticVersion latest = updateInfo.latest();
+            
+            // Check if we're behind
+            var comparison = this.version.compare(latest);
+            
+            if (comparison < 0) {
+                // We're behind, add all versions we're missing
+                for (Release release : updateInfo.allReleases()) {
+                    if (this.version.compare(release.version()) < 0) {
+                        behind.add(release);
                     }
-                };
-
-                if (shouldBreak) {
-                    break;
                 }
             }
 
             if (behind.isEmpty()) {
-                logger.info("You are running the latest version of NexAuth");
+                logger.info("You are running the latest version of NexAuth (%s)".formatted(getVersion()));
             } else {
                 Collections.reverse(behind);
                 logger.warn("!! YOU ARE RUNNING AN OUTDATED VERSION OF NEXAUTH !!");
-                logger.info("You are running version %s, the latest version is %s. You are running %s versions behind. Newer versions:".formatted(getVersion(), latest, behind.size()));
-                for (Release release : behind) {
-                    logger.info("- %s".formatted(release.name()));
+                logger.info("Current version: %s | Latest version: %s | Versions behind: %d".formatted(
+                    getVersion(), latest, behind.size()));
+                
+                // Show only the most recent updates (max 5)
+                var recentUpdates = behind.subList(0, Math.min(behind.size(), 5));
+                logger.info("Recent updates you're missing:");
+                for (Release release : recentUpdates) {
+                    logger.info("  → %s (%s)".formatted(release.name(), release.version()));
                 }
+                
+                if (behind.size() > 5) {
+                    logger.info("  ... and %d more versions".formatted(behind.size() - 5));
+                }
+                
                 logger.warn("!! PLEASE UPDATE TO THE LATEST VERSION !!");
+                logger.info("Download: https://github.com/Xreatlabs/NexAuth/releases/latest");
             }
         } catch (Exception e) {
-            logger.warn("Failed to check for updates", e);
+            logger.warn("Failed to check for updates: %s".formatted(e.getMessage()));
+            logger.debug("Update check error details:", e);
         }
+    }
+
+    private UpdateInfo checkLatestRelease() {
+        // Method 1: Try GitHub API first
+        try {
+            return checkGitHubAPI();
+        } catch (Exception e) {
+            logger.debug("GitHub API check failed: %s".formatted(e.getMessage()));
+        }
+        
+        // Method 2: Try GitHub releases RSS feed as backup
+        try {
+            return checkGitHubRSSFeed();
+        } catch (Exception e) {
+            logger.debug("GitHub RSS feed check failed: %s".formatted(e.getMessage()));
+        }
+        
+        // Method 3: Try direct GitHub releases page parsing as last resort
+        try {
+            return checkGitHubReleasesPage();
+        } catch (Exception e) {
+            logger.debug("GitHub releases page check failed: %s".formatted(e.getMessage()));
+        }
+        
+        return null;
+    }
+
+    private UpdateInfo checkGitHubAPI() throws Exception {
+        var connection = new URL("https://api.github.com/repos/Xreatlabs/NexAuth/releases").openConnection();
+        connection.setRequestProperty("User-Agent", "NexAuth/%s".formatted(getVersion()));
+        connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(10000);
+
+        try (var in = connection.getInputStream()) {
+            var root = GSON.fromJson(new InputStreamReader(in), JsonArray.class);
+            
+            List<Release> releases = new ArrayList<>();
+            SemanticVersion latest = null;
+
+            for (JsonElement raw : root) {
+                var release = raw.getAsJsonObject();
+                
+                // Skip pre-releases and drafts
+                if (release.get("prerelease").getAsBoolean() || release.get("draft").getAsBoolean()) {
+                    continue;
+                }
+                
+                var version = SemanticVersion.parse(release.get("tag_name").getAsString());
+                var name = release.get("name").getAsString();
+                
+                releases.add(new Release(version, name));
+                
+                if (latest == null) {
+                    latest = version;
+                }
+            }
+
+            return new UpdateInfo(latest, releases);
+        }
+    }
+
+    private UpdateInfo checkGitHubRSSFeed() throws Exception {
+        var connection = new URL("https://github.com/Xreatlabs/NexAuth/releases.atom").openConnection();
+        connection.setRequestProperty("User-Agent", "NexAuth/%s".formatted(getVersion()));
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(10000);
+
+        try (var in = connection.getInputStream()) {
+            var content = new String(in.readAllBytes());
+            
+            // Simple regex parsing for RSS feed
+            var pattern = java.util.regex.Pattern.compile("<title>([^<]+)</title>");
+            var matcher = pattern.matcher(content);
+            
+            List<Release> releases = new ArrayList<>();
+            SemanticVersion latest = null;
+            
+            while (matcher.find()) {
+                var title = matcher.group(1);
+                if (title.contains("NexAuth") && !title.equals("Release notes from NexAuth")) {
+                    try {
+                        // Extract version from title
+                        var versionPattern = java.util.regex.Pattern.compile("v?([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9]+)?)");
+                        var versionMatcher = versionPattern.matcher(title);
+                        
+                        if (versionMatcher.find()) {
+                            var version = SemanticVersion.parse(versionMatcher.group(1));
+                            releases.add(new Release(version, title));
+                            
+                            if (latest == null) {
+                                latest = version;
+                            }
+                        }
+                    } catch (Exception e) {
+                        // Skip invalid versions
+                    }
+                }
+            }
+            
+            if (latest != null) {
+                return new UpdateInfo(latest, releases);
+            }
+        }
+        
+        throw new Exception("No valid releases found in RSS feed");
+    }
+
+    private UpdateInfo checkGitHubReleasesPage() throws Exception {
+        var connection = new URL("https://github.com/Xreatlabs/NexAuth/releases").openConnection();
+        connection.setRequestProperty("User-Agent", "NexAuth/%s".formatted(getVersion()));
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(10000);
+
+        try (var in = connection.getInputStream()) {
+            var content = new String(in.readAllBytes());
+            
+            // Parse HTML for release tags
+            var pattern = java.util.regex.Pattern.compile("href=\"/Xreatlabs/NexAuth/releases/tag/([^\"]+)\"");
+            var matcher = pattern.matcher(content);
+            
+            List<Release> releases = new ArrayList<>();
+            SemanticVersion latest = null;
+            
+            while (matcher.find()) {
+                try {
+                    var tagName = matcher.group(1);
+                    var version = SemanticVersion.parse(tagName);
+                    releases.add(new Release(version, "NexAuth " + tagName));
+                    
+                    if (latest == null) {
+                        latest = version;
+                    }
+                } catch (Exception e) {
+                    // Skip invalid versions
+                }
+            }
+            
+            if (latest != null) {
+                return new UpdateInfo(latest, releases);
+            }
+        }
+        
+        throw new Exception("No valid releases found on releases page");
+    }
+
+    private record UpdateInfo(SemanticVersion latest, List<Release> allReleases) {
     }
 
     public UUID generateNewUUID(String name, @Nullable UUID premiumID) {

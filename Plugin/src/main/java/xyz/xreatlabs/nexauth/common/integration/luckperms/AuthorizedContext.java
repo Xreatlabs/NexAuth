@@ -21,7 +21,7 @@ public class AuthorizedContext<P> implements ContextCalculator<P> {
         this.plugin = plugin;
     }
 
-    private static final String KEY = "librelogin-authorized";
+    private static final String KEY = "nexauth-authorized";
 
     @Override
     public void calculate(@NonNull P player, @NonNull ContextConsumer consumer) {

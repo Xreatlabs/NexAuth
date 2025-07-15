@@ -90,7 +90,7 @@ public class AuthenticMySQLDatabaseConnector extends AuthenticDatabaseConnector<
 
         public static final ConfigurationKey<String> NAME = new ConfigurationKey<>(
                 "database",
-                "librelogin",
+                "nexauth",
                 "The name of the database.",
                 ConfigurateHelper::getString
         );

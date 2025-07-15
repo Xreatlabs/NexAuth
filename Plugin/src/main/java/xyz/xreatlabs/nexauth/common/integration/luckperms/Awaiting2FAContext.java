@@ -21,7 +21,7 @@ public class Awaiting2FAContext<P> implements ContextCalculator<P> {
         this.plugin = plugin;
     }
 
-    private static final String KEY = "librelogin-awaiting2fa";
+    private static final String KEY = "nexauth-awaiting2fa";
 
     @Override
     public void calculate(@NonNull P player, @NonNull ContextConsumer consumer) {

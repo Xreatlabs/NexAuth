@@ -161,6 +161,17 @@ public class ConfigurationKeys {
             ConfigurateHelper::getBoolean
     );
 
+    public static final ConfigurationKey<Boolean> HIDE_PLAYER_INVENTORY = new ConfigurationKey<>(
+            "hide-player-inventory",
+            true,
+            """
+                    Should we hide the player's inventory on packet level while they are not authenticated?
+                    This prevents unauthenticated players from seeing or accessing their inventory.
+                    The inventory will be revealed once the player successfully authenticates.
+                    """,
+            ConfigurateHelper::getBoolean
+    );
+
     public static final ConfigurationKey<Integer> MILLISECONDS_TO_REFRESH_NOTIFICATION = new ConfigurationKey<>(
             "milliseconds-to-refresh-notification",
             10000,
@@ -187,12 +198,12 @@ public class ConfigurationKeys {
 
     public static final ConfigurationKey<String> DATABASE_TYPE = new ConfigurationKey<>(
             "database.type",
-            "librelogin-sqlite",
+            "nexauth-sqlite",
             """
                     The type of the database. Built-in types:
-                    librelogin-mysql - MySQL database, you must fill out the mysql section below.
-                    librelogin-postgresql - PostgreSQL database, you must fill out the postgresql section below.
-                    librelogin-sqlite - SQLite database, default file is "database.db", you can change it in the sqlite section below.
+                    nexauth-mysql - MySQL database, you must fill out the mysql section below.
+                    nexauth-postgresql - PostgreSQL database, you must fill out the postgresql section below.
+                    nexauth-sqlite - SQLite database, default file is "database.db", you can change it in the sqlite section below.
                     """,
             ConfigurateHelper::getString
     );
@@ -233,8 +244,8 @@ public class ConfigurationKeys {
                     authy-mysql - Can convert from MySQL Authy SHA256
                     authy-sqlite - Can convert from SQLite Authy SHA256
                     logit-mysql - Can convert from MySQL LogIt SHA256
-                    librelogin-mysql - Can convert from MySQL NexAuth, useful for migrating to a different database
-                    librelogin-sqlite - Can convert from SQLite NexAuth, useful for migrating to a different database
+                    nexauth-mysql - Can convert from MySQL NexAuth, useful for migrating to a different database
+                    nexauth-sqlite - Can convert from SQLite NexAuth, useful for migrating to a different database
                     """,
             ConfigurateHelper::getString
     );

@@ -14,7 +14,7 @@ import xyz.xreatlabs.nexauth.api.util.ThrowableFunction;
  * The registration of a read database provider.
  *
  * @param factory           a factory that creates a new instance of the provider
- * @param id                the id of the provider, suggested format: "plugin_name-connector_id" (e.g. "librelogin-mysql", or "authme-sqlite")
+ * @param id                the id of the provider, suggested format: "plugin_name-connector_id" (e.g. "nexauth-mysql", or "authme-sqlite")
  * @param databaseConnector The class of the database connector you wish to use, should match the C type parameter. If null, no connector will be supplied in {@link #factory}
  * @param <R>               The type of the read database provider described by this registration
  * @param <C>               The type of the database connector

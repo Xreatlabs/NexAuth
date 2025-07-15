@@ -27,6 +27,7 @@ import xyz.xreatlabs.nexauth.common.SLF4JLogger;
 import xyz.xreatlabs.nexauth.common.image.AuthenticImageProjector;
 import xyz.xreatlabs.nexauth.common.util.CancellableTask;
 import xyz.xreatlabs.nexauth.paper.protocol.PacketListener;
+import xyz.xreatlabs.nexauth.paper.protocol.InventoryPacketListener;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,6 +39,7 @@ public class PaperNexAuth extends AuthenticNexAuth<Player, World> {
 
     private final PaperBootstrap bootstrap;
     private PaperListeners listeners;
+    private InventoryPacketListener inventoryListener;
     private boolean started;
 
     public PaperNexAuth(PaperBootstrap bootstrap) {
@@ -55,6 +57,10 @@ public class PaperNexAuth extends AuthenticNexAuth<Player, World> {
 
     public PaperBootstrap getBootstrap() {
         return bootstrap;
+    }
+
+    public InventoryPacketListener getInventoryListener() {
+        return inventoryListener;
     }
 
     @Override
@@ -152,9 +158,25 @@ public class PaperNexAuth extends AuthenticNexAuth<Player, World> {
             var player = event.getPlayer();
             if (player == null) return;
             player.setInvisible(false);
+            
+            // Reveal inventory for authenticated player
+            if (inventoryListener != null) {
+                inventoryListener.revealInventory(player);
+            }
         });
 
         listeners = new PaperListeners(this);
+        
+        // Only register inventory listener on Paper/Spigot servers (not on proxy)
+        if (Bukkit.getServer().getClass().getPackage().getName().contains("paper") || 
+            Bukkit.getServer().getClass().getPackage().getName().contains("spigot") ||
+            Bukkit.getServer().getClass().getPackage().getName().contains("craftbukkit")) {
+            inventoryListener = new InventoryPacketListener(this);
+            PacketEvents.getAPI().getEventManager().registerListener(inventoryListener);
+            getLogger().info("Inventory hiding feature enabled for Paper/Spigot server");
+        } else {
+            getLogger().info("Inventory hiding feature disabled (not a Paper/Spigot server)");
+        }
 
         Bukkit.getPluginManager().registerEvents(listeners, bootstrap);
         Bukkit.getPluginManager().registerEvents(new Blockers(this), bootstrap);

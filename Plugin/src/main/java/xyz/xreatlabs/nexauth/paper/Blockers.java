@@ -58,7 +58,7 @@ public class Blockers implements Listener {
         if (inLimbo(event.getPlayer())) {
             event.setCancelled(true);
         } else {
-            if (serverHandler.getLimboServers().contains(event.getTo().getWorld()) && !event.getPlayer().hasPermission("librelogin.limbo.access")) {
+            if (serverHandler.getLimboServers().contains(event.getTo().getWorld()) && !event.getPlayer().hasPermission("nexauth.limbo.access")) {
                 event.setCancelled(true);
             }
         }

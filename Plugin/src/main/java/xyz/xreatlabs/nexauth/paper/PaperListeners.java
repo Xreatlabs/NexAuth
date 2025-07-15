@@ -119,6 +119,12 @@ public class PaperListeners extends AuthenticListeners<PaperNexAuth, Player, Wor
             return;
         }
         readOnlyUserCache.invalidate(event.getPlayer().getUniqueId());
+        
+        // Hide inventory for unauthenticated players
+        if (plugin.getInventoryListener() != null) {
+            plugin.getInventoryListener().hideInventory(event.getPlayer());
+        }
+        
         onPostLogin(event.getPlayer(), data);
     }
 

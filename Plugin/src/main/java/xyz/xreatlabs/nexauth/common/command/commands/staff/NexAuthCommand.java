@@ -49,7 +49,7 @@ public class NexAuthCommand<P> extends StaffCommand<P> {
     }
 
     @Subcommand("email test")
-    @CommandPermission("librelogin.email.test")
+    @CommandPermission("nexauth.email.test")
     @Syntax("{@@syntax.email-test}")
     @CommandCompletion("%autocomplete.email-test")
     public CompletionStage<Void> onEmailTest(Audience audience, String email) {
@@ -63,7 +63,7 @@ public class NexAuthCommand<P> extends StaffCommand<P> {
     }
 
     @Subcommand("dump")
-    @CommandPermission("librelogin.dump")
+    @CommandPermission("nexauth.dump")
     public CompletionStage<Void> onDump(Audience audience) {
         return runAsync(() -> {
             audience.sendMessage(getMessage("info-dumping"));
@@ -485,7 +485,7 @@ public class NexAuthCommand<P> extends StaffCommand<P> {
     }
 
     @Subcommand("user alts")
-    @CommandPermission("librelogin.user.alts")
+    @CommandPermission("nexauth.user.alts")
     @Syntax("{@@syntax.user-alts}")
     @CommandCompletion("%autocomplete.user-alts")
     public CompletionStage<Void> onUserAlts(Audience audience, String name) {
