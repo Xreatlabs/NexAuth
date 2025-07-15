@@ -149,4 +149,19 @@ public class NanoLimboConfig implements LimboConfig {
     public int getWorkerGroupSize() {
         return 4; // Default value
     }
+
+    @Override
+    public double getMaxPacketRate() {
+        return 1000.0; // Default packet rate limit
+    }
+
+    @Override
+    public double getInterval() {
+        return 1000.0; // Default interval in milliseconds
+    }
+
+    @Override
+    public boolean isSecureProfile() {
+        return false; // Disable secure profile for auth limbo
+    }
 }

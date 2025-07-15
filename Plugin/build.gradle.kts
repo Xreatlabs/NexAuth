@@ -21,7 +21,7 @@ mcupload {
             loaders = listOf("paper", "purpur", "bungeecord", "waterfall", "velocity")
             projectId = "tL0SCXYq"
             gameVersions = listOf(
-                "1.21.4", "1.21.3", "1.21.2", "1.21.1", "1.21",
+                "1.21.7", "1.21.4", "1.21.3", "1.21.2", "1.21.1", "1.21",
                 "1.20.6", "1.20.5", "1.20.4", "1.20.3", "1.20.2", "1.20.1", "1.20",
                 "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19",
                 "1.18.2", "1.18.1", "1.18",
@@ -199,7 +199,7 @@ dependencies {
     implementation("xyz.kyngs.libby:libby-paper:1.6.0")
 
     //NanoLimboPlugin
-    compileOnly("com.github.bivashy.NanoLimboPlugin:api:1.0.8")
+    compileOnly("com.github.bivashy.NanoLimboPlugin:api:1.0.15")
 }
 
 tasks.withType<ProcessResources> {
