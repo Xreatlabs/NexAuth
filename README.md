@@ -47,6 +47,7 @@ alt="Contributors listed"></img>
 
 # Special thanks
 
+- [kyngs](https://github.com/kyngs) - for developing the original [LibreLogin](https://github.com/kyngs/LibreLogin) Minecraft plugin.
 - [Raixo](https://github.com/RAIXOCZ) - for developing the original bungeecord port
 - [FastLogin contributors](https://github.com/games647/FastLogin) - for their work, which was used as a base for the
   paper port
