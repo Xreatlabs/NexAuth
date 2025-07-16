@@ -728,6 +728,13 @@ public class MessageKeys {
             ConfigurateHelper::getString
     );
 
+    public static final ConfigurationKey<String> TITLE_PREMIUM = new ConfigurationKey<>(
+            "title-premium",
+            "&6&lPremium Account",
+            "This title is displayed when premium players auto-login. Make sure that you have use-titles set to true in the configuration.",
+            ConfigurateHelper::getString
+    );
+
     /*
     Subtitles
      */

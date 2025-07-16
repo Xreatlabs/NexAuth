@@ -1,5 +1,27 @@
 # NexAuth Changelog
 
+## [0.0.1-beta2] - 2025-07-16
+
+### 🎉 **New Features**
+
+- **Premium Account Titles**: Added title display for premium players on auto-login
+- **Inventory Hiding**: Implemented packet-level inventory hiding for unauthenticated players
+- **Enhanced Update Checker**: Added multiple fallback methods for better reliability
+
+### 🔄 **Updates**
+
+- **Configuration**: Updated all database references from "librelogin" to "nexauth"
+- **Branding**: Complete rebranding throughout the codebase
+- **Update System**: Improved update checking with GitHub API, RSS feed, and HTML parsing fallbacks
+- **Title System**: Premium titles now use existing `use-titles` configuration option
+
+### 🛠️ **Technical Improvements**
+
+- **PacketEvents Integration**: Added packet-level inventory hiding using PacketEvents 2.7.0
+- **Database Connectors**: Updated default database names to use "nexauth" branding
+- **Command Permissions**: Updated all permission nodes to use "nexauth" prefix
+- **Error Handling**: Enhanced error handling in update checker system
+
 ## [0.0.1-beta] - 2025-07-15
 
 ### 🎉 **Initial NexAuth Release**

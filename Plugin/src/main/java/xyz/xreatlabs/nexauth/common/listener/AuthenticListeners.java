@@ -6,6 +6,8 @@
 
 package xyz.xreatlabs.nexauth.common.listener;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.Nullable;
 import xyz.xreatlabs.nexauth.api.BiHolder;
 import xyz.xreatlabs.nexauth.api.PlatformHandle;
@@ -18,6 +20,8 @@ import xyz.xreatlabs.nexauth.common.authorization.ProfileConflictResolutionStrat
 import xyz.xreatlabs.nexauth.common.command.InvalidCommandArgument;
 import xyz.xreatlabs.nexauth.common.config.ConfigurationKeys;
 import xyz.xreatlabs.nexauth.common.database.AuthenticUser;
+
+import java.time.Duration;
 import xyz.xreatlabs.nexauth.common.event.events.AuthenticAuthenticatedEvent;
 
 import java.net.InetAddress;
@@ -50,7 +54,19 @@ public class AuthenticListeners<Plugin extends AuthenticNexAuth<P, S>, P, S> {
         var sessionTime = Duration.ofSeconds(plugin.getConfiguration().get(ConfigurationKeys.SESSION_TIMEOUT));
 
         if (user.autoLoginEnabled()) {
-            plugin.delay(() -> plugin.getPlatformHandle().getAudienceForPlayer(player).sendMessage(plugin.getMessages().getMessage("info-premium-logged-in")), 500);
+            plugin.delay(() -> {
+                var audience = plugin.getPlatformHandle().getAudienceForPlayer(player);
+                audience.sendMessage(plugin.getMessages().getMessage("info-premium-logged-in"));
+                
+                // Show premium title if enabled
+                if (plugin.getConfiguration().get(ConfigurationKeys.USE_TITLES)) {
+                    audience.showTitle(Title.title(
+                        plugin.getMessages().getMessage("title-premium"),
+                        Component.empty(),
+                        Title.Times.of(Duration.ofMillis(0), Duration.ofMillis(3000), Duration.ofMillis(500))
+                    ));
+                }
+            }, 500);
             plugin.getEventProvider().fire(plugin.getEventTypes().authenticated, new AuthenticAuthenticatedEvent<>(user, player, plugin, AuthenticatedEvent.AuthenticationReason.PREMIUM));
         } else if (sessionTime != null && user.getLastAuthentication() != null && ip.equals(user.getIp()) && user.getLastAuthentication().toLocalDateTime().plus(sessionTime).isAfter(LocalDateTime.now())) {
             plugin.delay(() -> plugin.getPlatformHandle().getAudienceForPlayer(player).sendMessage(plugin.getMessages().getMessage("info-session-logged-in")), 500);
