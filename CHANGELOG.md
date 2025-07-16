@@ -58,7 +58,7 @@ This is the initial beta release of **NexAuth**, a modern authentication plugin 
 
 ### 📋 **Version Information**
 
-- **Version**: 0.0.1-beta (pre-production)
+- **Version**: 0.0.1-beta2 (pre-production)
 - **Java**: Requires Java 17+
 - **Platforms**: Paper, Velocity, BungeeCord
 - **License**: Mozilla Public License 2.0
