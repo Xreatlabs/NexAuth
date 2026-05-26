@@ -1,85 +1,107 @@
-
 # NexAuth
 
-An updated fork of LibreLogin is an open-source, multiplatform, and highly customizable authentication plugin with outstanding features and API.
+NexAuth is a Java 21 authentication plugin for modern Minecraft networks. It supports Velocity proxy deployments and direct Paper/Purpur server deployments, with premium auto-login, offline registration/login, TOTP support, database-backed users, and a built-in Paper limbo/runtime path.
 
-# Quick information
+NexAuth began as a LibreLogin fork and now focuses on current Paper and Velocity behavior. BungeeCord and Waterfall support has been removed.
 
-<img src="https://img.shields.io/badge/Java%20version-%2021+-blue?style=for-the-badge&logo=java&logoColor=white"
-alt="Plugin requires Java 21 or newer"></img>
+## Status
 
-<a href="https://discord.gg/m5ptM8X2Du">
-<img src="https://img.shields.io/badge/Discord-%20SUPPORT-blue?style=for-the-badge&logo=discord&logoColor=white" 
-alt="Support available on Discord"></img>
-</a>
-<a href="https://github.com/xreatlabs/NexAuth/wiki">
-<img src="https://img.shields.io/badge/Documentation-555555?style=for-the-badge&logo=wikipedia" alt="Documentation on the Wiki"></img>
-</a>
+![Java 21+](https://img.shields.io/badge/Java-21%2B-blue?style=for-the-badge)
+![Platforms](https://img.shields.io/badge/Platforms-Paper%20%7C%20Velocity-0b7285?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MPL--2.0-2f9e44?style=for-the-badge)
 
-<a href="https://github.com/xreatlabs/NexAuth/graphs/contributors">
-<img src="https://img.shields.io/badge/Contributors-Credits-blue?style=for-the-badge" 
-alt="Contributors listed"></img>
-</a>
+## Features
 
-## Basic set of features
+- Offline registration and login for cracked/offline-mode players.
+- Premium account auto-login and migration flows.
+- TOTP two-factor authentication support.
+- Session handling, name validation, and case-sensitivity checks.
+- SQLite, MySQL/MariaDB, and PostgreSQL storage support.
+- Geyser/Floodgate support for Bedrock players.
+- Paper inventory hiding for unauthenticated players.
+- Velocity proxy flow with NexLimbo-compatible limbo integration.
+- Operator diagnostics through status/doctor tooling.
 
-- AutoLogin for premium players
-- TOTP 2FA (Authy, Google Authenticator...) [details](https://github.com/xreatlabs/NexAuth/wiki/2FA)
-- Session system
-- Name validation (including case sensitivity check)
-- Automatic data migration for premium players
-- Migration of a player's data by using one command
-- Geyser (Bedrock) support using [Floodgate](https://github.com/xreatlabs/NexAuth/wiki/Floodgate)
+## Supported Platforms
 
-## Required Dependencies
+| Platform | Status | Notes |
+| --- | --- | --- |
+| Velocity | Supported | Install `NexAuth.jar` on the proxy. Use a secured backend Paper server. |
+| Paper/Purpur | Supported | Install `NexAuth.jar` directly on the server. The server must run in offline mode. |
+| BungeeCord/Waterfall | Removed | The Bungee platform implementation and descriptor are no longer built or shipped. |
 
-### NexLimbo (Recommended for Proxy Setups)
+## Requirements
 
-For the best authentication experience on proxy servers (Velocity/BungeeCord), we highly recommend using **NexLimbo** - a lightweight limbo server specifically designed and optimized for NexAuth.
+- Java 21 or newer for normal builds and current Paper/Velocity targets.
+- Java 25 for testing Paper `26.1.x` locally.
+- Paper/Purpur or Velocity.
+- `online-mode=false` where NexAuth is installed.
+- Backend servers must not be exposed directly to the public internet in proxy deployments.
 
-**Why NexLimbo?**
-- Specifically designed for NexAuth's authentication flow
-- Lightweight and high-performance
-- Seamless integration with all NexAuth features
-- Enhanced security for authentication process
+## Installation
 
-**Installation:**
-1. Download NexLimbo from [GitHub Releases](https://github.com/Xreatlabs/NexLimbo/releases)
-2. Install the appropriate version for your proxy:
-   - `NexLimbo-Velocity.jar` for Velocity
-   - `NexLimbo-Bungee.jar` for BungeeCord/Waterfall
-3. Configure the limbo settings in NexAuth's config
-4. Restart your proxy
+### Velocity Proxy
 
-**Repository:** [https://github.com/Xreatlabs/NexLimbo](https://github.com/Xreatlabs/NexLimbo)
+1. Build or download `NexAuth.jar`.
+2. Place it in the Velocity `plugins/` directory.
+3. Configure backend servers in Velocity.
+4. Keep NexAuth on the proxy only for proxy-mode testing and production proxy deployments.
+5. Restart Velocity and complete the generated NexAuth configuration.
 
-## Considerations
+### Paper/Purpur Server
 
-- When using on proxy, install **NexLimbo** for secure authentication limbo
-- Ensure your backend servers are properly secured and not directly accessible
+1. Build or download `NexAuth.jar`.
+2. Place it in the Paper/Purpur `plugins/` directory.
+3. Set `online-mode=false` in `server.properties`.
+4. Restart once to generate configuration, fill it out, then restart again.
 
-## Platforms
+## Local Development
 
-- [x] Velocity
-- [x] BungeeCord
-- [x] Paper
+Build and test:
 
-## References
+```bash
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ./gradlew :Plugin:test shadowJar
+```
 
-- check out [reviews](https://www.spigotmc.org/resources/nexauth-authorization-plugin-automatic-login-2fa.101040/reviews) on spigotmc.org  
+Set up the preserved local test environment:
 
-# Special thanks
+```bash
+tools/test-env/setup.sh
+```
 
-- [kyngs](https://github.com/kyngs) - for developing the original [LibreLogin](https://github.com/kyngs/LibreLogin) Minecraft plugin.
-- [Raixo](https://github.com/RAIXOCZ) - for developing the original bungeecord port
-- [FastLogin contributors](https://github.com/games647/FastLogin) - for their work, which was used as a base for the
-  paper port
-- [Fejby](https://github.com/Fejby) - for providing Floodgate test server and helping with testing
+Run the Velocity + Paper backend stack:
 
-# License
+```bash
+tools/test-env/bin/start-all.sh
+tools/test-env/bin/bot.sh
+tools/test-env/bin/stop-all.sh
+```
 
-NexAuth is [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software), licensed under the Mozilla Public License 2.0.
+Run the optimized Paper-only compatibility matrix:
 
-[Read the license here.](https://github.com/xreatlabs/NexAuth/blob/master/LICENSE)
+```bash
+tools/test-env/bin/paper-boundary.sh
+```
 
-The plugin **is and always will be** completely open-source, so you don't need to worry about malicous copies.
+The matrix checks protocol/API boundary versions from Minecraft `1.20` through the latest Paper line instead of repeating every patch release.
+
+## Repository Layout
+
+- `API/` - public API contracts and shared API tests.
+- `Plugin/` - platform implementations, shared authentication logic, embedded limbo server, resources, and tests.
+- `Plugin/src/main/java/xyz/xreatlabs/nexauth/velocity/` - Velocity platform adapter.
+- `Plugin/src/main/java/xyz/xreatlabs/nexauth/paper/` - Paper/Purpur platform adapter.
+- `Plugin/src/main/java/xyz/xreatlabs/nexauth/common/` - platform-neutral authentication, config, database, commands, metrics, and diagnostics.
+- `Plugin/src/main/java/ua/nanit/limbo/` - embedded limbo protocol/server implementation.
+- `tools/test-env/` - reproducible local Velocity/Paper/mineflayer smoke environment.
+- `run/` - ignored generated runtime area used by local smoke tests.
+
+## Credits
+
+- [kyngs](https://github.com/kyngs), original LibreLogin author.
+- [FastLogin contributors](https://github.com/games647/FastLogin), whose work helped inform the Paper premium login path.
+- [Fejby](https://github.com/Fejby), for Floodgate testing support.
+
+## License
+
+NexAuth is free and open-source software licensed under the Mozilla Public License 2.0. See [LICENSE](LICENSE).

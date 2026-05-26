@@ -1,9 +1,0 @@
-name: "NexAuth"
-author: "xreatlabs"
-version: '${version}'
-main: "xyz.xreatlabs.nexauth.bungeecord.BungeeCordBootstrap"
-softDepends:
-  - "RedisBungee"
-  - "floodgate"
-  - "LuckPerms"
-  - "Protocolize"

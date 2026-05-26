@@ -18,7 +18,7 @@ mcupload {
     swallowErrors = true
     platforms {
         modrinth {
-            loaders = listOf("paper", "purpur", "bungeecord", "waterfall", "velocity")
+            loaders = listOf("paper", "purpur", "velocity")
             projectId = "tL0SCXYq"
             gameVersions = listOf(
                 "1.21.10", "1.21.9", "1.21.8", "1.21.7", "1.21.6", "1.21.5", "1.21.4", "1.21.3", "1.21.2", "1.21.1", "1.21",
@@ -96,6 +96,7 @@ tasks.withType<ShadowJar> {
     relocate("org.intellij", "xyz.xreatlabs.nexauth.lib.intellij")
     relocate("org.jetbrains", "xyz.xreatlabs.nexauth.lib.jetbrains")
     relocate("io.leangen.geantyref", "xyz.xreatlabs.nexauth.lib.reflect")
+    relocate("net.kyori.option", "xyz.xreatlabs.nexauth.lib.option")
     relocate("org.spongepowered.configurate", "xyz.xreatlabs.nexauth.lib.configurate")
     relocate("net.byteflux.libby", "xyz.xreatlabs.nexauth.lib.libby")
     relocate("org.postgresql", "xyz.xreatlabs.nexauth.lib.postgresql")
@@ -137,7 +138,6 @@ libby {
 }
 
 configurations.all {
-    // I hate this, but it needs to be done as bungeecord does not support newer versions of adventure, and packetevents includes it
     // Only apply to runtime configurations, not compile configurations to allow Paper API to compile with its required Adventure version
     if (name.contains("runtime", ignoreCase = true) && !name.contains("compile", ignoreCase = true)) {
         resolutionStrategy {
@@ -173,7 +173,6 @@ dependencies {
 
     //ACF
     libby("com.github.kyngs.commands:acf-velocity:7d5bf7cac0")
-    libby("com.github.kyngs.commands:acf-bungee:7d5bf7cac0")
     libby("com.github.kyngs.commands:acf-paper:7d5bf7cac0")
 
     //Utils
@@ -185,7 +184,6 @@ dependencies {
     compileOnly("dev.simplix:protocolize-api:2.4.3")
     libby("org.bouncycastle:bcprov-jdk18on:1.81")
     libby("org.apache.commons:commons-email:1.6.0")
-    // DO NOT UPGRADE TO 4.15.0 OR ABOVE BEFORE TESTING WATERFALL AND BUNGEECORD COMPATIBILITY!!!
     libby("net.kyori:adventure-text-minimessage:4.14.0")
     libby("com.github.kyngs:LegacyMessage:0.2.0")
 
@@ -194,20 +192,17 @@ dependencies {
     //LuckPerms
     compileOnly("net.luckperms:api:5.5")
 
-    //Bungeecord
-    compileOnly("net.md-5:bungeecord-api:1.21-R0.4")
-    compileOnly("com.github.ProxioDev.ValioBungee:RedisBungee-Bungee:0.13.0")
-    libby("net.kyori:adventure-platform-bungeecord:4.4.1")
+    //Velocity multi-proxy support
+    compileOnly("com.github.ProxioDev.ValioBungee:RedisBungee-Velocity:0.13.0")
 
     //BStats
     libby("org.bstats:bstats-velocity:3.1.0")
-    libby("org.bstats:bstats-bungeecord:3.1.0")
     libby("org.bstats:bstats-bukkit:3.1.0")
 
     //Paper
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
     //compileOnly "com.comphenix.protocol:ProtocolLib:5.1.0"
-    libby("com.github.retrooper:packetevents-spigot:2.9.4")
+    libby("com.github.retrooper:packetevents-spigot:2.12.1")
     compileOnly("io.netty:netty-all:4.2.2.Final")
     libby("io.netty:netty-all:4.2.2.Final")
     compileOnly("com.mojang:datafixerupper:5.0.28") //I hate this so much
@@ -216,7 +211,6 @@ dependencies {
     //Libby
     implementation("xyz.kyngs.libby:libby-bukkit:1.7.1")
     implementation("xyz.kyngs.libby:libby-velocity:1.7.1")
-    implementation("xyz.kyngs.libby:libby-bungee:1.7.1")
     implementation("xyz.kyngs.libby:libby-paper:1.7.1")
 
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
@@ -228,6 +222,7 @@ dependencies {
     testImplementation("net.kyori:adventure-nbt:4.14.0")
     testImplementation("net.kyori:adventure-text-serializer-plain:4.14.0")
     testImplementation("org.bouncycastle:bcprov-jdk18on:1.81")
+    testImplementation("io.netty:netty-all:4.2.2.Final")
 }
 
 tasks.test {
@@ -237,9 +232,6 @@ tasks.test {
 tasks.withType<ProcessResources> {
     outputs.upToDateWhen { false }
     filesMatching("plugin.yml") {
-        expand(mapOf("version" to version))
-    }
-    filesMatching("bungee.yml") {
         expand(mapOf("version" to version))
     }
     filesMatching("paper-plugin.yml") {

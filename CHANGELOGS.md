@@ -4,7 +4,7 @@
 
 ### 💬 Production Release
 
-This is the first stable production release of **NexAuth**. It promotes the work completed across the beta cycle into a `1.0.0` baseline intended for real-world deployments across Paper, Velocity, and BungeeCord/Waterfall networks.
+This is the first stable production release of **NexAuth**. It promotes the work completed across the beta cycle into a `1.0.0` baseline intended for real-world deployments across Paper and Velocity networks.
 
 ---
 
@@ -33,7 +33,6 @@ This is the first stable production release of **NexAuth**. It promotes the work
 
 - **Paper/Purpur**: 1.13 - 1.21.10
 - **Velocity**: Supported modern snapshot line
-- **BungeeCord/Waterfall**: Latest
 - **Java**: 21+
 
 ### 📦 Installation

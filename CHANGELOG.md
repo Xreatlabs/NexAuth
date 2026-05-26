@@ -6,6 +6,16 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 
 ## [Unreleased]
 
+### Changed
+- Removed the BungeeCord/Waterfall platform implementation, plugin descriptor, upload loaders, and Bungee-only dependencies.
+- Preserved the Velocity + Paper + mineflayer local smoke environment under `tools/test-env`.
+- Updated Paper compatibility for Minecraft `1.21.10`, `1.21.11`, and `26.1.2`.
+
+### Fixed
+- Relocated `net.kyori.option` with Configurate to avoid Paper classloader conflicts.
+- Updated PacketEvents to fix login/configuration packet parsing on newer Paper versions.
+- Added Paper encryption reflection support for the newer `net.minecraft.util.Crypt#getCipher` runtime path.
+
 ## [1.0.0] - 2026-03-18
 
 ### Added
@@ -69,7 +79,7 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 ### Added
 - Initial beta release of **NexAuth**.
 - Added support for Minecraft **1.21.7**.
-- Added multi-platform support for Paper, Velocity, and BungeeCord.
+- Added legacy multi-platform support.
 - Added support for MySQL, PostgreSQL, and SQLite.
 - Added TOTP 2FA, premium integration, email support, and migration tooling.
 

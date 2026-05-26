@@ -56,17 +56,12 @@ import static xyz.xreatlabs.nexauth.paper.protocol.ProtocolUtil.getServerVersion
 
 public class PaperListeners extends AuthenticListeners<PaperNexAuth, Player, World> implements Listener {
 
-    private static final String ENCRYPTION_CLASS_NAME = "MinecraftEncryption";
     private static final Class<?> ENCRYPTION_CLASS;
     private static Method encryptMethod;
     private static Method cipherMethod;
 
     static {
-        try {
-            ENCRYPTION_CLASS = Class.forName("net.minecraft.util." + ENCRYPTION_CLASS_NAME);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        ENCRYPTION_CLASS = resolveEncryptionClass();
     }
 
     private final KeyPair keyPair = EncryptionUtil.generateKeyPair();
@@ -399,6 +394,9 @@ public class PaperListeners extends AuthenticListeners<PaperNexAuth, Player, Wor
 
                 // Get the needed Cipher helper method (used to generate ciphers from login key)
                 cipherMethod = Reflection.getMethod(ENCRYPTION_CLASS, "a", int.class, Key.class);
+                if (cipherMethod == null) {
+                    cipherMethod = Reflection.getMethod(ENCRYPTION_CLASS, "getCipher", int.class, Key.class);
+                }
             }
         }
 
@@ -424,6 +422,20 @@ public class PaperListeners extends AuthenticListeners<PaperNexAuth, Player, Wor
         }
 
         return true;
+    }
+
+    private static Class<?> resolveEncryptionClass() {
+        for (String className : new String[]{
+                "net.minecraft.util.MinecraftEncryption",
+                "net.minecraft.util.Crypt"
+        }) {
+            try {
+                return Class.forName(className);
+            } catch (ClassNotFoundException ignored) {
+            }
+        }
+
+        throw new IllegalStateException("Unable to find Minecraft encryption utility class");
     }
 
     private void kickPlayer(String reason, com.github.retrooper.packetevents.protocol.player.User player) {

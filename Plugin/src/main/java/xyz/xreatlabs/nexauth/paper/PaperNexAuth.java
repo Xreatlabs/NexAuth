@@ -139,7 +139,7 @@ public class PaperNexAuth extends AuthenticNexAuth<Player, World> {
             return;
         }
 
-        if (Bukkit.spigot().getSpigotConfig().getBoolean("settings.bungeecord") || Bukkit.spigot().getPaperConfig().getBoolean("settings.velocity-support.enabled")) {
+        if (Bukkit.spigot().getPaperConfig().getBoolean("settings.velocity-support.enabled")) {
             getLogger().error("!!!This server is running under a proxy, NexAuth won't start!!!");
             getLogger().error("If you want to use NexAuth under a proxy, place it on the proxy and remove it from the server.");
             disable();
