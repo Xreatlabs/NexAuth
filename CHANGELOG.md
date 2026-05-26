@@ -15,6 +15,9 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 - Relocated `net.kyori.option` with Configurate to avoid Paper classloader conflicts.
 - Updated PacketEvents to fix login/configuration packet parsing on newer Paper versions.
 - Added Paper encryption reflection support for the newer `net.minecraft.util.Crypt#getCipher` runtime path.
+- Hardened Paper premium session verification so Mojang session-server errors fail closed instead of being treated as valid joins.
+- Made premium username normalization locale-safe and fail closed when Mojang's authoritative lookup is unavailable and fallback APIs miss.
+- Required an already authorized, registered session before enabling, confirming, or disabling premium login from player commands.
 
 ## [1.0.0] - 2026-03-18
 

@@ -28,12 +28,15 @@ public class PremiumEnableCommand<P> extends PremiumCommand<P> {
     @CommandCompletion("%autocomplete.premium")
     public CompletionStage<Void> onPremium(Audience sender, UUID uuid, P player, @Single String password) {
         return runAsync(() -> {
+            checkAuthorized(player);
             plugin.getLoginTryListener().ensureCanAttempt(player);
             var user = getUser(player);
+            if (!user.isRegistered()) throw new InvalidCommandArgument(getMessage("error-not-registered"));
             checkCracked(user);
 
             var hashed = user.getHashedPassword();
             var crypto = getCrypto(hashed);
+            if (crypto == null) throw new InvalidCommandArgument(getMessage("error-password-corrupted"));
 
             if (!crypto.matches(password, hashed)) {
                 plugin.getEventProvider()

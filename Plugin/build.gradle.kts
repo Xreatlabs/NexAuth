@@ -216,12 +216,14 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("com.google.code.gson:gson:2.13.1")
+    testImplementation("com.github.kyngs.commands:acf-paper:7d5bf7cac0")
     testImplementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
     testImplementation("com.google.guava:guava:33.4.8-jre")
     testImplementation("net.kyori:adventure-api:4.14.0")
     testImplementation("net.kyori:adventure-nbt:4.14.0")
     testImplementation("net.kyori:adventure-text-serializer-plain:4.14.0")
     testImplementation("org.bouncycastle:bcprov-jdk18on:1.81")
+    testImplementation("org.bstats:bstats-base:3.1.0")
     testImplementation("io.netty:netty-all:4.2.2.Final")
 }
 

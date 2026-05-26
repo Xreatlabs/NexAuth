@@ -23,6 +23,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -52,7 +53,7 @@ public class AuthenticPremiumProvider implements PremiumProvider {
 
     @Override
     public PremiumUser getUserForName(String name) throws PremiumException {
-        name = name.toLowerCase();
+        name = name.toLowerCase(Locale.ROOT);
 
         if (isCircuitOpen()) {
             throw new PremiumException(PremiumException.Issue.THROTTLED, "Premium provider circuit breaker is open");
@@ -62,19 +63,27 @@ public class AuthenticPremiumProvider implements PremiumProvider {
 
         String finalName = name;
         var result = userCache.get(name, x -> {
+            PremiumException firstException = null;
             for (int i = 0; i < fetchers.size(); i++) {
                 var fetcher = fetchers.get(i);
 
                 try {
-                    return fetcher.apply(x);
+                    var fetched = fetcher.apply(x);
+                    if (fetched != null) {
+                        return fetched;
+                    }
+                    if (i == 0) {
+                        return null;
+                    }
                 } catch (PremiumException e) {
+                    if (firstException == null) {
+                        firstException = e;
+                    }
                     if (e.getIssue() == PremiumException.Issue.SERVER_EXCEPTION || e.getIssue() == PremiumException.Issue.THROTTLED) {
                         openCircuit();
                     }
 
-                    if (i == fetchers.size() - 1) {
-                        exceptionToThrow[0] = e;
-                    } else if (e.getIssue() == PremiumException.Issue.SERVER_EXCEPTION) {
+                    if (e.getIssue() == PremiumException.Issue.SERVER_EXCEPTION) {
                         plugin.getLogger().warn("Got a server exception while fetching premium user. Falling back to an alternative API. Player's information's might not be up-to-date.", e);
                     } else if (e.getIssue() == PremiumException.Issue.THROTTLED) {
                         plugin.getLogger().warn("Your IP has been rate limited while fetching premium user. Falling back to an alternative API. Player's information's might not be up-to-date.", e);
@@ -83,11 +92,12 @@ public class AuthenticPremiumProvider implements PremiumProvider {
                     }
                 } catch (RuntimeException e) {
                     plugin.getLogger().debug("Unexpected exception while fetching premium user " + finalName, e);
-                    if (i == fetchers.size() - 1) {
-                        exceptionToThrow[0] = new PremiumException(PremiumException.Issue.UNDEFINED, e);
+                    if (firstException == null) {
+                        firstException = new PremiumException(PremiumException.Issue.UNDEFINED, e);
                     }
                 }
             }
+            exceptionToThrow[0] = firstException;
             return null;
         });
 

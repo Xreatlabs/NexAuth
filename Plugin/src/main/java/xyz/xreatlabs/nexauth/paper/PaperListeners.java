@@ -367,9 +367,11 @@ public class PaperListeners extends AuthenticListeners<PaperNexAuth, Player, Wor
         conn.setConnectTimeout(5000);
         conn.setReadTimeout(5000);
         conn.connect();
-        int responseCode = conn.getResponseCode();
-        conn.disconnect();
-        return responseCode != 204;
+        try {
+            return PaperSessionVerifier.isJoinedResponse(conn.getResponseCode());
+        } finally {
+            conn.disconnect();
+        }
     }
 
     /**

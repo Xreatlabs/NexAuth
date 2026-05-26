@@ -24,6 +24,7 @@ public class PremiumDisableCommand<P> extends PremiumCommand<P> {
     @Default
     public CompletionStage<Void> onCracked(Audience sender, P player) {
         return runAsync(() -> {
+            checkAuthorized(player);
             var user = getUser(player);
             checkPremium(user);
 

@@ -22,6 +22,7 @@ public class PremiumConfirmCommand<P> extends PremiumCommand<P> {
     @Default
     public CompletionStage<Void> onPremiumConfirm(Audience sender, P player) {
         return runAsync(() -> {
+            checkAuthorized(player);
             var user = getUser(player);
             checkCracked(user);
 
