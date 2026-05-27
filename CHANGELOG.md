@@ -6,42 +6,36 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 
 ## [Unreleased]
 
-### Changed
-- Removed the BungeeCord/Waterfall platform implementation, plugin descriptor, upload loaders, and Bungee-only dependencies.
-- Preserved the Velocity + Paper + mineflayer local smoke environment under `tools/test-env`.
-- Updated Paper compatibility for Minecraft `1.21.10`, `1.21.11`, and `26.1.2`.
-
-### Fixed
-- Relocated `net.kyori.option` with Configurate to avoid Paper classloader conflicts.
-- Updated PacketEvents to fix login/configuration packet parsing on newer Paper versions.
-- Added Paper encryption reflection support for the newer `net.minecraft.util.Crypt#getCipher` runtime path.
-- Hardened Paper premium session verification so Mojang session-server errors fail closed instead of being treated as valid joins.
-- Made premium username normalization locale-safe and fail closed when Mojang's authoritative lookup is unavailable and fallback APIs miss.
-- Required an already authorized, registered session before enabling, confirming, or disabling premium login from player commands.
-
-## [1.0.0] - 2026-03-18
+## [0.0.1-beta4] - 2026-05-27
 
 ### Added
 - Integrated **NexLimbo** as the recommended limbo system for proxy-based authentication flows.
-- Added support for Minecraft **1.21.5** through **1.21.10**.
+- Added support for Minecraft **1.21.5** through **1.21.11** and Paper **26.1.2**.
 - Added operator-facing doctor and status diagnostics to improve production observability.
 - Added packet-level inventory hiding for unauthenticated players.
 - Added premium-player title support on auto-login.
 
 ### Changed
-- Promoted NexAuth to its first stable production release.
 - Updated the Paper API target to **1.21.10-R0.1-SNAPSHOT**.
 - Updated Velocity compatibility to the latest supported snapshot line.
 - Replaced NanoLimboPlugin dependency references with NexLimbo-focused integration and documentation.
 - Improved update-check reliability with GitHub API, RSS feed, and HTML parsing fallbacks.
 - Updated branding and default database naming to use **nexauth** consistently.
 - Unified `/nexauth reload` behavior with configuration diff display.
+- Removed the BungeeCord/Waterfall platform implementation, plugin descriptor, upload loaders, and Bungee-only dependencies.
+- Preserved the Velocity + Paper + mineflayer local smoke environment under `tools/test-env`.
 
 ### Fixed
 - Hardened Velocity startup authentication flow to avoid startup/login failures when dependent systems are not fully ready.
 - Added null-safety guards for database lookup failures in platform listeners.
 - Fixed Adventure dependency forcing so compatibility constraints apply only to runtime configurations.
 - Improved release runtime packaging by switching Netty to Libby runtime download instead of shading it directly.
+- Relocated `net.kyori.option` with Configurate to avoid Paper classloader conflicts.
+- Updated PacketEvents to fix login/configuration packet parsing on newer Paper versions.
+- Added Paper encryption reflection support for the newer `net.minecraft.util.Crypt#getCipher` runtime path.
+- Hardened Paper premium session verification so Mojang session-server errors fail closed instead of being treated as valid joins.
+- Made premium username normalization locale-safe and fail closed when Mojang's authoritative lookup is unavailable and fallback APIs miss.
+- Required an already authorized, registered session before enabling, confirming, or disabling premium login from player commands.
 
 ### Security
 - Continued support for secure password hashing, TOTP 2FA, and premium-account authentication flows across supported platforms.
@@ -95,8 +89,8 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 ### Security
 - Documented the beta release as pre-production and recommended backups/testing before use.
 
-[Unreleased]: https://github.com/Xreatlabs/NexAuth/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/Xreatlabs/NexAuth/compare/0.0.1-beta3...v1.0.0
+[Unreleased]: https://github.com/Xreatlabs/NexAuth/compare/0.0.1-beta4...HEAD
+[0.0.1-beta4]: https://github.com/Xreatlabs/NexAuth/compare/0.0.1-beta3...0.0.1-beta4
 [0.0.1-beta3]: https://github.com/Xreatlabs/NexAuth/compare/0.0.1-beta2...0.0.1-beta3
 [0.0.1-beta2]: https://github.com/Xreatlabs/NexAuth/compare/0.0.1-beta...0.0.1-beta2
 [0.0.1-beta]: https://github.com/Xreatlabs/NexAuth/releases/tag/0.0.1-beta
