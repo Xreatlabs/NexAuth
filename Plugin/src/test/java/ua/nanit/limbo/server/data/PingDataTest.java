@@ -6,21 +6,21 @@
 
 package ua.nanit.limbo.server.data;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 class PingDataTest {
 
-    @Test
-    void storesConfiguredPingFields() {
-        var pingData = new PingData();
-        pingData.setDescription("desc");
-        pingData.setVersion("1.21");
-        pingData.setProtocol(767);
+  @Test
+  void storesConfiguredPingFields() {
+    var pingData = new PingData();
+    pingData.setDescription("desc");
+    pingData.setVersion("1.21");
+    pingData.setProtocol(767);
 
-        assertEquals("desc", pingData.getDescription());
-        assertEquals("1.21", pingData.getVersion());
-        assertEquals(767, pingData.getProtocol());
-    }
+    assertEquals("desc", pingData.getDescription());
+    assertEquals("1.21", pingData.getVersion());
+    assertEquals(767, pingData.getProtocol());
+  }
 }

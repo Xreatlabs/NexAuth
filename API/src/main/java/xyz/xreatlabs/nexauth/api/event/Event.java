@@ -16,18 +16,17 @@ import xyz.xreatlabs.nexauth.api.PlatformHandle;
  */
 public interface Event<P, S> {
 
-    /**
-     * Gets the plugin instance
-     *
-     * @return the plugin instance
-     */
-    NexAuthPlugin<P, S> getPlugin();
+  /**
+   * Gets the plugin instance
+   *
+   * @return the plugin instance
+   */
+  NexAuthPlugin<P, S> getPlugin();
 
-    /**
-     * Gets the platform handle
-     *
-     * @return the platform handle
-     */
-    PlatformHandle<P, S> getPlatformHandle();
-
+  /**
+   * Gets the platform handle
+   *
+   * @return the platform handle
+   */
+  PlatformHandle<P, S> getPlatformHandle();
 }

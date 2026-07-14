@@ -6,22 +6,22 @@
 
 package xyz.xreatlabs.nexauth.api.crypto;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Test;
+
 class HashedPasswordTest {
 
-    @Test
-    void toStringIncludesKeyFields() {
-        var password = new HashedPassword("abc", "salt", "argon2id");
+  @Test
+  void toStringIncludesKeyFields() {
+    var password = new HashedPassword("abc", "salt", "argon2id");
 
-        var rendered = password.toString();
+    var rendered = password.toString();
 
-        assertTrue(rendered.contains("hash='abc'"));
-        assertTrue(rendered.contains("salt='salt'"));
-        assertTrue(rendered.contains("algo='argon2id'"));
-        assertEquals(new HashedPassword("abc", "salt", "argon2id"), password);
-    }
+    assertTrue(rendered.contains("hash='abc'"));
+    assertTrue(rendered.contains("salt='salt'"));
+    assertTrue(rendered.contains("algo='argon2id'"));
+    assertEquals(new HashedPassword("abc", "salt", "argon2id"), password);
+  }
 }

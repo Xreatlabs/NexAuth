@@ -13,64 +13,63 @@ package xyz.xreatlabs.nexauth.api;
  */
 public interface Logger {
 
-    /**
-     * Logs a message at the INFO level.
-     *
-     * @param message The message to log.
-     */
-    void info(String message);
+  /**
+   * Logs a message at the INFO level.
+   *
+   * @param message The message to log.
+   */
+  void info(String message);
 
-    /**
-     * Logs a message, and a throwable at the INFO level.
-     *
-     * @param message   The message to log.
-     * @param throwable The throwable to log.
-     */
-    void info(String message, Throwable throwable);
+  /**
+   * Logs a message, and a throwable at the INFO level.
+   *
+   * @param message The message to log.
+   * @param throwable The throwable to log.
+   */
+  void info(String message, Throwable throwable);
 
-    /**
-     * Logs a message at the WARNING level.
-     *
-     * @param message The message to log.
-     */
-    void warn(String message);
+  /**
+   * Logs a message at the WARNING level.
+   *
+   * @param message The message to log.
+   */
+  void warn(String message);
 
-    /**
-     * Logs a message, and a throwable at the WARNING level.
-     *
-     * @param message   The message to log.
-     * @param throwable The throwable to log.
-     */
-    void warn(String message, Throwable throwable);
+  /**
+   * Logs a message, and a throwable at the WARNING level.
+   *
+   * @param message The message to log.
+   * @param throwable The throwable to log.
+   */
+  void warn(String message, Throwable throwable);
 
-    /**
-     * Logs a message at the ERROR level.
-     *
-     * @param message The message to log.
-     */
-    void error(String message);
+  /**
+   * Logs a message at the ERROR level.
+   *
+   * @param message The message to log.
+   */
+  void error(String message);
 
-    /**
-     * Logs a message, and a throwable at the ERROR level.
-     *
-     * @param message   The message to log.
-     * @param throwable The throwable to log.
-     */
-    void error(String message, Throwable throwable);
+  /**
+   * Logs a message, and a throwable at the ERROR level.
+   *
+   * @param message The message to log.
+   * @param throwable The throwable to log.
+   */
+  void error(String message, Throwable throwable);
 
-    /**
-     * Logs a message at the DEBUG level.
-     *
-     * @param message The message to log.
-     */
-    void debug(String message);
+  /**
+   * Logs a message at the DEBUG level.
+   *
+   * @param message The message to log.
+   */
+  void debug(String message);
 
-    /**
-     * Logs a message, and a throwable at the DEBUG level.
-     *
-     * @param message   The message to log.
-     * @param throwable The throwable to log.
-     */
-    void debug(String message, Throwable throwable);
-
+  /**
+   * Logs a message, and a throwable at the DEBUG level.
+   *
+   * @param message The message to log.
+   * @param throwable The throwable to log.
+   */
+  void debug(String message, Throwable throwable);
 }

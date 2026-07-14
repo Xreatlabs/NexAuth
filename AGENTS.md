@@ -71,6 +71,22 @@ Run the optimized direct-Paper matrix:
 tools/test-env/bin/paper-boundary.sh
 ```
 
+### Code Quality Tools
+
+The project uses four static analysis tools applied to all subprojects:
+
+- **Spotless** (`spotlessCheck` / `spotlessApply`): Google Java Format enforcement. Run `./gradlew spotlessApply` before committing.
+- **SpotBugs** (`spotbugsMain`): Static bug detection with exclude filter at `config/spotbugs/exclude.xml`.
+- **PMD** (`pmdMain`): Complexity, naming, dead code, and duplicate literal checks. Ruleset at `config/pmd/ruleset.xml`.
+- **Dependency Analysis** (`projectHealth`): Detects unused dependencies. Run it per module with `./gradlew :API:projectHealth :Plugin:projectHealth`.
+- **ArchUnit** (`ArchitectureBoundaryTest`): Enforces platform boundary rules (Paper must not import Velocity, Velocity must not import Paper, common must not import either).
+
+Pre-commit hooks are in `.githooks/`. Install with:
+
+```bash
+git config core.hooksPath .githooks
+```
+
 This checks protocol/API boundary versions from `1.20` through current Paper rather than every patch release.
 
 ## Local Test Environment

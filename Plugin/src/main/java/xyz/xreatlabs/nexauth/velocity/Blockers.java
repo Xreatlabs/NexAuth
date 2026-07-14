@@ -21,49 +21,58 @@ import xyz.xreatlabs.nexauth.common.config.HoconPluginConfiguration;
 
 public class Blockers {
 
-    private final AuthorizationProvider<Player> authorizationProvider;
-    private final HoconPluginConfiguration configuration;
+  private final AuthorizationProvider<Player> authorizationProvider;
+  private final HoconPluginConfiguration configuration;
 
-    public Blockers(AuthorizationProvider<Player> authorizationProvider, HoconPluginConfiguration configuration, Messages messages) {
-        this.authorizationProvider = authorizationProvider;
-        this.configuration = configuration;
+  public Blockers(
+      AuthorizationProvider<Player> authorizationProvider,
+      HoconPluginConfiguration configuration,
+      Messages messages) {
+    this.authorizationProvider = authorizationProvider;
+    this.configuration = configuration;
+  }
+
+  @Subscribe(order = PostOrder.FIRST)
+  public void onChat(PlayerChatEvent event) {
+    if (!authorizationProvider.isAuthorized(event.getPlayer())
+        || authorizationProvider.isAwaiting2FA(event.getPlayer()))
+      event.setResult(PlayerChatEvent.ChatResult.denied());
+  }
+
+  @Subscribe(order = PostOrder.FIRST)
+  public void onCommand(CommandExecuteEvent event) {
+    if (!(event.getCommandSource() instanceof Player player)) return;
+    if (authorizationProvider.isAuthorized(player) && !authorizationProvider.isAwaiting2FA(player))
+      return;
+
+    var command = event.getCommand().split(" ")[0];
+
+    for (String allowed :
+        configuration.get(ConfigurationKeys.ALLOWED_COMMANDS_WHILE_UNAUTHORIZED)) {
+      if (command.equals(allowed)) return;
     }
 
-    @Subscribe(order = PostOrder.FIRST)
-    public void onChat(PlayerChatEvent event) {
-        if (!authorizationProvider.isAuthorized(event.getPlayer()) || authorizationProvider.isAwaiting2FA(event.getPlayer()))
-            event.setResult(PlayerChatEvent.ChatResult.denied());
+    event.setResult(CommandExecuteEvent.CommandResult.denied());
+  }
+
+  @Subscribe(order = PostOrder.FIRST)
+  public void onServerConnect(ServerPreConnectEvent event) {
+    if (authorizationProvider.isAwaiting2FA(event.getPlayer())) {
+      if (!configuration
+          .get(ConfigurationKeys.LIMBO)
+          .contains(event.getOriginalServer().getServerInfo().getName())) {
+        event.setResult(ServerPreConnectEvent.ServerResult.denied());
+      }
     }
+  }
 
-    @Subscribe(order = PostOrder.FIRST)
-    public void onCommand(CommandExecuteEvent event) {
-        if (!(event.getCommandSource() instanceof Player player)) return;
-        if (authorizationProvider.isAuthorized(player) && !authorizationProvider.isAwaiting2FA(player))
-            return;
-
-        var command = event.getCommand().split(" ")[0];
-
-        for (String allowed : configuration.get(ConfigurationKeys.ALLOWED_COMMANDS_WHILE_UNAUTHORIZED)) {
-            if (command.equals(allowed)) return;
-        }
-
-        event.setResult(CommandExecuteEvent.CommandResult.denied());
+  @Subscribe(order = PostOrder.FIRST)
+  public void onServerKick(KickedFromServerEvent event) {
+    if (!authorizationProvider.isAuthorized(event.getPlayer())
+        || authorizationProvider.isAwaiting2FA(event.getPlayer())) {
+      event
+          .getPlayer()
+          .disconnect(event.getServerKickReason().orElse(Component.text("Limbo not running")));
     }
-
-    @Subscribe(order = PostOrder.FIRST)
-    public void onServerConnect(ServerPreConnectEvent event) {
-        if (authorizationProvider.isAwaiting2FA(event.getPlayer())) {
-            if (!configuration.get(ConfigurationKeys.LIMBO).contains(event.getOriginalServer().getServerInfo().getName())) {
-                event.setResult(ServerPreConnectEvent.ServerResult.denied());
-            }
-        }
-    }
-
-    @Subscribe(order = PostOrder.FIRST)
-    public void onServerKick(KickedFromServerEvent event) {
-        if (!authorizationProvider.isAuthorized(event.getPlayer()) || authorizationProvider.isAwaiting2FA(event.getPlayer())) {
-            event.getPlayer().disconnect(event.getServerKickReason().orElse(Component.text("Limbo not running")));
-        }
-    }
-
+  }
 }

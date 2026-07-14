@@ -10,9 +10,8 @@ import ua.nanit.limbo.protocol.registry.Version;
 
 public interface PacketOut extends Packet {
 
-    @Override
-    default void decode(ByteMessage msg, Version version) {
-        // Can be ignored for outgoing packets
-    }
-
+  @Override
+  default void decode(ByteMessage msg, Version version) {
+    // Can be ignored for outgoing packets
+  }
 }

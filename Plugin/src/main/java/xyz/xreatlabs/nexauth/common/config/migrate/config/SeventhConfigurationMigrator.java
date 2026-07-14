@@ -12,15 +12,12 @@ import xyz.xreatlabs.nexauth.common.config.migrate.ConfigurationMigrator;
 
 public class SeventhConfigurationMigrator implements ConfigurationMigrator {
 
-    @Override
-    public void migrate(ConfigurateHelper helper, Logger logger) {
-        var kickOnWrongPassword = helper.getBoolean("kick-on-wrong-password");
+  @Override
+  public void migrate(ConfigurateHelper helper, Logger logger) {
+    var kickOnWrongPassword = helper.getBoolean("kick-on-wrong-password");
 
-        helper.set("kick-on-wrong-password", null);
-        if (kickOnWrongPassword)
-            helper.set("max-login-attempts", 1);
-        else
-            helper.set("max-login-attempts", -1);
-    }
-
+    helper.set("kick-on-wrong-password", null);
+    if (kickOnWrongPassword) helper.set("max-login-attempts", 1);
+    else helper.set("max-login-attempts", -1);
+  }
 }

@@ -6,39 +6,39 @@
 
 package xyz.xreatlabs.nexauth.common.database.provider;
 
-import xyz.xreatlabs.nexauth.api.database.connector.SQLiteDatabaseConnector;
-import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import xyz.xreatlabs.nexauth.api.database.connector.SQLiteDatabaseConnector;
+import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 
 public class NexAuthSQLiteDatabaseProvider extends NexAuthSQLDatabaseProvider {
-    public NexAuthSQLiteDatabaseProvider(SQLiteDatabaseConnector connector, AuthenticNexAuth<?, ?> plugin) {
-        super(connector, plugin);
+  public NexAuthSQLiteDatabaseProvider(
+      SQLiteDatabaseConnector connector, AuthenticNexAuth<?, ?> plugin) {
+    super(connector, plugin);
+  }
+
+  @Override
+  protected List<String> getColumnNames(Connection connection) throws SQLException {
+    var columns = new ArrayList<String>();
+
+    var rs = connection.prepareStatement("PRAGMA table_info(librepremium_data)").executeQuery();
+
+    while (rs.next()) {
+      columns.add(rs.getString("name"));
     }
 
-    @Override
-    protected List<String> getColumnNames(Connection connection) throws SQLException {
-        var columns = new ArrayList<String>();
+    return columns;
+  }
 
-        var rs = connection.prepareStatement("PRAGMA table_info(librepremium_data)").executeQuery();
+  @Override
+  protected String getIgnoreSyntax() {
+    return "OR IGNORE";
+  }
 
-        while (rs.next()) {
-            columns.add(rs.getString("name"));
-        }
-
-        return columns;
-    }
-
-    @Override
-    protected String getIgnoreSyntax() {
-        return "OR IGNORE";
-    }
-
-    @Override
-    protected String addUnique(String column) {
-        return "CREATE UNIQUE INDEX %s_index ON librepremium_data(%s);".formatted(column, column);
-    }
+  @Override
+  protected String addUnique(String column) {
+    return "CREATE UNIQUE INDEX %s_index ON librepremium_data(%s);".formatted(column, column);
+  }
 }

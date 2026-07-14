@@ -6,48 +6,44 @@
 
 package ua.nanit.limbo.protocol.packets.play;
 
+import java.util.UUID;
 import ua.nanit.limbo.protocol.ByteMessage;
 import ua.nanit.limbo.protocol.PacketOut;
 import ua.nanit.limbo.protocol.registry.Version;
 import ua.nanit.limbo.server.data.BossBar;
 
-import java.util.UUID;
-
-/**
- * Packet for 1.9+
- */
+/** Packet for 1.9+ */
 public class PacketBossBar implements PacketOut {
 
-    private UUID uuid;
-    private BossBar bossBar;
-    private int flags;
+  private UUID uuid;
+  private BossBar bossBar;
+  private int flags;
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
+  }
 
-    public void setBossBar(BossBar bossBar) {
-        this.bossBar = bossBar;
-    }
+  public void setBossBar(BossBar bossBar) {
+    this.bossBar = bossBar;
+  }
 
-    public void setFlags(int flags) {
-        this.flags = flags;
-    }
+  public void setFlags(int flags) {
+    this.flags = flags;
+  }
 
-    @Override
-    public void encode(ByteMessage msg, Version version) {
-        msg.writeUuid(uuid);
-        msg.writeVarInt(0); // Create bossbar
-        msg.writeNbtMessage(bossBar.getText(), version);
-        msg.writeFloat(bossBar.getHealth());
-        msg.writeVarInt(bossBar.getColor().getIndex());
-        msg.writeVarInt(bossBar.getDivision().getIndex());
-        msg.writeByte(flags);
-    }
+  @Override
+  public void encode(ByteMessage msg, Version version) {
+    msg.writeUuid(uuid);
+    msg.writeVarInt(0); // Create bossbar
+    msg.writeNbtMessage(bossBar.getText(), version);
+    msg.writeFloat(bossBar.getHealth());
+    msg.writeVarInt(bossBar.getColor().getIndex());
+    msg.writeVarInt(bossBar.getDivision().getIndex());
+    msg.writeByte(flags);
+  }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
-
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

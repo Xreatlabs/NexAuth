@@ -17,31 +17,31 @@ import java.util.Objects;
  */
 public class EventType<P, S, E extends Event<P, S>> {
 
-    private final Class<?> clazz;
+  private final Class<?> clazz;
 
-    EventType(Class<?> clazz) {
-        this.clazz = clazz;
-    }
+  EventType(Class<?> clazz) {
+    this.clazz = clazz;
+  }
 
-    /**
-     * Returns the event class.
-     *
-     * @return The event class
-     */
-    public Class<?> getClazz() {
-        return clazz;
-    }
+  /**
+   * Returns the event class.
+   *
+   * @return The event class
+   */
+  public Class<?> getClazz() {
+    return clazz;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EventType<?, ?, ?> eventType = (EventType<?, ?, ?>) o;
-        return Objects.equals(clazz, eventType.clazz);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    EventType<?, ?, ?> eventType = (EventType<?, ?, ?>) o;
+    return Objects.equals(clazz, eventType.clazz);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(clazz);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(clazz);
+  }
 }

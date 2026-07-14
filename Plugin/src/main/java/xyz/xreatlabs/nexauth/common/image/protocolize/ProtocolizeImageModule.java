@@ -15,14 +15,12 @@ import xyz.xreatlabs.nexauth.common.image.protocolize.packet.MapDataPacket;
 
 public class ProtocolizeImageModule implements ProtocolizeModule {
 
-    @Override
-    public void registerMappings(MappingProvider mappingProvider) {
+  @Override
+  public void registerMappings(MappingProvider mappingProvider) {}
 
-    }
-
-    @Override
-    public void registerPackets(ProtocolRegistrationProvider protocolRegistrationProvider) {
-        protocolRegistrationProvider.registerPacket(MapDataPacket.MAPPINGS, Protocol.PLAY, PacketDirection.CLIENTBOUND, MapDataPacket.class);
-    }
-
+  @Override
+  public void registerPackets(ProtocolRegistrationProvider protocolRegistrationProvider) {
+    protocolRegistrationProvider.registerPacket(
+        MapDataPacket.MAPPINGS, Protocol.PLAY, PacketDirection.CLIENTBOUND, MapDataPacket.class);
+  }
 }

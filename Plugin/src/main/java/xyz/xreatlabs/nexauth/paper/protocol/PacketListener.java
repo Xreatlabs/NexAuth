@@ -13,19 +13,19 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import xyz.xreatlabs.nexauth.paper.PaperListeners;
 
 public class PacketListener extends PacketListenerAbstract {
-    private final PaperListeners delegate;
+  private final PaperListeners delegate;
 
-    public PacketListener(PaperListeners delegate) {
-        super(PacketListenerPriority.HIGHEST);
-        this.delegate = delegate;
-    }
+  public PacketListener(PaperListeners delegate) {
+    super(PacketListenerPriority.HIGHEST);
+    this.delegate = delegate;
+  }
 
-    @Override
-    public void onPacketReceive(PacketReceiveEvent event) {
-        if (event.isCancelled()) return;
-        if (event.getPacketType() != PacketType.Login.Client.LOGIN_START && event.getPacketType() != PacketType.Login.Client.ENCRYPTION_RESPONSE)
-            return;
+  @Override
+  public void onPacketReceive(PacketReceiveEvent event) {
+    if (event.isCancelled()) return;
+    if (event.getPacketType() != PacketType.Login.Client.LOGIN_START
+        && event.getPacketType() != PacketType.Login.Client.ENCRYPTION_RESPONSE) return;
 
-        delegate.onPacketReceive(event);
-    }
+    delegate.onPacketReceive(event);
+  }
 }

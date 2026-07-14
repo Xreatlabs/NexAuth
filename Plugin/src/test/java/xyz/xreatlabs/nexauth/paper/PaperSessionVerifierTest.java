@@ -6,24 +6,23 @@
 
 package xyz.xreatlabs.nexauth.paper;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class PaperSessionVerifierTest {
 
-    @Test
-    void onlyAcceptsExplicitJoinedResponses() throws IOException {
-        assertTrue(PaperSessionVerifier.isJoinedResponse(200));
-        assertFalse(PaperSessionVerifier.isJoinedResponse(204));
-    }
+  @Test
+  void onlyAcceptsExplicitJoinedResponses() throws IOException {
+    assertTrue(PaperSessionVerifier.isJoinedResponse(200));
+    assertFalse(PaperSessionVerifier.isJoinedResponse(204));
+  }
 
-    @Test
-    void failsClosedOnSessionServerErrors() {
-        assertThrows(IOException.class, () -> PaperSessionVerifier.isJoinedResponse(403));
-        assertThrows(IOException.class, () -> PaperSessionVerifier.isJoinedResponse(429));
-        assertThrows(IOException.class, () -> PaperSessionVerifier.isJoinedResponse(500));
-    }
+  @Test
+  void failsClosedOnSessionServerErrors() {
+    assertThrows(IOException.class, () -> PaperSessionVerifier.isJoinedResponse(403));
+    assertThrows(IOException.class, () -> PaperSessionVerifier.isJoinedResponse(429));
+    assertThrows(IOException.class, () -> PaperSessionVerifier.isJoinedResponse(500));
+  }
 }

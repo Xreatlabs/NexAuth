@@ -17,39 +17,39 @@ import java.util.function.Consumer;
  */
 public interface EventProvider<P, S> {
 
-    /**
-     * Returns the event types.
-     *
-     * @return The event types
-     */
-    default EventTypes<P, S> getTypes() {
-        return new EventTypes<>();
-    }
+  /**
+   * Returns the event types.
+   *
+   * @return The event types
+   */
+  default EventTypes<P, S> getTypes() {
+    return new EventTypes<>();
+  }
 
-    /**
-     * Allows you to subscribe to an event.
-     *
-     * @param type    The type of the event see {@link #getTypes()}
-     * @param handler The handler to call when the event is fired
-     * @param <E>     The event type
-     * @return The handler you passed as a parameter, this is useful for unsubscribing
-     */
-    <E extends Event<P, S>> Consumer<E> subscribe(EventType<P, S, E> type, Consumer<E> handler);
+  /**
+   * Allows you to subscribe to an event.
+   *
+   * @param type The type of the event see {@link #getTypes()}
+   * @param handler The handler to call when the event is fired
+   * @param <E> The event type
+   * @return The handler you passed as a parameter, this is useful for unsubscribing
+   */
+  <E extends Event<P, S>> Consumer<E> subscribe(EventType<P, S, E> type, Consumer<E> handler);
 
-    /**
-     * Allows you to unsubscribe from an event.
-     *
-     * @param handler The handler to unsubscribe. Must be the same instance as your handler used in {@link #subscribe(EventType, Consumer)}
-     */
-    void unsubscribe(Consumer<? extends Event<P, S>> handler);
+  /**
+   * Allows you to unsubscribe from an event.
+   *
+   * @param handler The handler to unsubscribe. Must be the same instance as your handler used in
+   *     {@link #subscribe(EventType, Consumer)}
+   */
+  void unsubscribe(Consumer<? extends Event<P, S>> handler);
 
-    /**
-     * Allows you to fire an event.
-     *
-     * @param type  The type of the event see {@link #getTypes()}
-     * @param event The event to fire
-     * @param <E>   The event type
-     */
-    <E extends Event<P, S>> void fire(EventType<P, S, E> type, E event);
-
+  /**
+   * Allows you to fire an event.
+   *
+   * @param type The type of the event see {@link #getTypes()}
+   * @param event The event to fire
+   * @param <E> The event type
+   */
+  <E extends Event<P, S>> void fire(EventType<P, S, E> type, E event);
 }

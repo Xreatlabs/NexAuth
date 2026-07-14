@@ -16,11 +16,10 @@ import xyz.xreatlabs.nexauth.api.NexAuthPlugin;
  */
 public interface NexAuthProvider<P, S> {
 
-    /**
-     * Gets the instance of the plugin
-     *
-     * @return the instance of the plugin
-     */
-    NexAuthPlugin<P, S> getNexAuth();
-
+  /**
+   * Gets the instance of the plugin
+   *
+   * @return the instance of the plugin
+   */
+  NexAuthPlugin<P, S> getNexAuth();
 }

@@ -9,9 +9,9 @@ package ua.nanit.limbo.server;
 import java.util.Collection;
 
 public interface CommandHandler<T> {
-    Collection<Command> getCommands();
+  Collection<Command> getCommands();
 
-    void register(T command);
+  void register(T command);
 
-    boolean executeCommand(String input);
+  boolean executeCommand(String input);
 }

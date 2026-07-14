@@ -12,12 +12,11 @@ import ua.nanit.limbo.server.LimboServer;
 
 public interface Packet {
 
-    void encode(ByteMessage msg, Version version);
+  void encode(ByteMessage msg, Version version);
 
-    void decode(ByteMessage msg, Version version);
+  void decode(ByteMessage msg, Version version);
 
-    default void handle(ClientConnection conn, LimboServer server) {
-        // Ignored by default
-    }
-
+  default void handle(ClientConnection conn, LimboServer server) {
+    // Ignored by default
+  }
 }

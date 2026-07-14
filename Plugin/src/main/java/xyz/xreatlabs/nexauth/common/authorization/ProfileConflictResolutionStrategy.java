@@ -7,5 +7,7 @@
 package xyz.xreatlabs.nexauth.common.authorization;
 
 public enum ProfileConflictResolutionStrategy {
-    BLOCK, USE_OFFLINE, OVERWRITE;
+  BLOCK,
+  USE_OFFLINE,
+  OVERWRITE;
 }

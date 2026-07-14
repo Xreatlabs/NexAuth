@@ -9,22 +9,22 @@ package xyz.xreatlabs.nexauth.common.crypto;
 import xyz.xreatlabs.nexauth.api.crypto.HashedPassword;
 
 public class LogITMessageDigestCryptoProvider extends MessageDigestCryptoProvider {
-    public LogITMessageDigestCryptoProvider(String identifier, String md) {
-        super(identifier, md);
-    }
+  public LogITMessageDigestCryptoProvider(String identifier, String md) {
+    super(identifier, md);
+  }
 
-    @Override
-    public boolean matches(String input, HashedPassword password) {
-        var salt = password.salt();
-        var hash = password.hash();
-        var hashedInput = salt == null ? plainHash(input) : plainHash(input + salt);
-        return hashedInput.equals(hash);
-    }
+  @Override
+  public boolean matches(String input, HashedPassword password) {
+    var salt = password.salt();
+    var hash = password.hash();
+    var hashedInput = salt == null ? plainHash(input) : plainHash(input + salt);
+    return hashedInput.equals(hash);
+  }
 
-    @Override
-    public HashedPassword createHash(String password) {
-        var salt = randomSalt();
-        var hash = plainHash(password + salt);
-        return new HashedPassword(hash, salt, getIdentifier());
-    }
+  @Override
+  public HashedPassword createHash(String password) {
+    var salt = randomSalt();
+    var hash = plainHash(password + salt);
+    return new HashedPassword(hash, salt, getIdentifier());
+  }
 }

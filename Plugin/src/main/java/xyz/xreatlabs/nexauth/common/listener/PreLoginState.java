@@ -7,7 +7,7 @@
 package xyz.xreatlabs.nexauth.common.listener;
 
 public enum PreLoginState {
-
-    FORCE_ONLINE, FORCE_OFFLINE, DENIED
-
+  FORCE_ONLINE,
+  FORCE_OFFLINE,
+  DENIED
 }

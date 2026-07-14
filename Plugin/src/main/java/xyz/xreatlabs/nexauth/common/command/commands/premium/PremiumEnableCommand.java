@@ -7,48 +7,53 @@
 package xyz.xreatlabs.nexauth.common.command.commands.premium;
 
 import co.aikar.commands.annotation.*;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 import net.kyori.adventure.audience.Audience;
 import xyz.xreatlabs.nexauth.api.event.events.WrongPasswordEvent.AuthenticationSource;
 import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 import xyz.xreatlabs.nexauth.common.command.InvalidCommandArgument;
 import xyz.xreatlabs.nexauth.common.event.events.AuthenticWrongPasswordEvent;
 
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-
 @CommandAlias("premium|autologin")
 public class PremiumEnableCommand<P> extends PremiumCommand<P> {
 
-    public PremiumEnableCommand(AuthenticNexAuth<P, ?> plugin) {
-        super(plugin);
-    }
+  public PremiumEnableCommand(AuthenticNexAuth<P, ?> plugin) {
+    super(plugin);
+  }
 
-    @Default
-    @Syntax("{@@syntax.premium}")
-    @CommandCompletion("%autocomplete.premium")
-    public CompletionStage<Void> onPremium(Audience sender, UUID uuid, P player, @Single String password) {
-        return runAsync(() -> {
-            checkAuthorized(player);
-            plugin.getLoginTryListener().ensureCanAttempt(player);
-            var user = getUser(player);
-            if (!user.isRegistered()) throw new InvalidCommandArgument(getMessage("error-not-registered"));
-            checkCracked(user);
+  @Default
+  @Syntax("{@@syntax.premium}")
+  @CommandCompletion("%autocomplete.premium")
+  public CompletionStage<Void> onPremium(
+      Audience sender, UUID uuid, P player, @Single String password) {
+    return runAsync(
+        () -> {
+          checkAuthorized(player);
+          plugin.getLoginTryListener().ensureCanAttempt(player);
+          var user = getUser(player);
+          if (!user.isRegistered())
+            throw new InvalidCommandArgument(getMessage("error-not-registered"));
+          checkCracked(user);
 
-            var hashed = user.getHashedPassword();
-            var crypto = getCrypto(hashed);
-            if (crypto == null) throw new InvalidCommandArgument(getMessage("error-password-corrupted"));
+          var hashed = user.getHashedPassword();
+          var crypto = getCrypto(hashed);
+          if (crypto == null)
+            throw new InvalidCommandArgument(getMessage("error-password-corrupted"));
 
-            if (!crypto.matches(password, hashed)) {
-                plugin.getEventProvider()
-                        .unsafeFire(plugin.getEventTypes().wrongPassword,
-                                new AuthenticWrongPasswordEvent<>(user, player, plugin, AuthenticationSource.PREMIUM_ENABLE));
-                throw new InvalidCommandArgument(getMessage("error-password-wrong"));
-            }
+          if (!crypto.matches(password, hashed)) {
+            plugin
+                .getEventProvider()
+                .unsafeFire(
+                    plugin.getEventTypes().wrongPassword,
+                    new AuthenticWrongPasswordEvent<>(
+                        user, player, plugin, AuthenticationSource.PREMIUM_ENABLE));
+            throw new InvalidCommandArgument(getMessage("error-password-wrong"));
+          }
 
-            plugin.getCommandProvider().registerConfirm(uuid);
+          plugin.getCommandProvider().registerConfirm(uuid);
 
-            sender.sendMessage(getMessage("prompt-confirm"));
+          sender.sendMessage(getMessage("prompt-confirm"));
         });
-    }
-
+  }
 }

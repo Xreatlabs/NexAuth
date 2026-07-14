@@ -6,25 +6,30 @@
 
 package xyz.xreatlabs.nexauth.common.doctor;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 class DoctorServiceTest {
 
-    @Test
-    void runsChecksIntoOrderedReport() {
-        var service = new DoctorService(List.<DoctorCheck>of(
+  @Test
+  void runsChecksIntoOrderedReport() {
+    var service =
+        new DoctorService(
+            List.<DoctorCheck>of(
                 () -> new DoctorCheckResult("email", DoctorSeverity.OK, "Email ready"),
-                () -> new DoctorCheckResult("database", DoctorSeverity.FAIL, "Database unreachable"),
-                () -> new DoctorCheckResult("config", DoctorSeverity.WARN, "Configuration fallback active")
-        ));
+                () ->
+                    new DoctorCheckResult("database", DoctorSeverity.FAIL, "Database unreachable"),
+                () ->
+                    new DoctorCheckResult(
+                        "config", DoctorSeverity.WARN, "Configuration fallback active")));
 
-        var report = service.run();
+    var report = service.run();
 
-        assertEquals(DoctorSeverity.FAIL, report.overallSeverity());
-        assertEquals(List.of("database", "config", "email"), report.checks().stream().map(DoctorCheckResult::checkId).toList());
-    }
+    assertEquals(DoctorSeverity.FAIL, report.overallSeverity());
+    assertEquals(
+        List.of("database", "config", "email"),
+        report.checks().stream().map(DoctorCheckResult::checkId).toList());
+  }
 }

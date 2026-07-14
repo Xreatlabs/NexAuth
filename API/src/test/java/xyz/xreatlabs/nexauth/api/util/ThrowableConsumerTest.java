@@ -6,21 +6,20 @@
 
 package xyz.xreatlabs.nexauth.api.util;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.atomic.AtomicReference;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 class ThrowableConsumerTest {
 
-    @Test
-    void acceptsValue() throws Throwable {
-        var seen = new AtomicReference<String>();
-        ThrowableConsumer<String, Exception> consumer = seen::set;
+  @Test
+  void acceptsValue() throws Throwable {
+    var seen = new AtomicReference<String>();
+    ThrowableConsumer<String, Exception> consumer = seen::set;
 
-        consumer.accept("value");
+    consumer.accept("value");
 
-        assertEquals("value", seen.get());
-    }
+    assertEquals("value", seen.get());
+  }
 }

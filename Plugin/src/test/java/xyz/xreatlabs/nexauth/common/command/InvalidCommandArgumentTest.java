@@ -6,20 +6,20 @@
 
 package xyz.xreatlabs.nexauth.common.command;
 
-import net.kyori.adventure.text.Component;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import net.kyori.adventure.text.Component;
+import org.junit.jupiter.api.Test;
+
 class InvalidCommandArgumentTest {
 
-    @Test
-    void exposesUserFacingComponent() {
-        var message = Component.text("Wrong password");
-        var argument = new InvalidCommandArgument(message);
+  @Test
+  void exposesUserFacingComponent() {
+    var message = Component.text("Wrong password");
+    var argument = new InvalidCommandArgument(message);
 
-        assertSame(message, argument.getUserFuckUp());
-        assertEquals(message, argument.getUserFuckUp());
-    }
+    assertSame(message, argument.getUserFuckUp());
+    assertEquals(message, argument.getUserFuckUp());
+  }
 }

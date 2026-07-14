@@ -12,32 +12,31 @@ import ua.nanit.limbo.protocol.registry.Version;
 
 public class PacketPlayerAbilities implements PacketOut {
 
-    private int flags = 0x02;
-    private float flyingSpeed = 0.0F;
-    private float fieldOfView = 0.1F;
+  private int flags = 0x02;
+  private float flyingSpeed = 0.0F;
+  private float fieldOfView = 0.1F;
 
-    public void setFlags(int flags) {
-        this.flags = flags;
-    }
+  public void setFlags(int flags) {
+    this.flags = flags;
+  }
 
-    public void setFlyingSpeed(float flyingSpeed) {
-        this.flyingSpeed = flyingSpeed;
-    }
+  public void setFlyingSpeed(float flyingSpeed) {
+    this.flyingSpeed = flyingSpeed;
+  }
 
-    public void setFieldOfView(float fieldOfView) {
-        this.fieldOfView = fieldOfView;
-    }
+  public void setFieldOfView(float fieldOfView) {
+    this.fieldOfView = fieldOfView;
+  }
 
-    @Override
-    public void encode(ByteMessage msg, Version version) {
-        msg.writeByte(flags);
-        msg.writeFloat(flyingSpeed);
-        msg.writeFloat(fieldOfView);
-    }
+  @Override
+  public void encode(ByteMessage msg, Version version) {
+    msg.writeByte(flags);
+    msg.writeFloat(flyingSpeed);
+    msg.writeFloat(fieldOfView);
+  }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
-
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

@@ -7,6 +7,7 @@
 package xyz.xreatlabs.nexauth.common.command.commands.authorization;
 
 import co.aikar.commands.annotation.*;
+import java.util.concurrent.CompletionStage;
 import net.kyori.adventure.audience.Audience;
 import xyz.xreatlabs.nexauth.api.event.events.AuthenticatedEvent;
 import xyz.xreatlabs.nexauth.api.event.events.WrongPasswordEvent.AuthenticationSource;
@@ -14,67 +15,75 @@ import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 import xyz.xreatlabs.nexauth.common.command.InvalidCommandArgument;
 import xyz.xreatlabs.nexauth.common.event.events.AuthenticWrongPasswordEvent;
 
-import java.util.concurrent.CompletionStage;
-
 @CommandAlias("login|l|log")
 public class LoginCommand<P> extends AuthorizationCommand<P> {
 
-    public LoginCommand(AuthenticNexAuth<P, ?> premium) {
-        super(premium);
-    }
+  public LoginCommand(AuthenticNexAuth<P, ?> premium) {
+    super(premium);
+  }
 
-    @Default
-    @Syntax("{@@syntax.login}")
-    @CommandCompletion("%autocomplete.login")
-    public CompletionStage<Void> onLogin(Audience sender, P player, @Single String password, @Optional String code) {
-        return runAsync(() -> {
-            checkUnauthorized(player);
-            plugin.getLoginTryListener().ensureCanAttempt(player);
-            var user = getUser(player);
-            if (!user.isRegistered()) throw new InvalidCommandArgument(getMessage("error-not-registered"));
+  @Default
+  @Syntax("{@@syntax.login}")
+  @CommandCompletion("%autocomplete.login")
+  public CompletionStage<Void> onLogin(
+      Audience sender, P player, @Single String password, @Optional String code) {
+    return runAsync(
+        () -> {
+          checkUnauthorized(player);
+          plugin.getLoginTryListener().ensureCanAttempt(player);
+          var user = getUser(player);
+          if (!user.isRegistered())
+            throw new InvalidCommandArgument(getMessage("error-not-registered"));
 
-            sender.sendMessage(getMessage("info-logging-in"));
+          sender.sendMessage(getMessage("info-logging-in"));
 
-            var hashed = user.getHashedPassword();
-            var crypto = getCrypto(hashed);
+          var hashed = user.getHashedPassword();
+          var crypto = getCrypto(hashed);
 
-            if (crypto == null) throw new InvalidCommandArgument(getMessage("error-password-corrupted"));
+          if (crypto == null)
+            throw new InvalidCommandArgument(getMessage("error-password-corrupted"));
 
-            if (!crypto.matches(password, hashed)) {
-                plugin.getEventProvider()
-                        .unsafeFire(plugin.getEventTypes().wrongPassword,
-                                new AuthenticWrongPasswordEvent<>(user, player, plugin, AuthenticationSource.LOGIN));
-                throw new InvalidCommandArgument(getMessage("error-password-wrong"));
+          if (!crypto.matches(password, hashed)) {
+            plugin
+                .getEventProvider()
+                .unsafeFire(
+                    plugin.getEventTypes().wrongPassword,
+                    new AuthenticWrongPasswordEvent<>(
+                        user, player, plugin, AuthenticationSource.LOGIN));
+            throw new InvalidCommandArgument(getMessage("error-password-wrong"));
+          }
+
+          var secret = user.getSecret();
+
+          if (secret != null) {
+            var totp = plugin.getTOTPProvider();
+
+            if (totp != null) {
+              if (code == null) throw new InvalidCommandArgument(getMessage("totp-not-provided"));
+
+              int parsedCode;
+
+              try {
+                parsedCode = Integer.parseInt(code.trim().replace(" ", ""));
+              } catch (NumberFormatException e) {
+                throw new InvalidCommandArgument(getMessage("totp-wrong"));
+              }
+
+              if (!totp.verify(parsedCode, secret)) {
+                plugin
+                    .getEventProvider()
+                    .unsafeFire(
+                        plugin.getEventTypes().wrongPassword,
+                        new AuthenticWrongPasswordEvent<>(
+                            user, player, plugin, AuthenticationSource.TOTP));
+                throw new InvalidCommandArgument(getMessage("totp-wrong"));
+              }
             }
+          }
 
-            var secret = user.getSecret();
-
-            if (secret != null) {
-                var totp = plugin.getTOTPProvider();
-
-                if (totp != null) {
-                    if (code == null) throw new InvalidCommandArgument(getMessage("totp-not-provided"));
-
-                    int parsedCode;
-
-                    try {
-                        parsedCode = Integer.parseInt(code.trim().replace(" ", ""));
-                    } catch (NumberFormatException e) {
-                        throw new InvalidCommandArgument(getMessage("totp-wrong"));
-                    }
-
-                    if (!totp.verify(parsedCode, secret)) {
-                        plugin.getEventProvider()
-                                .unsafeFire(plugin.getEventTypes().wrongPassword,
-                                        new AuthenticWrongPasswordEvent<>(user, player, plugin, AuthenticationSource.TOTP));
-                        throw new InvalidCommandArgument(getMessage("totp-wrong"));
-                    }
-                }
-            }
-
-            sender.sendMessage(getMessage("info-logged-in"));
-            getAuthorizationProvider().authorize(user, player, AuthenticatedEvent.AuthenticationReason.LOGIN);
+          sender.sendMessage(getMessage("info-logged-in"));
+          getAuthorizationProvider()
+              .authorize(user, player, AuthenticatedEvent.AuthenticationReason.LOGIN);
         });
-    }
-
+  }
 }

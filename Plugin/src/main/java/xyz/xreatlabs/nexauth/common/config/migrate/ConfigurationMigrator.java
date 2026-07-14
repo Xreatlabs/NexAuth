@@ -12,11 +12,10 @@ import xyz.xreatlabs.nexauth.common.config.key.ConfigurationKey;
 
 public interface ConfigurationMigrator {
 
-    void migrate(ConfigurateHelper helper, Logger logger);
+  void migrate(ConfigurateHelper helper, Logger logger);
 
-    default void rename(String from, ConfigurationKey<?> to, ConfigurateHelper helper) {
-        helper.set(to.key(), to.getter().apply(helper, from));
-        helper.set(from, null);
-    }
-
+  default void rename(String from, ConfigurationKey<?> to, ConfigurateHelper helper) {
+    helper.set(to.key(), to.getter().apply(helper, from));
+    helper.set(from, null);
+  }
 }

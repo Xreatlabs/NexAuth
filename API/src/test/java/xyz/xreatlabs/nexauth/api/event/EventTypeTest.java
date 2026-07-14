@@ -6,29 +6,27 @@
 
 package xyz.xreatlabs.nexauth.api.event;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import org.junit.jupiter.api.Test;
+
 class EventTypeTest {
 
-    @Test
-    void equalityAndHashCodeDependOnClass() {
-        var first = new EventType<>(DummyEvent.class);
-        var second = new EventType<>(DummyEvent.class);
-        var third = new EventType<>(OtherEvent.class);
+  @Test
+  void equalityAndHashCodeDependOnClass() {
+    var first = new EventType<>(DummyEvent.class);
+    var second = new EventType<>(DummyEvent.class);
+    var third = new EventType<>(OtherEvent.class);
 
-        assertSame(DummyEvent.class, first.getClazz());
-        assertEquals(first, second);
-        assertEquals(first.hashCode(), second.hashCode());
-        assertNotEquals(first, third);
-    }
+    assertSame(DummyEvent.class, first.getClazz());
+    assertEquals(first, second);
+    assertEquals(first.hashCode(), second.hashCode());
+    assertNotEquals(first, third);
+  }
 
-    private interface DummyEvent extends Event<Object, Object> {
-    }
+  private interface DummyEvent extends Event<Object, Object> {}
 
-    private interface OtherEvent extends Event<Object, Object> {
-    }
+  private interface OtherEvent extends Event<Object, Object> {}
 }

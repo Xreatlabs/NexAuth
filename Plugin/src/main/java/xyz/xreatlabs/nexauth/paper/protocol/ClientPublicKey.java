@@ -7,17 +7,16 @@
 package xyz.xreatlabs.nexauth.paper.protocol;
 
 import com.github.retrooper.packetevents.util.crypto.SignatureData;
-
 import java.security.PublicKey;
 import java.time.Instant;
 
 public record ClientPublicKey(Instant expire, PublicKey key, byte[] signature) {
 
-    public boolean expired(Instant timestamp) {
-        return !timestamp.isBefore(expire);
-    }
+  public boolean expired(Instant timestamp) {
+    return !timestamp.isBefore(expire);
+  }
 
-    public SignatureData toSignatureData() {
-        return new SignatureData(expire, key, signature);
-    }
+  public SignatureData toSignatureData() {
+    return new SignatureData(expire, key, signature);
+  }
 }

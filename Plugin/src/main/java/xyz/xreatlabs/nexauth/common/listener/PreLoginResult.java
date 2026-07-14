@@ -10,5 +10,4 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 import xyz.xreatlabs.nexauth.api.database.User;
 
-public record PreLoginResult(PreLoginState state, @Nullable Component message, User user) {
-}
+public record PreLoginResult(PreLoginState state, @Nullable Component message, User user) {}

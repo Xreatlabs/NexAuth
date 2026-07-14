@@ -6,40 +6,40 @@
 
 package xyz.xreatlabs.nexauth.common.config.key;
 
-import org.junit.jupiter.api.Test;
-import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.Test;
+import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
+
 class ConfigurationKeyTest {
 
-    @Test
-    void computeFallsBackToDefaultWhenGetterReturnsNull() {
-        var key = new ConfigurationKey<>("test.key", "fallback", "comment", (helper, path) -> null);
+  @Test
+  void computeFallsBackToDefaultWhenGetterReturnsNull() {
+    var key = new ConfigurationKey<>("test.key", "fallback", "comment", (helper, path) -> null);
 
-        assertEquals("fallback", key.compute((ConfigurateHelper) null));
-    }
+    assertEquals("fallback", key.compute((ConfigurateHelper) null));
+  }
 
-    @Test
-    void settersUpdateCommentAndDefault() {
-        var key = new ConfigurationKey<>("test.key", "fallback", "comment", (helper, path) -> "value");
+  @Test
+  void settersUpdateCommentAndDefault() {
+    var key = new ConfigurationKey<>("test.key", "fallback", "comment", (helper, path) -> "value");
 
-        key.setComment("new comment");
-        key.setDefault("new default");
+    key.setComment("new comment");
+    key.setDefault("new default");
 
-        assertEquals("new comment", key.comment());
-        assertEquals("new default", key.defaultValue());
-    }
+    assertEquals("new comment", key.comment());
+    assertEquals("new default", key.defaultValue());
+  }
 
-    @Test
-    void getCommentKeyIsCommentOnly() {
-        var key = ConfigurationKey.getComment("section", "hello");
+  @Test
+  void getCommentKeyIsCommentOnly() {
+    var key = ConfigurationKey.getComment("section", "hello");
 
-        assertEquals("section", key.key());
-        assertEquals("hello", key.comment());
-        assertNull(key.defaultValue());
-        assertThrows(UnsupportedOperationException.class, () -> key.getter().apply(null, "section"));
-    }
+    assertEquals("section", key.key());
+    assertEquals("hello", key.comment());
+    assertNull(key.defaultValue());
+    assertThrows(UnsupportedOperationException.class, () -> key.getter().apply(null, "section"));
+  }
 }

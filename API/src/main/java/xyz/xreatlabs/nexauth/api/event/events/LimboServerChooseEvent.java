@@ -14,5 +14,4 @@ import xyz.xreatlabs.nexauth.api.event.ServerChooseEvent;
  * @author kyngs
  * @see ServerChooseEvent#setServer
  */
-public interface LimboServerChooseEvent<P, S> extends ServerChooseEvent<P, S> {
-}
+public interface LimboServerChooseEvent<P, S> extends ServerChooseEvent<P, S> {}

@@ -6,77 +6,78 @@
 
 package xyz.xreatlabs.nexauth.velocity.integration;
 
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.lang.reflect.Method;
-
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
-
+import java.net.InetSocketAddress;
 import ua.nanit.limbo.server.LimboServer;
 import ua.nanit.limbo.server.data.InfoForwarding;
 import xyz.xreatlabs.nexauth.common.integration.nativelimbo.NativeLimboIntegration;
 
 public class VelocityNativeLimboIntegration extends NativeLimboIntegration<RegisteredServer> {
 
-    private final ClassLoader classLoader;
-    private final ProxyServer proxyServer;
+  private final ClassLoader classLoader;
+  private final ProxyServer proxyServer;
 
-    public VelocityNativeLimboIntegration(ProxyServer proxyServer, String portRange) {
-        super(portRange);
-        this.classLoader = getClass().getClassLoader();
-        this.proxyServer = proxyServer;
+  public VelocityNativeLimboIntegration(ProxyServer proxyServer, String portRange) {
+    super(portRange);
+    this.classLoader = getClass().getClassLoader();
+    this.proxyServer = proxyServer;
+  }
+
+  @Override
+  public RegisteredServer createLimbo(String serverName) {
+    InetSocketAddress address =
+        findLocalAvailableAddress()
+            .orElseThrow(
+                () -> new IllegalStateException("Cannot find available port for limbo server!"));
+    LimboServer server = createLimboServer(address);
+    try {
+      server.start();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+    return proxyServer.registerServer(new ServerInfo(serverName, address));
+  }
 
-    @Override
-    public RegisteredServer createLimbo(String serverName) {
-        InetSocketAddress address = findLocalAvailableAddress().orElseThrow(() -> new IllegalStateException("Cannot find available port for limbo server!"));
-        LimboServer server = createLimboServer(address);
-        try {
-            server.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return proxyServer.registerServer(new ServerInfo(serverName, address));
+  @Override
+  protected InfoForwarding createForwarding() {
+    // Use reflection to safely access internal configuration
+    try {
+      Object velocityConfiguration = proxyServer.getConfiguration();
+      Class<?> configClass = velocityConfiguration.getClass();
+
+      // Try to get the forwarding mode using reflection
+      Object forwardingMode =
+          configClass.getMethod("getPlayerInfoForwardingMode").invoke(velocityConfiguration);
+      String forwardingModeName = forwardingMode.toString();
+
+      switch (forwardingModeName) {
+        case "NONE":
+          return FORWARDING_FACTORY.none();
+        case "LEGACY":
+          return FORWARDING_FACTORY.legacy();
+        case "MODERN":
+          byte[] secret =
+              (byte[]) configClass.getMethod("getForwardingSecret").invoke(velocityConfiguration);
+          return FORWARDING_FACTORY.modern(secret);
+        case "BUNGEEGUARD":
+          byte[] bungeeSecret =
+              (byte[]) configClass.getMethod("getForwardingSecret").invoke(velocityConfiguration);
+          return FORWARDING_FACTORY.bungeeGuardFromSecret(bungeeSecret);
+        default:
+          // Fallback to NONE if unknown mode
+          return FORWARDING_FACTORY.none();
+      }
+    } catch (Exception e) {
+      // If reflection fails, fallback to NONE forwarding
+      // This ensures compatibility with future Velocity versions
+      return FORWARDING_FACTORY.none();
     }
+  }
 
-    @Override
-    protected InfoForwarding createForwarding() {
-        // Use reflection to safely access internal configuration
-        try {
-            Object velocityConfiguration = proxyServer.getConfiguration();
-            Class<?> configClass = velocityConfiguration.getClass();
-            
-            // Try to get the forwarding mode using reflection
-            Object forwardingMode = configClass.getMethod("getPlayerInfoForwardingMode").invoke(velocityConfiguration);
-            String forwardingModeName = forwardingMode.toString();
-            
-            switch (forwardingModeName) {
-                case "NONE":
-                    return FORWARDING_FACTORY.none();
-                case "LEGACY":
-                    return FORWARDING_FACTORY.legacy();
-                case "MODERN":
-                    byte[] secret = (byte[]) configClass.getMethod("getForwardingSecret").invoke(velocityConfiguration);
-                    return FORWARDING_FACTORY.modern(secret);
-                case "BUNGEEGUARD":
-                    byte[] bungeeSecret = (byte[]) configClass.getMethod("getForwardingSecret").invoke(velocityConfiguration);
-                    return FORWARDING_FACTORY.bungeeGuardFromSecret(bungeeSecret);
-                default:
-                    // Fallback to NONE if unknown mode
-                    return FORWARDING_FACTORY.none();
-            }
-        } catch (Exception e) {
-            // If reflection fails, fallback to NONE forwarding
-            // This ensures compatibility with future Velocity versions
-            return FORWARDING_FACTORY.none();
-        }
-    }
-
-    @Override
-    protected ClassLoader classLoader() {
-        return classLoader;
-    }
-
+  @Override
+  protected ClassLoader classLoader() {
+    return classLoader;
+  }
 }

@@ -6,27 +6,28 @@
 
 package xyz.xreatlabs.nexauth.api.premium;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import org.junit.jupiter.api.Test;
+
 class PremiumExceptionTest {
 
-    @Test
-    void storesIssueAndCause() {
-        var cause = new IllegalStateException("rate limited");
-        var exception = new PremiumException(PremiumException.Issue.THROTTLED, cause);
+  @Test
+  void storesIssueAndCause() {
+    var cause = new IllegalStateException("rate limited");
+    var exception = new PremiumException(PremiumException.Issue.THROTTLED, cause);
 
-        assertEquals(PremiumException.Issue.THROTTLED, exception.getIssue());
-        assertSame(cause, exception.getCause());
-    }
+    assertEquals(PremiumException.Issue.THROTTLED, exception.getIssue());
+    assertSame(cause, exception.getCause());
+  }
 
-    @Test
-    void storesIssueAndMessage() {
-        var exception = new PremiumException(PremiumException.Issue.SERVER_EXCEPTION, "broken response");
+  @Test
+  void storesIssueAndMessage() {
+    var exception =
+        new PremiumException(PremiumException.Issue.SERVER_EXCEPTION, "broken response");
 
-        assertEquals(PremiumException.Issue.SERVER_EXCEPTION, exception.getIssue());
-        assertEquals("broken response", exception.getMessage());
-    }
+    assertEquals(PremiumException.Issue.SERVER_EXCEPTION, exception.getIssue());
+    assertEquals("broken response", exception.getMessage());
+  }
 }

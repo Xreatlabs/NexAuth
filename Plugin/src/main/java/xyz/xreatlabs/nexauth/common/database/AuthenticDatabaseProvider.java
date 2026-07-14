@@ -10,17 +10,16 @@ import xyz.xreatlabs.nexauth.api.database.ReadWriteDatabaseProvider;
 import xyz.xreatlabs.nexauth.api.database.connector.DatabaseConnector;
 import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 
-public abstract class AuthenticDatabaseProvider<C extends DatabaseConnector<?, ?>> implements ReadWriteDatabaseProvider {
+public abstract class AuthenticDatabaseProvider<C extends DatabaseConnector<?, ?>>
+    implements ReadWriteDatabaseProvider {
 
-    protected final C connector;
-    protected final AuthenticNexAuth<?, ?> plugin;
+  protected final C connector;
+  protected final AuthenticNexAuth<?, ?> plugin;
 
-    protected AuthenticDatabaseProvider(C connector, AuthenticNexAuth<?, ?> plugin) {
-        this.connector = connector;
-        this.plugin = plugin;
-    }
+  protected AuthenticDatabaseProvider(C connector, AuthenticNexAuth<?, ?> plugin) {
+    this.connector = connector;
+    this.plugin = plugin;
+  }
 
-    public void validateSchema() {
-    }
-
+  public void validateSchema() {}
 }

@@ -12,8 +12,8 @@ import xyz.xreatlabs.nexauth.common.config.ConfigurationKeys;
 import xyz.xreatlabs.nexauth.common.config.migrate.ConfigurationMigrator;
 
 public class FifthConfigurationMigrator implements ConfigurationMigrator {
-    @Override
-    public void migrate(ConfigurateHelper helper, Logger logger) {
-        rename("pass-through", ConfigurationKeys.LOBBY, helper);
-    }
+  @Override
+  public void migrate(ConfigurateHelper helper, Logger logger) {
+    rename("pass-through", ConfigurationKeys.LOBBY, helper);
+  }
 }

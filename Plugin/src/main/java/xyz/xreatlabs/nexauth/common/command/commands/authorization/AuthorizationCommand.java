@@ -12,14 +12,13 @@ import xyz.xreatlabs.nexauth.common.command.InvalidCommandArgument;
 
 public class AuthorizationCommand<P> extends Command<P> {
 
-    public AuthorizationCommand(AuthenticNexAuth<P, ?> premium) {
-        super(premium);
-    }
+  public AuthorizationCommand(AuthenticNexAuth<P, ?> premium) {
+    super(premium);
+  }
 
-    protected void checkUnauthorized(P player) {
-        if (getAuthorizationProvider().isAuthorized(player)) {
-            throw new InvalidCommandArgument(getMessage("error-already-authorized"));
-        }
+  protected void checkUnauthorized(P player) {
+    if (getAuthorizationProvider().isAuthorized(player)) {
+      throw new InvalidCommandArgument(getMessage("error-already-authorized"));
     }
-
+  }
 }

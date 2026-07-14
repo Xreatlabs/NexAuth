@@ -15,24 +15,21 @@ import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 
 public class Awaiting2FAContext<P> implements ContextCalculator<P> {
 
-    private final AuthenticNexAuth<P, ?> plugin;
+  private final AuthenticNexAuth<P, ?> plugin;
 
-    public Awaiting2FAContext(AuthenticNexAuth<P, ?> plugin) {
-        this.plugin = plugin;
-    }
+  public Awaiting2FAContext(AuthenticNexAuth<P, ?> plugin) {
+    this.plugin = plugin;
+  }
 
-    private static final String KEY = "nexauth-awaiting2fa";
+  private static final String KEY = "nexauth-awaiting2fa";
 
-    @Override
-    public void calculate(@NonNull P player, @NonNull ContextConsumer consumer) {
-        consumer.accept(KEY, Boolean.toString(plugin.getAuthorizationProvider().isAwaiting2FA(player)));
-    }
+  @Override
+  public void calculate(@NonNull P player, @NonNull ContextConsumer consumer) {
+    consumer.accept(KEY, Boolean.toString(plugin.getAuthorizationProvider().isAwaiting2FA(player)));
+  }
 
-    @Override
-    public @NonNull ContextSet estimatePotentialContexts() {
-        return ImmutableContextSet.builder()
-                .add(KEY, "true")
-                .add(KEY, "false")
-                .build();
-    }
+  @Override
+  public @NonNull ContextSet estimatePotentialContexts() {
+    return ImmutableContextSet.builder().add(KEY, "true").add(KEY, "false").build();
+  }
 }

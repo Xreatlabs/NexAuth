@@ -11,22 +11,23 @@ import xyz.xreatlabs.nexauth.api.NexAuthPlugin;
 import xyz.xreatlabs.nexauth.api.database.User;
 import xyz.xreatlabs.nexauth.api.event.ServerChooseEvent;
 
-public class AuthenticServerChooseEvent<P, S> extends AuthenticPlayerBasedEvent<P, S> implements ServerChooseEvent<P, S> {
+public class AuthenticServerChooseEvent<P, S> extends AuthenticPlayerBasedEvent<P, S>
+    implements ServerChooseEvent<P, S> {
 
-    private S server = null;
+  private S server = null;
 
-    public AuthenticServerChooseEvent(@Nullable User user, P player, NexAuthPlugin<P, S> plugin) {
-        super(user, player, plugin);
-    }
+  public AuthenticServerChooseEvent(@Nullable User user, P player, NexAuthPlugin<P, S> plugin) {
+    super(user, player, plugin);
+  }
 
-    @Nullable
-    @Override
-    public S getServer() {
-        return server;
-    }
+  @Nullable
+  @Override
+  public S getServer() {
+    return server;
+  }
 
-    @Override
-    public void setServer(S server) {
-        this.server = server;
-    }
+  @Override
+  public void setServer(S server) {
+    this.server = server;
+  }
 }

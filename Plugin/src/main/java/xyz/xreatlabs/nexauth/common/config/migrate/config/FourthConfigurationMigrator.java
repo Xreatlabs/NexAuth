@@ -11,22 +11,22 @@ import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
 import xyz.xreatlabs.nexauth.common.config.migrate.ConfigurationMigrator;
 
 public class FourthConfigurationMigrator implements ConfigurationMigrator {
-    @Override
-    public void migrate(ConfigurateHelper helper, Logger logger) {
-        helper.set("database.properties.mysql.host", helper.getString("database.host"));
-        helper.set("database.properties.mysql.database", helper.getString("database.database"));
-        helper.set("database.properties.mysql.password", helper.getString("database.password"));
-        helper.set("database.properties.mysql.port", helper.getInt("database.port"));
-        helper.set("database.properties.mysql.user", helper.getString("database.user"));
-        helper.set("database.properties.mysql.max-life-time", helper.getInt("database.max-life-time"));
-        helper.set("database.type", "nexauth-mysql");
+  @Override
+  public void migrate(ConfigurateHelper helper, Logger logger) {
+    helper.set("database.properties.mysql.host", helper.getString("database.host"));
+    helper.set("database.properties.mysql.database", helper.getString("database.database"));
+    helper.set("database.properties.mysql.password", helper.getString("database.password"));
+    helper.set("database.properties.mysql.port", helper.getInt("database.port"));
+    helper.set("database.properties.mysql.user", helper.getString("database.user"));
+    helper.set("database.properties.mysql.max-life-time", helper.getInt("database.max-life-time"));
+    helper.set("database.type", "nexauth-mysql");
 
-        helper.set("database.host", null);
-        helper.set("database.database", null);
-        helper.set("database.password", null);
-        helper.set("database.port", null);
-        helper.set("database.user", null);
-        helper.set("database.max-life-time", null);
-        helper.set("migration", null);
-    }
+    helper.set("database.host", null);
+    helper.set("database.database", null);
+    helper.set("database.password", null);
+    helper.set("database.port", null);
+    helper.set("database.user", null);
+    helper.set("database.max-life-time", null);
+    helper.set("migration", null);
+  }
 }

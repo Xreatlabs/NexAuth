@@ -12,8 +12,10 @@ import xyz.xreatlabs.nexauth.api.database.User;
 import xyz.xreatlabs.nexauth.api.event.events.LimboServerChooseEvent;
 import xyz.xreatlabs.nexauth.common.event.AuthenticServerChooseEvent;
 
-public class AuthenticLimboServerChooseEvent<P, S> extends AuthenticServerChooseEvent<P, S> implements LimboServerChooseEvent<P, S> {
-    public AuthenticLimboServerChooseEvent(@Nullable User user, P player, NexAuthPlugin<P, S> plugin) {
-        super(user, player, plugin);
-    }
+public class AuthenticLimboServerChooseEvent<P, S> extends AuthenticServerChooseEvent<P, S>
+    implements LimboServerChooseEvent<P, S> {
+  public AuthenticLimboServerChooseEvent(
+      @Nullable User user, P player, NexAuthPlugin<P, S> plugin) {
+    super(user, player, plugin);
+  }
 }

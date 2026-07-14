@@ -12,16 +12,15 @@ import xyz.xreatlabs.nexauth.common.command.InvalidCommandArgument;
 import xyz.xreatlabs.nexauth.common.command.commands.authorization.AuthorizationCommand;
 
 public class PremiumCommand<P> extends AuthorizationCommand<P> {
-    public PremiumCommand(AuthenticNexAuth<P, ?> premium) {
-        super(premium);
-    }
+  public PremiumCommand(AuthenticNexAuth<P, ?> premium) {
+    super(premium);
+  }
 
-    protected void checkCracked(User user) {
-        if (user.autoLoginEnabled()) throw new InvalidCommandArgument(getMessage("error-not-cracked"));
-    }
+  protected void checkCracked(User user) {
+    if (user.autoLoginEnabled()) throw new InvalidCommandArgument(getMessage("error-not-cracked"));
+  }
 
-    protected void checkPremium(User user) {
-        if (!user.autoLoginEnabled()) throw new InvalidCommandArgument(getMessage("error-not-premium"));
-    }
-
+  protected void checkPremium(User user) {
+    if (!user.autoLoginEnabled()) throw new InvalidCommandArgument(getMessage("error-not-premium"));
+  }
 }

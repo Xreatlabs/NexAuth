@@ -6,23 +6,24 @@
 
 package xyz.xreatlabs.nexauth.common.authorization;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+
 class ProfileConflictResolutionStrategyTest {
 
-    @Test
-    void exposesExpectedStrategies() {
-        assertArrayEquals(
-                new ProfileConflictResolutionStrategy[]{
-                        ProfileConflictResolutionStrategy.BLOCK,
-                        ProfileConflictResolutionStrategy.USE_OFFLINE,
-                        ProfileConflictResolutionStrategy.OVERWRITE
-                },
-                ProfileConflictResolutionStrategy.values()
-        );
-        assertEquals(ProfileConflictResolutionStrategy.OVERWRITE, ProfileConflictResolutionStrategy.valueOf("OVERWRITE"));
-    }
+  @Test
+  void exposesExpectedStrategies() {
+    assertArrayEquals(
+        new ProfileConflictResolutionStrategy[] {
+          ProfileConflictResolutionStrategy.BLOCK,
+          ProfileConflictResolutionStrategy.USE_OFFLINE,
+          ProfileConflictResolutionStrategy.OVERWRITE
+        },
+        ProfileConflictResolutionStrategy.values());
+    assertEquals(
+        ProfileConflictResolutionStrategy.OVERWRITE,
+        ProfileConflictResolutionStrategy.valueOf("OVERWRITE"));
+  }
 }

@@ -6,9 +6,7 @@
 
 package xyz.xreatlabs.nexauth.paper;
 
+import java.util.UUID;
 import xyz.xreatlabs.nexauth.paper.protocol.ClientPublicKey;
 
-import java.util.UUID;
-
-public record EncryptionData(String username, byte[] token, ClientPublicKey publicKey, UUID uuid) {
-}
+public record EncryptionData(String username, byte[] token, ClientPublicKey publicKey, UUID uuid) {}

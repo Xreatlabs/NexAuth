@@ -6,8 +6,5 @@
 
 package xyz.xreatlabs.nexauth.api.event.exception;
 
-/**
- * An exception thrown when an event is cancelled.
- */
-public class EventCancelledException extends RuntimeException {
-}
+/** An exception thrown when an event is cancelled. */
+public class EventCancelledException extends RuntimeException {}

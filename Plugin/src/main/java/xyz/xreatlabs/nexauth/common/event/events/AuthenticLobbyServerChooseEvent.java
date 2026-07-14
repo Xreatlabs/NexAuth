@@ -12,30 +12,31 @@ import xyz.xreatlabs.nexauth.api.database.User;
 import xyz.xreatlabs.nexauth.api.event.events.LobbyServerChooseEvent;
 import xyz.xreatlabs.nexauth.common.event.AuthenticServerChooseEvent;
 
-public class AuthenticLobbyServerChooseEvent<P, S> extends AuthenticServerChooseEvent<P, S> implements LobbyServerChooseEvent<P, S> {
+public class AuthenticLobbyServerChooseEvent<P, S> extends AuthenticServerChooseEvent<P, S>
+    implements LobbyServerChooseEvent<P, S> {
 
-    private final Boolean fallback;
-    private boolean cancelled = false;
+  private final Boolean fallback;
+  private boolean cancelled = false;
 
-    public AuthenticLobbyServerChooseEvent(@Nullable User user, P player, NexAuthPlugin<P, S> plugin, Boolean fallback) {
-        super(user, player, plugin);
+  public AuthenticLobbyServerChooseEvent(
+      @Nullable User user, P player, NexAuthPlugin<P, S> plugin, Boolean fallback) {
+    super(user, player, plugin);
 
-        this.fallback = fallback;
-    }
+    this.fallback = fallback;
+  }
 
-    @Override
-    public Boolean isFallback() {
-        return fallback;
-    }
+  @Override
+  public Boolean isFallback() {
+    return fallback;
+  }
 
+  @Override
+  public void setCancelled(boolean cancelled) {
+    this.cancelled = cancelled;
+  }
 
-    @Override
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
+  @Override
+  public boolean isCancelled() {
+    return cancelled;
+  }
 }

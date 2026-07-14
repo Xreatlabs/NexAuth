@@ -17,38 +17,39 @@ import xyz.xreatlabs.nexauth.api.event.events.AuthenticatedEvent;
  */
 public interface AuthorizationProvider<P> {
 
-    /**
-     * Checks whether the user has already passed the login process.
-     *
-     * @param player The player.
-     * @return True if the user has already passed the login process, false otherwise.
-     */
-    boolean isAuthorized(P player);
+  /**
+   * Checks whether the user has already passed the login process.
+   *
+   * @param player The player.
+   * @return True if the user has already passed the login process, false otherwise.
+   */
+  boolean isAuthorized(P player);
 
-    /**
-     * Checks whether the player is in the process of enabling 2FA.
-     *
-     * @param player The player.
-     * @return True if the player is in the process of enabling 2FA, false otherwise.
-     */
-    boolean isAwaiting2FA(P player);
+  /**
+   * Checks whether the player is in the process of enabling 2FA.
+   *
+   * @param player The player.
+   * @return True if the player is in the process of enabling 2FA, false otherwise.
+   */
+  boolean isAwaiting2FA(P player);
 
-    /**
-     * Authorizes the player, if the player is not already authorized. Implementation must make sure that {@link #isAuthorized(P)} returns false.
-     *
-     * @param user   The user.
-     * @param player The player.
-     * @param reason The reason for authorization.
-     */
-    void authorize(User user, P player, AuthenticatedEvent.AuthenticationReason reason);
+  /**
+   * Authorizes the player, if the player is not already authorized. Implementation must make sure
+   * that {@link #isAuthorized(P)} returns false.
+   *
+   * @param user The user.
+   * @param player The player.
+   * @param reason The reason for authorization.
+   */
+  void authorize(User user, P player, AuthenticatedEvent.AuthenticationReason reason);
 
-    /**
-     * Finishes the 2FA enabling process.
-     *
-     * @param player The player.
-     * @param code   The code.
-     * @param user   The user.
-     * @return whether the code is valid.
-     */
-    boolean confirmTwoFactorAuth(P player, Integer code, User user);
+  /**
+   * Finishes the 2FA enabling process.
+   *
+   * @param player The player.
+   * @param code The code.
+   * @param user The user.
+   * @return whether the code is valid.
+   */
+  boolean confirmTwoFactorAuth(P player, Integer code, User user);
 }

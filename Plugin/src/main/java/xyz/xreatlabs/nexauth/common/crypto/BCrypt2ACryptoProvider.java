@@ -7,51 +7,43 @@
 package xyz.xreatlabs.nexauth.common.crypto;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import javax.annotation.Nullable;
 import xyz.xreatlabs.nexauth.api.crypto.CryptoProvider;
 import xyz.xreatlabs.nexauth.api.crypto.HashedPassword;
 import xyz.xreatlabs.nexauth.common.util.CryptoUtil;
 
-import javax.annotation.Nullable;
-
 public class BCrypt2ACryptoProvider implements CryptoProvider {
 
-    public static final BCrypt.Hasher HASHER = BCrypt
-            .with(BCrypt.Version.VERSION_2A);
-    public static final BCrypt.Verifyer VERIFIER = BCrypt
-            .verifyer(BCrypt.Version.VERSION_2A);
+  public static final BCrypt.Hasher HASHER = BCrypt.with(BCrypt.Version.VERSION_2A);
+  public static final BCrypt.Verifyer VERIFIER = BCrypt.verifyer(BCrypt.Version.VERSION_2A);
 
-    @Override
-    @Nullable
-    public HashedPassword createHash(String password) {
-        String hash;
-        try {
-            hash = HASHER.hashToString(10, password.toCharArray());
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-        return CryptoUtil.convertFromBCryptRaw(
-                hash
-        );
+  @Override
+  @Nullable
+  public HashedPassword createHash(String password) {
+    String hash;
+    try {
+      hash = HASHER.hashToString(10, password.toCharArray());
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
+    return CryptoUtil.convertFromBCryptRaw(hash);
+  }
+
+  @Override
+  public boolean matches(String input, HashedPassword password) {
+    var raw = CryptoUtil.rawBcryptFromHashed(password).toCharArray();
+    BCrypt.Result result;
+    try {
+      result = VERIFIER.verify(input.toCharArray(), raw);
+    } catch (IllegalArgumentException e) {
+      return false;
     }
 
-    @Override
-    public boolean matches(String input, HashedPassword password) {
-        var raw = CryptoUtil.rawBcryptFromHashed(password).toCharArray();
-        BCrypt.Result result;
-        try {
-            result = VERIFIER.verify(input.toCharArray(),
-                    raw
-            );
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+    return result.verified;
+  }
 
-        return result.verified;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "BCrypt-2A";
-    }
-
+  @Override
+  public String getIdentifier() {
+    return "BCrypt-2A";
+  }
 }

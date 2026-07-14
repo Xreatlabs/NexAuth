@@ -6,16 +6,16 @@
 
 package xyz.xreatlabs.nexauth.api.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 class ThrowableFunctionTest {
 
-    @Test
-    void appliesValue() throws Throwable {
-        ThrowableFunction<String, Integer, Exception> function = String::length;
+  @Test
+  void appliesValue() throws Throwable {
+    ThrowableFunction<String, Integer, Exception> function = String::length;
 
-        assertEquals(5, function.apply("hello"));
-    }
+    assertEquals(5, function.apply("hello"));
+  }
 }

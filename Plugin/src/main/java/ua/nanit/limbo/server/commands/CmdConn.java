@@ -12,24 +12,24 @@ import ua.nanit.limbo.server.Log;
 
 public class CmdConn implements Command {
 
-    private final LimboServer server;
+  private final LimboServer server;
 
-    public CmdConn(LimboServer server) {
-        this.server = server;
-    }
+  public CmdConn(LimboServer server) {
+    this.server = server;
+  }
 
-    @Override
-    public void execute() {
-        Log.info("Connections: %d", server.getConnections().getCount());
-    }
+  @Override
+  public void execute() {
+    Log.info("Connections: %d", server.getConnections().getCount());
+  }
 
-    @Override
-    public String name() {
-        return "conn";
-    }
+  @Override
+  public String name() {
+    return "conn";
+  }
 
-    @Override
-    public String description() {
-        return "Display connections count";
-    }
+  @Override
+  public String description() {
+    return "Display connections count";
+  }
 }

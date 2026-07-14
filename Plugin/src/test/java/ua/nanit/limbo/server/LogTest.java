@@ -6,19 +6,19 @@
 
 package ua.nanit.limbo.server;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Test;
+
 class LogTest {
 
-    @Test
-    void debugFlagFollowsConfiguredLevel() {
-        Log.setLevel(Log.Level.INFO.getIndex());
-        assertFalse(Log.isDebug());
+  @Test
+  void debugFlagFollowsConfiguredLevel() {
+    Log.setLevel(Log.Level.INFO.getIndex());
+    assertFalse(Log.isDebug());
 
-        Log.setLevel(Log.Level.DEBUG.getIndex());
-        assertTrue(Log.isDebug());
-    }
+    Log.setLevel(Log.Level.DEBUG.getIndex());
+    assertTrue(Log.isDebug());
+  }
 }

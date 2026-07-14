@@ -8,10 +8,9 @@ package ua.nanit.limbo.server;
 
 public interface Command {
 
-    void execute();
+  void execute();
 
-    String name();
+  String name();
 
-    String description();
-
+  String description();
 }

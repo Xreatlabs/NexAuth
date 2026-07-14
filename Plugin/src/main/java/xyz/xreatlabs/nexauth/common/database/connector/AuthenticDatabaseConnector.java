@@ -10,25 +10,25 @@ import xyz.xreatlabs.nexauth.api.database.connector.DatabaseConnector;
 import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 import xyz.xreatlabs.nexauth.common.config.key.ConfigurationKey;
 
-public abstract class AuthenticDatabaseConnector<E extends Exception, I> implements DatabaseConnector<E, I> {
+public abstract class AuthenticDatabaseConnector<E extends Exception, I>
+    implements DatabaseConnector<E, I> {
 
-    protected final AuthenticNexAuth<?, ?> plugin;
-    private final String prefix;
-    protected boolean connected = true;
+  protected final AuthenticNexAuth<?, ?> plugin;
+  private final String prefix;
+  protected boolean connected = true;
 
-    public AuthenticDatabaseConnector(AuthenticNexAuth<?, ?> plugin, String prefix) {
-        this.plugin = plugin;
-        this.prefix = prefix;
-    }
+  public AuthenticDatabaseConnector(AuthenticNexAuth<?, ?> plugin, String prefix) {
+    this.plugin = plugin;
+    this.prefix = prefix;
+  }
 
-    @Override
-    public boolean connected() {
-        return connected;
-    }
+  @Override
+  public boolean connected() {
+    return connected;
+  }
 
-    public <T> T get(ConfigurationKey<T> key) {
-        var value = key.getter().apply(plugin.getConfiguration().getHelper(), prefix + key.key());
-        return value == null ? key.defaultValue() : value;
-    }
-
+  public <T> T get(ConfigurationKey<T> key) {
+    var value = key.getter().apply(plugin.getConfiguration().getHelper(), prefix + key.key());
+    return value == null ? key.defaultValue() : value;
+  }
 }

@@ -13,19 +13,19 @@ import ua.nanit.limbo.protocol.registry.Version;
 
 public class PacketTitleSetSubTitle implements PacketOut {
 
-    private NbtMessage subtitle;
+  private NbtMessage subtitle;
 
-    public void setSubtitle(NbtMessage subtitle) {
-        this.subtitle = subtitle;
-    }
+  public void setSubtitle(NbtMessage subtitle) {
+    this.subtitle = subtitle;
+  }
 
-    @Override
-    public void encode(ByteMessage msg, Version version) {
-        msg.writeNbtMessage(subtitle, version);
-    }
+  @Override
+  public void encode(ByteMessage msg, Version version) {
+    msg.writeNbtMessage(subtitle, version);
+  }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

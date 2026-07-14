@@ -6,40 +6,39 @@
 
 package ua.nanit.limbo.server.data;
 
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
 class InfoForwardingTest {
 
-    @Test
-    void reportsTypeAndTokens() throws Exception {
-        var forwarding = new InfoForwarding();
-        set(forwarding, "type", InfoForwarding.Type.BUNGEE_GUARD);
-        set(forwarding, "tokens", List.of("alpha", "beta"));
+  @Test
+  void reportsTypeAndTokens() throws Exception {
+    var forwarding = new InfoForwarding();
+    set(forwarding, "type", InfoForwarding.Type.BUNGEE_GUARD);
+    set(forwarding, "tokens", List.of("alpha", "beta"));
 
-        assertTrue(forwarding.isBungeeGuard());
-        assertFalse(forwarding.isModern());
-        assertTrue(forwarding.hasToken("alpha"));
-        assertFalse(forwarding.hasToken("missing"));
-    }
+    assertTrue(forwarding.isBungeeGuard());
+    assertFalse(forwarding.isModern());
+    assertTrue(forwarding.hasToken("alpha"));
+    assertFalse(forwarding.hasToken("missing"));
+  }
 
-    @Test
-    void noneTypeReportsNone() throws Exception {
-        var forwarding = new InfoForwarding();
-        set(forwarding, "type", InfoForwarding.Type.NONE);
+  @Test
+  void noneTypeReportsNone() throws Exception {
+    var forwarding = new InfoForwarding();
+    set(forwarding, "type", InfoForwarding.Type.NONE);
 
-        assertTrue(forwarding.isNone());
-        assertFalse(forwarding.isLegacy());
-    }
+    assertTrue(forwarding.isNone());
+    assertFalse(forwarding.isLegacy());
+  }
 
-    private static void set(Object target, String fieldName, Object value) throws Exception {
-        Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(target, value);
-    }
+  private static void set(Object target, String fieldName, Object value) throws Exception {
+    Field field = target.getClass().getDeclaredField(fieldName);
+    field.setAccessible(true);
+    field.set(target, value);
+  }
 }

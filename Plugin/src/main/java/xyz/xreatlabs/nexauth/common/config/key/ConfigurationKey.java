@@ -6,57 +6,61 @@
 
 package xyz.xreatlabs.nexauth.common.config.key;
 
-import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
-
 import java.util.function.BiFunction;
+import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
 
 public class ConfigurationKey<T> {
 
-    private final String key;
-    private final BiFunction<ConfigurateHelper, String, T> getter;
-    private T defaultValue;
-    private String comment;
+  private final String key;
+  private final BiFunction<ConfigurateHelper, String, T> getter;
+  private T defaultValue;
+  private String comment;
 
-    public ConfigurationKey(String key, T defaultValue, String comment, BiFunction<ConfigurateHelper, String, T> getter) {
-        this.key = key;
-        this.getter = getter;
-        this.defaultValue = defaultValue;
-        this.comment = comment;
-    }
+  public ConfigurationKey(
+      String key, T defaultValue, String comment, BiFunction<ConfigurateHelper, String, T> getter) {
+    this.key = key;
+    this.getter = getter;
+    this.defaultValue = defaultValue;
+    this.comment = comment;
+  }
 
-    public static ConfigurationKey<?> getComment(String key, String comment) {
-        return new ConfigurationKey<>(key, null, comment, (x, y) -> {
-            throw new UnsupportedOperationException();
+  public static ConfigurationKey<?> getComment(String key, String comment) {
+    return new ConfigurationKey<>(
+        key,
+        null,
+        comment,
+        (x, y) -> {
+          throw new UnsupportedOperationException();
         });
-    }
+  }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
 
-    public String key() {
-        return key;
-    }
+  public String key() {
+    return key;
+  }
 
-    public BiFunction<ConfigurateHelper, String, T> getter() {
-        return getter;
-    }
+  public BiFunction<ConfigurateHelper, String, T> getter() {
+    return getter;
+  }
 
-    public T defaultValue() {
-        return defaultValue;
-    }
+  public T defaultValue() {
+    return defaultValue;
+  }
 
-    public String comment() {
-        return comment;
-    }
+  public String comment() {
+    return comment;
+  }
 
-    public void setDefault(T defaultValue) {
-        this.defaultValue = defaultValue;
-    }
+  public void setDefault(T defaultValue) {
+    this.defaultValue = defaultValue;
+  }
 
-    public T compute(ConfigurateHelper configurateHelper) {
-        var value = getter.apply(configurateHelper, key());
+  public T compute(ConfigurateHelper configurateHelper) {
+    var value = getter.apply(configurateHelper, key());
 
-        return value == null ? defaultValue : value;
-    }
+    return value == null ? defaultValue : value;
+  }
 }

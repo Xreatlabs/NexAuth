@@ -8,6 +8,5 @@ package xyz.xreatlabs.nexauth.common.util;
 
 public interface CancellableTask {
 
-    void cancel();
-
+  void cancel();
 }

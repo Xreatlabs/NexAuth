@@ -6,18 +6,18 @@
 
 package xyz.xreatlabs.nexauth.api;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 class BiHolderTest {
 
-    @Test
-    void storesKeyAndValue() {
-        var holder = new BiHolder<>("mode", 7);
+  @Test
+  void storesKeyAndValue() {
+    var holder = new BiHolder<>("mode", 7);
 
-        assertEquals("mode", holder.key());
-        assertEquals(7, holder.value());
-        assertEquals(new BiHolder<>("mode", 7), holder);
-    }
+    assertEquals("mode", holder.key());
+    assertEquals(7, holder.value());
+    assertEquals(new BiHolder<>("mode", 7), holder);
+  }
 }

@@ -11,34 +11,30 @@ import java.util.Objects;
 
 public record DoctorReport(List<DoctorCheckResult> checks) {
 
-    public DoctorReport {
-        Objects.requireNonNull(checks, "checks");
-        checks = checks.stream()
-                .sorted()
-                .toList();
-    }
+  public DoctorReport {
+    Objects.requireNonNull(checks, "checks");
+    checks = checks.stream().sorted().toList();
+  }
 
-    public DoctorSeverity overallSeverity() {
-        return checks.stream()
-                .map(DoctorCheckResult::severity)
-                .reduce(DoctorSeverity.OK, DoctorSeverity::max);
-    }
+  public DoctorSeverity overallSeverity() {
+    return checks.stream()
+        .map(DoctorCheckResult::severity)
+        .reduce(DoctorSeverity.OK, DoctorSeverity::max);
+  }
 
-    public long okCount() {
-        return countBySeverity(DoctorSeverity.OK);
-    }
+  public long okCount() {
+    return countBySeverity(DoctorSeverity.OK);
+  }
 
-    public long warnCount() {
-        return countBySeverity(DoctorSeverity.WARN);
-    }
+  public long warnCount() {
+    return countBySeverity(DoctorSeverity.WARN);
+  }
 
-    public long failCount() {
-        return countBySeverity(DoctorSeverity.FAIL);
-    }
+  public long failCount() {
+    return countBySeverity(DoctorSeverity.FAIL);
+  }
 
-    private long countBySeverity(DoctorSeverity severity) {
-        return checks.stream()
-                .filter(result -> result.severity() == severity)
-                .count();
-    }
+  private long countBySeverity(DoctorSeverity severity) {
+    return checks.stream().filter(result -> result.severity() == severity).count();
+  }
 }

@@ -6,21 +6,20 @@
 
 package xyz.xreatlabs.nexauth.api.totp;
 
-import org.junit.jupiter.api.Test;
-
-import java.awt.image.BufferedImage;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import java.awt.image.BufferedImage;
+import org.junit.jupiter.api.Test;
+
 class TOTPDataTest {
 
-    @Test
-    void storesQrAndSecret() {
-        var qr = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
-        var data = new TOTPData(qr, "SECRET-123");
+  @Test
+  void storesQrAndSecret() {
+    var qr = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+    var data = new TOTPData(qr, "SECRET-123");
 
-        assertSame(qr, data.qr());
-        assertEquals("SECRET-123", data.secret());
-    }
+    assertSame(qr, data.qr());
+    assertEquals("SECRET-123", data.secret());
+  }
 }

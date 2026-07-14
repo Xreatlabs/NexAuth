@@ -12,25 +12,25 @@ import ua.nanit.limbo.protocol.registry.Version;
 
 public class PacketGameEvent implements PacketOut {
 
-    private byte type;
-    private float value;
+  private byte type;
+  private float value;
 
-    public void setType(byte type) {
-        this.type = type;
-    }
+  public void setType(byte type) {
+    this.type = type;
+  }
 
-    public void setValue(float value) {
-        this.value = value;
-    }
+  public void setValue(float value) {
+    this.value = value;
+  }
 
-    @Override
-    public void encode(ByteMessage msg, Version version) {
-        msg.writeByte(type);
-        msg.writeFloat(value);
-    }
+  @Override
+  public void encode(ByteMessage msg, Version version) {
+    msg.writeByte(type);
+    msg.writeFloat(value);
+  }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

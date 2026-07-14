@@ -17,12 +17,18 @@ import org.jetbrains.annotations.Nullable;
  * @author kyngs
  */
 public record HashedPassword(String hash, @Nullable String salt, String algo) {
-    @Override
-    public String toString() {
-        return "HashedPassword{" +
-                "hash='" + hash + '\'' +
-                ", salt='" + salt + '\'' +
-                ", algo='" + algo + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "HashedPassword{"
+        + "hash='"
+        + hash
+        + '\''
+        + ", salt='"
+        + salt
+        + '\''
+        + ", algo='"
+        + algo
+        + '\''
+        + '}';
+  }
 }

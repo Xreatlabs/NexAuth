@@ -6,19 +6,18 @@
 
 package xyz.xreatlabs.nexauth.common.config;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+
 class NewUUIDCreatorTest {
 
-    @Test
-    void exposesExpectedStrategies() {
-        assertArrayEquals(
-                new NewUUIDCreator[]{NewUUIDCreator.RANDOM, NewUUIDCreator.MOJANG, NewUUIDCreator.CRACKED},
-                NewUUIDCreator.values()
-        );
-        assertEquals(NewUUIDCreator.MOJANG, NewUUIDCreator.valueOf("MOJANG"));
-    }
+  @Test
+  void exposesExpectedStrategies() {
+    assertArrayEquals(
+        new NewUUIDCreator[] {NewUUIDCreator.RANDOM, NewUUIDCreator.MOJANG, NewUUIDCreator.CRACKED},
+        NewUUIDCreator.values());
+    assertEquals(NewUUIDCreator.MOJANG, NewUUIDCreator.valueOf("MOJANG"));
+  }
 }

@@ -11,8 +11,8 @@ import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
 import xyz.xreatlabs.nexauth.common.config.migrate.ConfigurationMigrator;
 
 public class EightConfigurationMigrator implements ConfigurationMigrator {
-    @Override
-    public void migrate(ConfigurateHelper helper, Logger logger) {
-        helper.set("mail.email", helper.getString("mail.username"));
-    }
+  @Override
+  public void migrate(ConfigurateHelper helper, Logger logger) {
+    helper.set("mail.email", helper.getString("mail.username"));
+  }
 }

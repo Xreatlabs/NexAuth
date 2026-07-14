@@ -12,23 +12,23 @@ import java.util.logging.Logger;
 
 public class SimpleLogFilter extends LogFilter implements Filter {
 
-    private final Filter filter;
-    private final Logger logger;
+  private final Filter filter;
+  private final Logger logger;
 
-    public SimpleLogFilter(Logger logger) {
-        filter = logger.getFilter();
-        this.logger = logger;
-    }
+  public SimpleLogFilter(Logger logger) {
+    filter = logger.getFilter();
+    this.logger = logger;
+  }
 
-    @Override
-    public boolean isLoggable(LogRecord record) {
-        if (filter != null && !filter.isLoggable(record)) return false;
+  @Override
+  public boolean isLoggable(LogRecord record) {
+    if (filter != null && !filter.isLoggable(record)) return false;
 
-        return checkMessage(record.getMessage());
-    }
+    return checkMessage(record.getMessage());
+  }
 
-    @Override
-    public void inject() {
-        logger.setFilter(this);
-    }
+  @Override
+  public void inject() {
+    logger.setFilter(this);
+  }
 }

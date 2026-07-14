@@ -6,6 +6,9 @@
 
 package xyz.xreatlabs.nexauth.common.migrate;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 import xyz.xreatlabs.nexauth.api.Logger;
 import xyz.xreatlabs.nexauth.api.crypto.HashedPassword;
 import xyz.xreatlabs.nexauth.api.database.User;
@@ -13,57 +16,57 @@ import xyz.xreatlabs.nexauth.api.database.connector.SQLDatabaseConnector;
 import xyz.xreatlabs.nexauth.common.database.AuthenticUser;
 import xyz.xreatlabs.nexauth.common.util.CryptoUtil;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
-
 public class LoginSecuritySQLMigrateReadProvider extends SQLMigrateReadProvider {
-    public LoginSecuritySQLMigrateReadProvider(String tableName, Logger logger, SQLDatabaseConnector connector) {
-        super(tableName, logger, connector);
-    }
+  public LoginSecuritySQLMigrateReadProvider(
+      String tableName, Logger logger, SQLDatabaseConnector connector) {
+    super(tableName, logger, connector);
+  }
 
-    @Override
-    public Collection<User> getAllUsers() {
-        return connector.runQuery(connection -> {
-            var ps = connection.prepareStatement("SELECT * FROM `%s`".formatted(tableName));
+  @Override
+  public Collection<User> getAllUsers() {
+    return connector.runQuery(
+        connection -> {
+          var ps = connection.prepareStatement("SELECT * FROM `%s`".formatted(tableName));
 
-            var rs = ps.executeQuery();
+          var rs = ps.executeQuery();
 
-            var users = new HashSet<User>();
+          var users = new HashSet<User>();
 
-            while (rs.next()) {
-                var uniqueId = UUID.fromString(rs.getString("unique_user_id"));
-                var lastNickname = rs.getString("last_name");
-                var lastSeen = rs.getTimestamp("last_login");
-                var firstSeen = rs.getTimestamp("registration_date");
-                var rawPassword = rs.getString("password");
-                var hashingAlgorithm = rs.getInt("hashing_algorithm");
+          while (rs.next()) {
+            var uniqueId = UUID.fromString(rs.getString("unique_user_id"));
+            var lastNickname = rs.getString("last_name");
+            var lastSeen = rs.getTimestamp("last_login");
+            var firstSeen = rs.getTimestamp("registration_date");
+            var rawPassword = rs.getString("password");
+            var hashingAlgorithm = rs.getInt("hashing_algorithm");
 
-                HashedPassword hashed;
+            HashedPassword hashed;
 
-                if (hashingAlgorithm == 7) {
-                    hashed = CryptoUtil.convertFromBCryptRaw(rawPassword);
-                } else {
-                    logger.warn("User %s has invalid algorithm %s, omitting".formatted(lastNickname, hashingAlgorithm));
-                    continue;
-                }
-
-                users.add(new AuthenticUser(
-                        uniqueId,
-                        null,
-                        hashed,
-                        lastNickname,
-                        firstSeen,
-                        lastSeen,
-                        null,
-                        null,
-                        lastSeen,
-                        null,
-                        null
-                ));
+            if (hashingAlgorithm == 7) {
+              hashed = CryptoUtil.convertFromBCryptRaw(rawPassword);
+            } else {
+              logger.warn(
+                  "User %s has invalid algorithm %s, omitting"
+                      .formatted(lastNickname, hashingAlgorithm));
+              continue;
             }
 
-            return users;
+            users.add(
+                new AuthenticUser(
+                    uniqueId,
+                    null,
+                    hashed,
+                    lastNickname,
+                    firstSeen,
+                    lastSeen,
+                    null,
+                    null,
+                    lastSeen,
+                    null,
+                    null));
+          }
+
+          return users;
         });
-    }
+  }
 }

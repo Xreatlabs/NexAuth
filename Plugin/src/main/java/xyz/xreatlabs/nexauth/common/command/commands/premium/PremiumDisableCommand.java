@@ -8,36 +8,39 @@ package xyz.xreatlabs.nexauth.common.command.commands.premium;
 
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
+import java.util.concurrent.CompletionStage;
 import net.kyori.adventure.audience.Audience;
 import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 import xyz.xreatlabs.nexauth.common.event.events.AuthenticPremiumLoginSwitchEvent;
 
-import java.util.concurrent.CompletionStage;
-
 @CommandAlias("cracked|manuallogin")
 public class PremiumDisableCommand<P> extends PremiumCommand<P> {
 
-    public PremiumDisableCommand(AuthenticNexAuth<P, ?> premium) {
-        super(premium);
-    }
+  public PremiumDisableCommand(AuthenticNexAuth<P, ?> premium) {
+    super(premium);
+  }
 
-    @Default
-    public CompletionStage<Void> onCracked(Audience sender, P player) {
-        return runAsync(() -> {
-            checkAuthorized(player);
-            var user = getUser(player);
-            checkPremium(user);
+  @Default
+  public CompletionStage<Void> onCracked(Audience sender, P player) {
+    return runAsync(
+        () -> {
+          checkAuthorized(player);
+          var user = getUser(player);
+          checkPremium(user);
 
-            sender.sendMessage(getMessage("info-disabling"));
+          sender.sendMessage(getMessage("info-disabling"));
 
-            user.setPremiumUUID(null);
+          user.setPremiumUUID(null);
 
-            plugin.getEventProvider().unsafeFire(plugin.getEventTypes().premiumLoginSwitch, new AuthenticPremiumLoginSwitchEvent<>(user, player, plugin));
+          plugin
+              .getEventProvider()
+              .unsafeFire(
+                  plugin.getEventTypes().premiumLoginSwitch,
+                  new AuthenticPremiumLoginSwitchEvent<>(user, player, plugin));
 
-            getDatabaseProvider().updateUser(user);
+          getDatabaseProvider().updateUser(user);
 
-            plugin.getPlatformHandle().kick(player, getMessage("kick-premium-info-disabled"));
+          plugin.getPlatformHandle().kick(player, getMessage("kick-premium-info-disabled"));
         });
-    }
-
+  }
 }

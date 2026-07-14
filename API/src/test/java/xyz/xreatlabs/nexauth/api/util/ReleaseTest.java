@@ -6,19 +6,19 @@
 
 package xyz.xreatlabs.nexauth.api.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 class ReleaseTest {
 
-    @Test
-    void storesVersionAndName() {
-        var version = new SemanticVersion(1, 2, 3, false);
-        var release = new Release(version, "NexAuth 1.2.3");
+  @Test
+  void storesVersionAndName() {
+    var version = new SemanticVersion(1, 2, 3, false);
+    var release = new Release(version, "NexAuth 1.2.3");
 
-        assertEquals(version, release.version());
-        assertEquals("NexAuth 1.2.3", release.name());
-        assertEquals(new Release(version, "NexAuth 1.2.3"), release);
-    }
+    assertEquals(version, release.version());
+    assertEquals("NexAuth 1.2.3", release.name());
+    assertEquals(new Release(version, "NexAuth 1.2.3"), release);
+  }
 }

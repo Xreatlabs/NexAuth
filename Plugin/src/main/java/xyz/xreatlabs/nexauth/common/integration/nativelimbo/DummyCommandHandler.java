@@ -6,25 +6,23 @@
 
 package xyz.xreatlabs.nexauth.common.integration.nativelimbo;
 
+import java.util.Collection;
+import java.util.Collections;
 import ua.nanit.limbo.server.Command;
 import ua.nanit.limbo.server.CommandHandler;
 
-import java.util.Collection;
-import java.util.Collections;
-
 public class DummyCommandHandler implements CommandHandler<Command> {
 
-    @Override
-    public Collection<Command> getCommands() {
-        return Collections.emptyList();
-    }
+  @Override
+  public Collection<Command> getCommands() {
+    return Collections.emptyList();
+  }
 
-    @Override
-    public void register(Command command) {
-    }
+  @Override
+  public void register(Command command) {}
 
-    @Override
-    public boolean executeCommand(String input) {
-        return false;
-    }
+  @Override
+  public boolean executeCommand(String input) {
+    return false;
+  }
 }

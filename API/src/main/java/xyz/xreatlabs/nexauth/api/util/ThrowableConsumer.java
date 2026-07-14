@@ -7,7 +7,8 @@
 package xyz.xreatlabs.nexauth.api.util;
 
 /**
- * A functional interface for consuming a value of type T and potentially throwing an exception of type E.
+ * A functional interface for consuming a value of type T and potentially throwing an exception of
+ * type E.
  *
  * @param <T> the type of the value to be consumed
  * @param <E> the type of the exception that can be thrown
@@ -15,12 +16,11 @@ package xyz.xreatlabs.nexauth.api.util;
  */
 public interface ThrowableConsumer<T, E extends Throwable> {
 
-    /**
-     * Performs this operation on the given argument.
-     *
-     * @param t the input argument
-     * @throws E an exception of type {@link E}
-     */
-    void accept(T t) throws E;
-
+  /**
+   * Performs this operation on the given argument.
+   *
+   * @param t the input argument
+   * @throws E an exception of type {@link E}
+   */
+  void accept(T t) throws E;
 }

@@ -10,11 +10,11 @@ import xyz.xreatlabs.nexauth.api.PlatformHandle;
 
 public class AuthenticHandler<P, S> {
 
-    protected final AuthenticNexAuth<P, S> plugin;
-    protected final PlatformHandle<P, S> platformHandle;
+  protected final AuthenticNexAuth<P, S> plugin;
+  protected final PlatformHandle<P, S> platformHandle;
 
-    public AuthenticHandler(AuthenticNexAuth<P, S> plugin) {
-        this.plugin = plugin;
-        this.platformHandle = plugin.getPlatformHandle();
-    }
+  public AuthenticHandler(AuthenticNexAuth<P, S> plugin) {
+    this.plugin = plugin;
+    this.platformHandle = plugin.getPlatformHandle();
+  }
 }

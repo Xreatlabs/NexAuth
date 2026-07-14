@@ -13,38 +13,38 @@ package xyz.xreatlabs.nexauth.api.mail;
  */
 public interface EmailHandler {
 
-    /**
-     * This method sends an email to the user.
-     *
-     * @param email   The email to send the email to.
-     * @param subject The subject of the email.
-     * @param content The content of the email.
-     */
-    void sendEmail(String email, String subject, String content);
+  /**
+   * This method sends an email to the user.
+   *
+   * @param email The email to send the email to.
+   * @param subject The subject of the email.
+   * @param content The content of the email.
+   */
+  void sendEmail(String email, String subject, String content);
 
-    /**
-     * This method sends a test email to the user.
-     *
-     * @param email The email to send the email to.
-     */
-    void sendTestMail(String email);
+  /**
+   * This method sends a test email to the user.
+   *
+   * @param email The email to send the email to.
+   */
+  void sendTestMail(String email);
 
-    /**
-     * This method sends a password reset email to the user.
-     *
-     * @param email    The email to send the email to.
-     * @param token    The token to reset the password.
-     * @param ip       The ip of the user.
-     * @param username The username of the user.
-     */
-    void sendPasswordResetMail(String email, String token, String username, String ip);
+  /**
+   * This method sends a password reset email to the user.
+   *
+   * @param email The email to send the email to.
+   * @param token The token to reset the password.
+   * @param ip The ip of the user.
+   * @param username The username of the user.
+   */
+  void sendPasswordResetMail(String email, String token, String username, String ip);
 
-    /**
-     * This method sends a verification email to the user.
-     *
-     * @param email The email to send the email to.
-     * @param token The token to verify the email.
-     * @param username The username of the user.
-     */
-    void sendVerificationMail(String email, String token, String username);
+  /**
+   * This method sends a verification email to the user.
+   *
+   * @param email The email to send the email to.
+   * @param token The token to verify the email.
+   * @param username The username of the user.
+   */
+  void sendVerificationMail(String email, String token, String username);
 }

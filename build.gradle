@@ -1,6 +1,9 @@
 plugins {
     id 'org.cadixdev.licenser' version '0.6.1'
     id 'com.github.ben-manes.versions' version '0.52.0'
+    id 'com.github.spotbugs' version '6.1.7' apply false
+    id 'com.diffplug.spotless' version '7.0.2' apply false
+    id 'com.autonomousapps.dependency-analysis' version '2.1.4' apply false
 }
 
 defaultTasks 'updateLicenses', 'shadowJar'
@@ -13,6 +16,10 @@ subprojects {
 
     apply plugin: 'org.cadixdev.licenser'
     apply plugin: 'com.github.ben-manes.versions'
+    apply plugin: 'com.github.spotbugs'
+    apply plugin: 'com.diffplug.spotless'
+    apply plugin: 'pmd'
+    apply plugin: 'com.autonomousapps.dependency-analysis'
 
     repositories {
         mavenLocal()
@@ -33,4 +40,41 @@ subprojects {
         }
     }
 
+    // --- SpotBugs: static analysis for bugs, dead code, and type issues ---
+    spotbugs {
+        toolVersion = '4.9.3'
+        effort = 'default'
+        reportLevel = 'medium'
+        excludeFilter = rootProject.file('config/spotbugs/exclude.xml')
+        ignoreFailures = true
+    }
+
+    // --- PMD: complexity, naming, duplicate code, and tech debt tracking ---
+    pmd {
+        toolVersion = '7.15.0'
+        ruleSets = []
+        ruleSetFiles = rootProject.files('config/pmd/ruleset.xml')
+        ignoreFailures = true
+    }
+
+    // --- Spotless: automated code formatting ---
+    spotless {
+        java {
+            target('src/main/java/**/*.java', 'src/test/java/**/*.java')
+            googleJavaFormat('1.24.0')
+                    .reflowLongStrings()
+                    .formatJavadoc(true)
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
+
+    // --- Dependency analysis: detect unused dependencies ---
+    dependencyAnalysis {
+        issues {
+            onUnusedDependencies {
+                severity('warn')
+            }
+        }
+    }
 }

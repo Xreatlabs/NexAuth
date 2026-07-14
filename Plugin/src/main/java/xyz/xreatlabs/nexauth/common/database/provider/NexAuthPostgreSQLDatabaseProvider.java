@@ -6,39 +6,43 @@
 
 package xyz.xreatlabs.nexauth.common.database.provider;
 
-import xyz.xreatlabs.nexauth.api.database.connector.PostgreSQLDatabaseConnector;
-import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import xyz.xreatlabs.nexauth.api.database.connector.PostgreSQLDatabaseConnector;
+import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 
 public class NexAuthPostgreSQLDatabaseProvider extends NexAuthSQLDatabaseProvider {
-    public NexAuthPostgreSQLDatabaseProvider(PostgreSQLDatabaseConnector connector, AuthenticNexAuth<?, ?> plugin) {
-        super(connector, plugin);
+  public NexAuthPostgreSQLDatabaseProvider(
+      PostgreSQLDatabaseConnector connector, AuthenticNexAuth<?, ?> plugin) {
+    super(connector, plugin);
+  }
+
+  @Override
+  protected List<String> getColumnNames(Connection connection) throws SQLException {
+    var resultSet =
+        connection
+            .prepareStatement(
+                "SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE"
+                    + " TABLE_NAME='librepremium_data' and TABLE_SCHEMA='public'")
+            .executeQuery();
+
+    var columns = new ArrayList<String>();
+    while (resultSet.next()) {
+      columns.add(resultSet.getString("column_name"));
     }
 
-    @Override
-    protected List<String> getColumnNames(Connection connection) throws SQLException {
-        var resultSet = connection.prepareStatement("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='librepremium_data' and TABLE_SCHEMA='public'")
-                .executeQuery();
+    return columns;
+  }
 
-        var columns = new ArrayList<String>();
-        while (resultSet.next()) {
-            columns.add(resultSet.getString("column_name"));
-        }
+  @Override
+  protected String getIgnoreSuffix() {
+    return " ON CONFLICT DO NOTHING";
+  }
 
-        return columns;
-    }
-
-    @Override
-    protected String getIgnoreSuffix() {
-        return " ON CONFLICT DO NOTHING";
-    }
-
-    @Override
-    protected String addUnique(String column) {
-        return "CREATE UNIQUE INDEX %s_index ON librepremium_data(%s)".formatted(column, column);
-    }
+  @Override
+  protected String addUnique(String column) {
+    return "CREATE UNIQUE INDEX %s_index ON librepremium_data(%s)".formatted(column, column);
+  }
 }

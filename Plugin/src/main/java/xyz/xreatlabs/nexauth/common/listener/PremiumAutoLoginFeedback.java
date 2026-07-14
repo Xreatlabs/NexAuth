@@ -6,22 +6,25 @@
 
 package xyz.xreatlabs.nexauth.common.listener;
 
+import java.util.function.Consumer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
-import java.util.function.Consumer;
-
 final class PremiumAutoLoginFeedback {
 
-    private PremiumAutoLoginFeedback() {
-    }
+  private PremiumAutoLoginFeedback() {}
 
-    static void notify(Audience audience, Component message, Title title, boolean useTitles, Consumer<Runnable> delayedTaskScheduler) {
-        audience.sendMessage(message);
+  static void notify(
+      Audience audience,
+      Component message,
+      Title title,
+      boolean useTitles,
+      Consumer<Runnable> delayedTaskScheduler) {
+    audience.sendMessage(message);
 
-        if (useTitles) {
-            delayedTaskScheduler.accept(() -> audience.showTitle(title));
-        }
+    if (useTitles) {
+      delayedTaskScheduler.accept(() -> audience.showTitle(title));
     }
+  }
 }

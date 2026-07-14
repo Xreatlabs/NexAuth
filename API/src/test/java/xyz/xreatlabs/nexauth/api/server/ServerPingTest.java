@@ -6,17 +6,17 @@
 
 package xyz.xreatlabs.nexauth.api.server;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 class ServerPingTest {
 
-    @Test
-    void storesMaxPlayers() {
-        var ping = new ServerPing(250);
+  @Test
+  void storesMaxPlayers() {
+    var ping = new ServerPing(250);
 
-        assertEquals(250, ping.maxPlayers());
-        assertEquals(new ServerPing(250), ping);
-    }
+    assertEquals(250, ping.maxPlayers());
+    assertEquals(new ServerPing(250), ping);
+  }
 }

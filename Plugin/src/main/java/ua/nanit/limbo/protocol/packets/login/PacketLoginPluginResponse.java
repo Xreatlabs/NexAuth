@@ -15,44 +15,43 @@ import ua.nanit.limbo.server.LimboServer;
 
 public class PacketLoginPluginResponse implements PacketIn {
 
-    private int messageId;
-    private boolean successful;
-    private ByteMessage data;
+  private int messageId;
+  private boolean successful;
+  private ByteMessage data;
 
-    public int getMessageId() {
-        return messageId;
+  public int getMessageId() {
+    return messageId;
+  }
+
+  public boolean isSuccessful() {
+    return successful;
+  }
+
+  public ByteMessage getData() {
+    return data;
+  }
+
+  @Override
+  public void decode(ByteMessage msg, Version version) {
+    messageId = msg.readVarInt();
+    successful = msg.readBoolean();
+
+    if (msg.readableBytes() > 0) {
+      int readableBytes = msg.readableBytes();
+      if (readableBytes > Short.MAX_VALUE) {
+        throw new DecoderException("Cannot receive payload larger than " + Short.MAX_VALUE);
+      }
+      data = new ByteMessage(msg.readBytes(readableBytes));
     }
+  }
 
-    public boolean isSuccessful() {
-        return successful;
-    }
+  @Override
+  public void handle(ClientConnection conn, LimboServer server) {
+    server.getPacketHandler().handle(conn, this);
+  }
 
-    public ByteMessage getData() {
-        return data;
-    }
-
-    @Override
-    public void decode(ByteMessage msg, Version version) {
-        messageId = msg.readVarInt();
-        successful = msg.readBoolean();
-
-        if (msg.readableBytes() > 0) {
-            int readableBytes = msg.readableBytes();
-            if (readableBytes > Short.MAX_VALUE) {
-                throw new DecoderException("Cannot receive payload larger than " + Short.MAX_VALUE);
-            }
-            data = new ByteMessage(msg.readBytes(readableBytes));
-        }
-    }
-
-    @Override
-    public void handle(ClientConnection conn, LimboServer server) {
-        server.getPacketHandler().handle(conn, this);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
-
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

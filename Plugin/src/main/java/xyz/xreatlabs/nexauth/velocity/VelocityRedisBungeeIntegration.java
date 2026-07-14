@@ -7,19 +7,18 @@
 package xyz.xreatlabs.nexauth.velocity;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungeeAPI;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class VelocityRedisBungeeIntegration {
 
-    private final RedisBungeeAPI redisBungeeAPI;
+  private final RedisBungeeAPI redisBungeeAPI;
 
-    public VelocityRedisBungeeIntegration() {
-        redisBungeeAPI = RedisBungeeAPI.getRedisBungeeApi();
-    }
+  public VelocityRedisBungeeIntegration() {
+    redisBungeeAPI = RedisBungeeAPI.getRedisBungeeApi();
+  }
 
-    public boolean isPlayerOnline(@NonNull UUID player) {
-        return redisBungeeAPI.isPlayerOnline(player);
-    }
+  public boolean isPlayerOnline(@NonNull UUID player) {
+    return redisBungeeAPI.isPlayerOnline(player);
+  }
 }

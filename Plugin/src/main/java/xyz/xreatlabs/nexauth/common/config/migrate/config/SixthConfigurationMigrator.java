@@ -11,13 +11,13 @@ import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
 import xyz.xreatlabs.nexauth.common.config.migrate.ConfigurationMigrator;
 
 public class SixthConfigurationMigrator implements ConfigurationMigrator {
-    @Override
-    public void migrate(ConfigurateHelper helper, Logger logger) {
-        var allowedCommands = helper.getStringList("allowed-commands-while-unauthorized");
+  @Override
+  public void migrate(ConfigurateHelper helper, Logger logger) {
+    var allowedCommands = helper.getStringList("allowed-commands-while-unauthorized");
 
-        allowedCommands.add("resetpassword");
-        allowedCommands.add("confirmpasswordreset");
+    allowedCommands.add("resetpassword");
+    allowedCommands.add("confirmpasswordreset");
 
-        helper.set("allowed-commands-while-unauthorized", allowedCommands);
-    }
+    helper.set("allowed-commands-while-unauthorized", allowedCommands);
+  }
 }

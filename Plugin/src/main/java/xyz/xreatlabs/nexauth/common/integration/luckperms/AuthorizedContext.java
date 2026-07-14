@@ -15,24 +15,21 @@ import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 
 public class AuthorizedContext<P> implements ContextCalculator<P> {
 
-    private final AuthenticNexAuth<P, ?> plugin;
+  private final AuthenticNexAuth<P, ?> plugin;
 
-    public AuthorizedContext(AuthenticNexAuth<P, ?> plugin) {
-        this.plugin = plugin;
-    }
+  public AuthorizedContext(AuthenticNexAuth<P, ?> plugin) {
+    this.plugin = plugin;
+  }
 
-    private static final String KEY = "nexauth-authorized";
+  private static final String KEY = "nexauth-authorized";
 
-    @Override
-    public void calculate(@NonNull P player, @NonNull ContextConsumer consumer) {
-        consumer.accept(KEY, Boolean.toString(plugin.getAuthorizationProvider().isAuthorized(player)));
-    }
+  @Override
+  public void calculate(@NonNull P player, @NonNull ContextConsumer consumer) {
+    consumer.accept(KEY, Boolean.toString(plugin.getAuthorizationProvider().isAuthorized(player)));
+  }
 
-    @Override
-    public @NonNull ContextSet estimatePotentialContexts() {
-        return ImmutableContextSet.builder()
-                .add(KEY, "true")
-                .add(KEY, "false")
-                .build();
-    }
+  @Override
+  public @NonNull ContextSet estimatePotentialContexts() {
+    return ImmutableContextSet.builder().add(KEY, "true").add(KEY, "false").build();
+  }
 }

@@ -11,6 +11,4 @@ package xyz.xreatlabs.nexauth.api.database;
  *
  * @author kyngs
  */
-public interface ReadWriteDatabaseProvider extends ReadDatabaseProvider, WriteDatabaseProvider {
-
-}
+public interface ReadWriteDatabaseProvider extends ReadDatabaseProvider, WriteDatabaseProvider {}

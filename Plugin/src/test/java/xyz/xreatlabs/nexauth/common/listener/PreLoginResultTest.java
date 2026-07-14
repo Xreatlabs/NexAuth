@@ -6,21 +6,21 @@
 
 package xyz.xreatlabs.nexauth.common.listener;
 
-import net.kyori.adventure.text.Component;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import net.kyori.adventure.text.Component;
+import org.junit.jupiter.api.Test;
+
 class PreLoginResultTest {
 
-    @Test
-    void storesStateMessageAndNullableUser() {
-        var message = Component.text("Denied");
-        var result = new PreLoginResult(PreLoginState.DENIED, message, null);
+  @Test
+  void storesStateMessageAndNullableUser() {
+    var message = Component.text("Denied");
+    var result = new PreLoginResult(PreLoginState.DENIED, message, null);
 
-        assertEquals(PreLoginState.DENIED, result.state());
-        assertEquals(message, result.message());
-        assertNull(result.user());
-    }
+    assertEquals(PreLoginState.DENIED, result.state());
+    assertEquals(message, result.message());
+    assertNull(result.user());
+  }
 }

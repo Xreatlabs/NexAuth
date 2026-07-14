@@ -20,176 +20,188 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.GameProfile;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
+import java.lang.reflect.Field;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import xyz.xreatlabs.nexauth.api.event.exception.EventCancelledException;
 import xyz.xreatlabs.nexauth.common.config.ConfigurationKeys;
 import xyz.xreatlabs.nexauth.common.listener.AuthenticListeners;
 import xyz.xreatlabs.nexauth.common.util.GeneralUtil;
 
-import java.lang.reflect.Field;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+public class VelocityListeners
+    extends AuthenticListeners<VelocityNexAuth, Player, RegisteredServer> {
 
-public class VelocityListeners extends AuthenticListeners<VelocityNexAuth, Player, RegisteredServer> {
+  private static final AttributeKey<?> FLOODGATE_ATTR = AttributeKey.valueOf("floodgate-player");
+  private static final Field INITIAL_MINECRAFT_CONNECTION;
+  private static final Field INITIAL_CONNECTION_DELEGATE;
+  private static final Field CHANNEL;
 
-    private static final AttributeKey<?> FLOODGATE_ATTR = AttributeKey.valueOf("floodgate-player");
-    private static final Field INITIAL_MINECRAFT_CONNECTION;
-    private static final Field INITIAL_CONNECTION_DELEGATE;
-    private static final Field CHANNEL;
+  static {
+    try {
+      Class<?> initialConnection =
+          Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection");
+      Class<?> minecraftConnection =
+          Class.forName("com.velocitypowered.proxy.connection.MinecraftConnection");
+      INITIAL_MINECRAFT_CONNECTION =
+          GeneralUtil.getFieldByType(initialConnection, minecraftConnection);
+      if (INITIAL_MINECRAFT_CONNECTION != null) {
+        INITIAL_MINECRAFT_CONNECTION.setAccessible(true);
+      }
 
-    static {
-        try {
-            Class<?> initialConnection = Class.forName("com.velocitypowered.proxy.connection.client.InitialInboundConnection");
-            Class<?> minecraftConnection = Class.forName("com.velocitypowered.proxy.connection.MinecraftConnection");
-            INITIAL_MINECRAFT_CONNECTION = GeneralUtil.getFieldByType(initialConnection, minecraftConnection);
-            if (INITIAL_MINECRAFT_CONNECTION != null) {
-                INITIAL_MINECRAFT_CONNECTION.setAccessible(true);
-            }
+      // Since Velocity 3.1.0
+      Class<?> loginInboundConnection;
+      try {
+        loginInboundConnection =
+            Class.forName("com.velocitypowered.proxy.connection.client.LoginInboundConnection");
+      } catch (ClassNotFoundException e) {
+        loginInboundConnection = null;
+      }
 
-            // Since Velocity 3.1.0
-            Class<?> loginInboundConnection;
-            try {
-                loginInboundConnection = Class.forName("com.velocitypowered.proxy.connection.client.LoginInboundConnection");
-            } catch (ClassNotFoundException e) {
-                loginInboundConnection = null;
-            }
+      if (loginInboundConnection != null) {
+        INITIAL_CONNECTION_DELEGATE = loginInboundConnection.getDeclaredField("delegate");
+        INITIAL_CONNECTION_DELEGATE.setAccessible(true);
+        Objects.requireNonNull(
+            INITIAL_CONNECTION_DELEGATE, "initial inbound connection delegate cannot be null");
+      } else {
+        INITIAL_CONNECTION_DELEGATE = null;
+      }
 
-            if (loginInboundConnection != null) {
-                INITIAL_CONNECTION_DELEGATE = loginInboundConnection.getDeclaredField("delegate");
-                INITIAL_CONNECTION_DELEGATE.setAccessible(true);
-                Objects.requireNonNull(
-                        INITIAL_CONNECTION_DELEGATE,
-                        "initial inbound connection delegate cannot be null"
-                );
-            } else {
-                INITIAL_CONNECTION_DELEGATE = null;
-            }
+      CHANNEL = GeneralUtil.getFieldByType(minecraftConnection, Channel.class);
+      if (CHANNEL != null) {
+        CHANNEL.setAccessible(true);
+      }
+    } catch (ClassNotFoundException | NoSuchFieldException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-            CHANNEL = GeneralUtil.getFieldByType(minecraftConnection, Channel.class);
-            if (CHANNEL != null) {
-                CHANNEL.setAccessible(true);
-            }
-        } catch (ClassNotFoundException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
+  public VelocityListeners(VelocityNexAuth plugin) {
+    super(plugin);
+  }
+
+  @Subscribe(order = PostOrder.LAST)
+  public void onPostLogin(PostLoginEvent event) {
+    onPostLogin(event.getPlayer(), null);
+  }
+
+  @Subscribe
+  public void onDisconnect(DisconnectEvent event) {
+    onPlayerDisconnect(event.getPlayer());
+  }
+
+  @Subscribe(order = PostOrder.NORMAL)
+  public void onProfileRequest(GameProfileRequestEvent event) {
+    var existing = event.getGameProfile();
+
+    if (existing != null && plugin.fromFloodgate(existing.getId())) return;
+
+    var profile = plugin.getDatabaseProvider().getByName(event.getUsername());
+
+    if (profile == null) {
+      plugin
+          .getLogger()
+          .error(
+              "Failed to retrieve profile for user: "
+                  + event.getUsername()
+                  + " - database unavailable");
+      return;
     }
 
-    public VelocityListeners(VelocityNexAuth plugin) {
-        super(plugin);
-    }
+    var gProfile = event.getOriginalProfile();
 
-    @Subscribe(order = PostOrder.LAST)
-    public void onPostLogin(PostLoginEvent event) {
-        onPostLogin(event.getPlayer(), null);
-    }
+    event.setGameProfile(
+        new GameProfile(profile.getUuid(), gProfile.getName(), gProfile.getProperties()));
+  }
 
-    @Subscribe
-    public void onDisconnect(DisconnectEvent event) {
-        onPlayerDisconnect(event.getPlayer());
-    }
+  @Subscribe(order = PostOrder.LAST)
+  public void onPreLogin(PreLoginEvent event) {
 
-    @Subscribe(order = PostOrder.NORMAL)
-    public void onProfileRequest(GameProfileRequestEvent event) {
-        var existing = event.getGameProfile();
+    if (!event.getResult().isAllowed()) return;
 
-        if (existing != null && plugin.fromFloodgate(existing.getId())) return;
-
-        var profile = plugin.getDatabaseProvider().getByName(event.getUsername());
-
-        if (profile == null) {
-            plugin.getLogger().error("Failed to retrieve profile for user: " + event.getUsername() + " - database unavailable");
-            return;
-        }
-
-        var gProfile = event.getOriginalProfile();
-
-        event.setGameProfile(new GameProfile(profile.getUuid(), gProfile.getName(), gProfile.getProperties()));
-    }
-
-    @Subscribe(order = PostOrder.LAST)
-    public void onPreLogin(PreLoginEvent event) {
-
-        if (!event.getResult().isAllowed())
-            return;
-
-        // If floodgate is present, attempt to extract the floodgate player from the connection channel.
-        if (plugin.floodgateEnabled()) {
-            Channel channel;
-            InboundConnection connection = event.getConnection();
-            try {
-                if (INITIAL_CONNECTION_DELEGATE != null) {
-                    connection = (InboundConnection) INITIAL_CONNECTION_DELEGATE.get(connection);
-                }
-
-                Object mcConnection = INITIAL_MINECRAFT_CONNECTION.get(connection);
-                channel = (Channel) CHANNEL.get(mcConnection);
-
-                if (channel.attr(FLOODGATE_ATTR).get() != null) {
-                    return; // Player is coming from Floodgate
-                }
-            } catch (Exception e) {
-                plugin.getLogger().warn("Failed to check if player is coming from Floodgate.");
-                e.printStackTrace();
-                event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text("Internal NexAuth error")));
-                return;
-            }
+    // If floodgate is present, attempt to extract the floodgate player from the connection channel.
+    if (plugin.floodgateEnabled()) {
+      Channel channel;
+      InboundConnection connection = event.getConnection();
+      try {
+        if (INITIAL_CONNECTION_DELEGATE != null) {
+          connection = (InboundConnection) INITIAL_CONNECTION_DELEGATE.get(connection);
         }
 
-        var result = onPreLogin(event.getUsername(), event.getConnection().getRemoteAddress().getAddress());
+        Object mcConnection = INITIAL_MINECRAFT_CONNECTION.get(connection);
+        channel = (Channel) CHANNEL.get(mcConnection);
 
+        if (channel.attr(FLOODGATE_ATTR).get() != null) {
+          return; // Player is coming from Floodgate
+        }
+      } catch (Exception e) {
+        plugin.getLogger().warn("Failed to check if player is coming from Floodgate.");
+        e.printStackTrace();
         event.setResult(
-                switch (result.state()) {
-                    case DENIED -> {
-                        assert result.message() != null;
-                        yield PreLoginEvent.PreLoginComponentResult.denied(result.message());
-                    }
-                    case FORCE_ONLINE -> PreLoginEvent.PreLoginComponentResult.forceOnlineMode();
-                    case FORCE_OFFLINE -> PreLoginEvent.PreLoginComponentResult.forceOfflineMode();
-                }
-        );
-
+            PreLoginEvent.PreLoginComponentResult.denied(Component.text("Internal NexAuth error")));
+        return;
+      }
     }
 
-    @Subscribe(order = PostOrder.LAST)
-    public void chooseServer(PlayerChooseInitialServerEvent event) {
-        var server = chooseServer(event.getPlayer(), null, null);
+    var result =
+        onPreLogin(event.getUsername(), event.getConnection().getRemoteAddress().getAddress());
 
-        if (server.value() == null) {
-            event.getPlayer().disconnect(plugin.getMessages().getMessage("kick-no-" + (server.key() ? "lobby" : "limbo")));
-            event.setInitialServer(null);
-        } else {
-            event.setInitialServer(server.value());
+    event.setResult(
+        switch (result.state()) {
+          case DENIED -> {
+            assert result.message() != null;
+            yield PreLoginEvent.PreLoginComponentResult.denied(result.message());
+          }
+          case FORCE_ONLINE -> PreLoginEvent.PreLoginComponentResult.forceOnlineMode();
+          case FORCE_OFFLINE -> PreLoginEvent.PreLoginComponentResult.forceOfflineMode();
+        });
+  }
+
+  @Subscribe(order = PostOrder.LAST)
+  public void chooseServer(PlayerChooseInitialServerEvent event) {
+    var server = chooseServer(event.getPlayer(), null, null);
+
+    if (server.value() == null) {
+      event
+          .getPlayer()
+          .disconnect(
+              plugin.getMessages().getMessage("kick-no-" + (server.key() ? "lobby" : "limbo")));
+      event.setInitialServer(null);
+    } else {
+      event.setInitialServer(server.value());
+    }
+  }
+
+  @Subscribe(order = PostOrder.EARLY)
+  public void onKick(KickedFromServerEvent event) {
+    var reason = event.getServerKickReason().orElse(Component.text("null"));
+    var message =
+        plugin
+            .getMessages()
+            .getMessage("info-kick")
+            .replaceText(builder -> builder.matchLiteral("%reason%").replacement(reason));
+    var player = event.getPlayer();
+
+    if (event.kickedDuringServerConnect()) {
+      event.setResult(KickedFromServerEvent.Notify.create(message));
+    } else {
+      if (!plugin.getConfiguration().get(ConfigurationKeys.FALLBACK)
+          || plugin.getServerHandler().getLobbyServers().containsValue(event.getServer())) {
+        event.setResult(KickedFromServerEvent.DisconnectPlayer.create(message));
+      } else {
+        try {
+          var user = plugin.getDatabaseProvider().getByUUID(player.getUniqueId());
+          if (user == null) throw new NoSuchElementException();
+
+          var server = plugin.getServerHandler().chooseLobbyServer(user, player, false, true);
+
+          if (server == null) throw new NoSuchElementException();
+
+          event.setResult(KickedFromServerEvent.RedirectPlayer.create(server, message));
+        } catch (NoSuchElementException | EventCancelledException e) {
+          event.setResult(KickedFromServerEvent.DisconnectPlayer.create(message));
         }
-
+      }
     }
-
-    @Subscribe(order = PostOrder.EARLY)
-    public void onKick(KickedFromServerEvent event) {
-        var reason = event.getServerKickReason().orElse(Component.text("null"));
-        var message = plugin.getMessages().getMessage("info-kick").replaceText(builder -> builder.matchLiteral("%reason%").replacement(reason));
-        var player = event.getPlayer();
-
-        if (event.kickedDuringServerConnect()) {
-            event.setResult(KickedFromServerEvent.Notify.create(message));
-        } else {
-            if (!plugin.getConfiguration().get(ConfigurationKeys.FALLBACK) || plugin.getServerHandler().getLobbyServers().containsValue(event.getServer())) {
-                event.setResult(KickedFromServerEvent.DisconnectPlayer.create(message));
-            } else {
-                try {
-                    var user = plugin.getDatabaseProvider().getByUUID(player.getUniqueId());
-                    if (user == null) throw new NoSuchElementException();
-
-                    var server = plugin.getServerHandler().chooseLobbyServer(user, player, false, true);
-
-                    if (server == null) throw new NoSuchElementException();
-
-                    event.setResult(KickedFromServerEvent.RedirectPlayer.create(server, message));
-                } catch (NoSuchElementException | EventCancelledException e) {
-                    event.setResult(KickedFromServerEvent.DisconnectPlayer.create(message));
-                }
-            }
-        }
-    }
-
-
+  }
 }

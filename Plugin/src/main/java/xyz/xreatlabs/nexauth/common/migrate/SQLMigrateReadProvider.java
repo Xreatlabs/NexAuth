@@ -11,13 +11,13 @@ import xyz.xreatlabs.nexauth.api.database.connector.SQLDatabaseConnector;
 
 public abstract class SQLMigrateReadProvider extends MigrateReadProvider {
 
-    protected final String tableName;
-    protected final Logger logger;
-    protected final SQLDatabaseConnector connector;
+  protected final String tableName;
+  protected final Logger logger;
+  protected final SQLDatabaseConnector connector;
 
-    public SQLMigrateReadProvider(String tableName, Logger logger, SQLDatabaseConnector connector) {
-        this.tableName = tableName;
-        this.logger = logger;
-        this.connector = connector;
-    }
+  public SQLMigrateReadProvider(String tableName, Logger logger, SQLDatabaseConnector connector) {
+    this.tableName = tableName;
+    this.logger = logger;
+    this.connector = connector;
+  }
 }

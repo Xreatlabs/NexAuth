@@ -11,21 +11,20 @@ import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 
 public class LuckPermsIntegration<P, S> {
 
-    private final AuthorizedContext<P> authorizedContext;
-    private final Awaiting2FAContext<P> awaiting2faContext;
+  private final AuthorizedContext<P> authorizedContext;
+  private final Awaiting2FAContext<P> awaiting2faContext;
 
-    public LuckPermsIntegration(AuthenticNexAuth<P, S> plugin) {
-        authorizedContext = new AuthorizedContext<>(plugin);
-        awaiting2faContext = new Awaiting2FAContext<>(plugin);
-        var contextMgr = LuckPermsProvider.get().getContextManager();
-        contextMgr.registerCalculator(authorizedContext);
-        contextMgr.registerCalculator(awaiting2faContext);
-    }
+  public LuckPermsIntegration(AuthenticNexAuth<P, S> plugin) {
+    authorizedContext = new AuthorizedContext<>(plugin);
+    awaiting2faContext = new Awaiting2FAContext<>(plugin);
+    var contextMgr = LuckPermsProvider.get().getContextManager();
+    contextMgr.registerCalculator(authorizedContext);
+    contextMgr.registerCalculator(awaiting2faContext);
+  }
 
-    public void disable() {
-        var contextMgr = LuckPermsProvider.get().getContextManager();
-        contextMgr.unregisterCalculator(authorizedContext);
-        contextMgr.unregisterCalculator(awaiting2faContext);
-    }
-
+  public void disable() {
+    var contextMgr = LuckPermsProvider.get().getContextManager();
+    contextMgr.unregisterCalculator(authorizedContext);
+    contextMgr.unregisterCalculator(awaiting2faContext);
+  }
 }

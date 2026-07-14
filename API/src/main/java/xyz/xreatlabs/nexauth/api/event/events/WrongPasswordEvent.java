@@ -9,43 +9,31 @@ package xyz.xreatlabs.nexauth.api.event.events;
 import xyz.xreatlabs.nexauth.api.event.PlayerBasedEvent;
 
 /**
- * This event is called after the player has tried to enter the password, but it doesn't match with the player's real password.
- * Note, that this event is fired when the player executes the following commands: /login, /changepassword, /premium, /setemail.
- * Use {@link #getSource()} to check the source of the event.
- *
+ * This event is called after the player has tried to enter the password, but it doesn't match with
+ * the player's real password. Note, that this event is fired when the player executes the following
+ * commands: /login, /changepassword, /premium, /setemail. Use {@link #getSource()} to check the
+ * source of the event.
  */
 public interface WrongPasswordEvent<P, S> extends PlayerBasedEvent<P, S> {
 
-    /**
-     * Returns the source of the incorrect password.
-     *
-     * @return The source of the incorrect password
-     */
-    AuthenticationSource getSource();
+  /**
+   * Returns the source of the incorrect password.
+   *
+   * @return The source of the incorrect password
+   */
+  AuthenticationSource getSource();
 
-    /**
-     * Possible sources for incorrect password.
-     */
-    enum AuthenticationSource {
-        /**
-         * The player has used the /login command with a wrong password
-         */
-        LOGIN,
-        /**
-         * The player has used the /login command with a wrong TOTP code
-         */
-        TOTP,
-        /**
-         * The player has used the /changepassword command with a wrong password
-         */
-        CHANGE_PASSWORD,
-        /**
-         * The player has used the /premium command with a wrong password
-         */
-        PREMIUM_ENABLE,
-        /**
-         * The player has used the /setemail command with a wrong password
-         */
-        SET_EMAIL
-    }
+  /** Possible sources for incorrect password. */
+  enum AuthenticationSource {
+    /** The player has used the /login command with a wrong password */
+    LOGIN,
+    /** The player has used the /login command with a wrong TOTP code */
+    TOTP,
+    /** The player has used the /changepassword command with a wrong password */
+    CHANGE_PASSWORD,
+    /** The player has used the /premium command with a wrong password */
+    PREMIUM_ENABLE,
+    /** The player has used the /setemail command with a wrong password */
+    SET_EMAIL
+  }
 }

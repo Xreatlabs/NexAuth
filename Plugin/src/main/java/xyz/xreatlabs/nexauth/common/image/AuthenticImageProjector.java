@@ -10,12 +10,12 @@ import xyz.xreatlabs.nexauth.api.image.ImageProjector;
 import xyz.xreatlabs.nexauth.common.AuthenticHandler;
 import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 
-public abstract class AuthenticImageProjector<P, S> extends AuthenticHandler<P, S> implements ImageProjector<P> {
+public abstract class AuthenticImageProjector<P, S> extends AuthenticHandler<P, S>
+    implements ImageProjector<P> {
 
-    public AuthenticImageProjector(AuthenticNexAuth<P, S> plugin) {
-        super(plugin);
-    }
+  public AuthenticImageProjector(AuthenticNexAuth<P, S> plugin) {
+    super(plugin);
+  }
 
-    public abstract void enable();
-
+  public abstract void enable();
 }

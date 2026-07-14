@@ -8,26 +8,25 @@ package xyz.xreatlabs.nexauth.common.command.commands.premium;
 
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
+import java.util.concurrent.CompletionStage;
 import net.kyori.adventure.audience.Audience;
 import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
 
-import java.util.concurrent.CompletionStage;
-
 @CommandAlias("premiumconfirm|confirmpremium")
 public class PremiumConfirmCommand<P> extends PremiumCommand<P> {
-    public PremiumConfirmCommand(AuthenticNexAuth<P, ?> plugin) {
-        super(plugin);
-    }
+  public PremiumConfirmCommand(AuthenticNexAuth<P, ?> plugin) {
+    super(plugin);
+  }
 
-    @Default
-    public CompletionStage<Void> onPremiumConfirm(Audience sender, P player) {
-        return runAsync(() -> {
-            checkAuthorized(player);
-            var user = getUser(player);
-            checkCracked(user);
+  @Default
+  public CompletionStage<Void> onPremiumConfirm(Audience sender, P player) {
+    return runAsync(
+        () -> {
+          checkAuthorized(player);
+          var user = getUser(player);
+          checkCracked(user);
 
-            plugin.getCommandProvider().onConfirm(player, sender, user);
+          plugin.getCommandProvider().onConfirm(player, sender, user);
         });
-    }
-
+  }
 }

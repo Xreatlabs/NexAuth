@@ -14,30 +14,30 @@ import ua.nanit.limbo.world.DimensionRegistry;
 
 public class PacketRegistryData implements PacketOut {
 
-    private DimensionRegistry dimensionRegistry;
-    private MetadataWriter metadataWriter;
+  private DimensionRegistry dimensionRegistry;
+  private MetadataWriter metadataWriter;
 
-    public void setDimensionRegistry(DimensionRegistry dimensionRegistry) {
-        this.dimensionRegistry = dimensionRegistry;
-    }
+  public void setDimensionRegistry(DimensionRegistry dimensionRegistry) {
+    this.dimensionRegistry = dimensionRegistry;
+  }
 
-    public void setMetadataWriter(MetadataWriter metadataWriter) {
-        this.metadataWriter = metadataWriter;
-    }
+  public void setMetadataWriter(MetadataWriter metadataWriter) {
+    this.metadataWriter = metadataWriter;
+  }
 
-    @Override
-    public void encode(ByteMessage msg, Version version) {
-        if (metadataWriter != null) {
-            if (version.moreOrEqual(Version.V1_20_5)) {
-                metadataWriter.writeData(msg, version);
-                return;
-            }
-        }
-        msg.writeCompoundTag(dimensionRegistry.getCodec_1_20(), version);
+  @Override
+  public void encode(ByteMessage msg, Version version) {
+    if (metadataWriter != null) {
+      if (version.moreOrEqual(Version.V1_20_5)) {
+        metadataWriter.writeData(msg, version);
+        return;
+      }
     }
+    msg.writeCompoundTag(dimensionRegistry.getCodec_1_20(), version);
+  }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

@@ -12,11 +12,11 @@ import xyz.xreatlabs.nexauth.common.mail.AuthenticEMailHandler;
 
 public class EMailCommand<P> extends Command<P> {
 
-    protected final AuthenticEMailHandler mailHandler;
+  protected final AuthenticEMailHandler mailHandler;
 
-    public EMailCommand(AuthenticNexAuth<P, ?> plugin) {
-        super(plugin);
-        mailHandler = plugin.getEmailHandler();
-        assert mailHandler != null;
-    }
+  public EMailCommand(AuthenticNexAuth<P, ?> plugin) {
+    super(plugin);
+    mailHandler = plugin.getEmailHandler();
+    assert mailHandler != null;
+  }
 }

@@ -11,11 +11,11 @@ import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
 import xyz.xreatlabs.nexauth.common.config.migrate.ConfigurationMigrator;
 
 public class ThirdConfigurationMigrator implements ConfigurationMigrator {
-    @Override
-    public void migrate(ConfigurateHelper helper, Logger logger) {
-        var list = helper.getStringList("pass-through");
+  @Override
+  public void migrate(ConfigurateHelper helper, Logger logger) {
+    var list = helper.getStringList("pass-through");
 
-        helper.set("pass-through", null);
-        helper.set("pass-through.root", list);
-    }
+    helper.set("pass-through", null);
+    helper.set("pass-through.root", list);
+  }
 }

@@ -13,13 +13,13 @@ import ua.nanit.limbo.server.LimboServer;
 
 public class PacketFinishConfiguration implements PacketIn, PacketOut {
 
-    @Override
-    public void handle(ClientConnection conn, LimboServer server) {
-        server.getPacketHandler().handle(conn, this);
-    }
+  @Override
+  public void handle(ClientConnection conn, LimboServer server) {
+    server.getPacketHandler().handle(conn, this);
+  }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

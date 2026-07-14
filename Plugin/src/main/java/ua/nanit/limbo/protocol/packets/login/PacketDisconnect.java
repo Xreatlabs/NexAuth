@@ -12,20 +12,19 @@ import ua.nanit.limbo.protocol.registry.Version;
 
 public class PacketDisconnect implements PacketOut {
 
-    private String reason;
+  private String reason;
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
+  public void setReason(String reason) {
+    this.reason = reason;
+  }
 
-    @Override
-    public void encode(ByteMessage msg, Version version) {
-        msg.writeString(String.format("{\"text\": \"%s\"}", reason));
-    }
+  @Override
+  public void encode(ByteMessage msg, Version version) {
+    msg.writeString(String.format("{\"text\": \"%s\"}", reason));
+  }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
-
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

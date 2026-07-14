@@ -138,8 +138,11 @@ libby {
 }
 
 configurations.all {
-    // Only apply to runtime configurations, not compile configurations to allow Paper API to compile with its required Adventure version
-    if (name.contains("runtime", ignoreCase = true) && !name.contains("compile", ignoreCase = true)) {
+    // Apply only to packaged runtime configurations. Tests must use the same Adventure API selected
+    // by the Paper/Velocity compile classpath or compiled main classes fail with linkage errors.
+    if (name.contains("runtime", ignoreCase = true)
+        && !name.contains("compile", ignoreCase = true)
+        && !name.startsWith("test", ignoreCase = true)) {
         resolutionStrategy {
             force("net.kyori:adventure-text-minimessage:4.14.0")
             force("net.kyori:adventure-text-serializer-gson:4.14.0")
@@ -219,12 +222,18 @@ dependencies {
     testImplementation("com.github.kyngs.commands:acf-paper:7d5bf7cac0")
     testImplementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
     testImplementation("com.google.guava:guava:33.4.8-jre")
-    testImplementation("net.kyori:adventure-api:4.14.0")
-    testImplementation("net.kyori:adventure-nbt:4.14.0")
-    testImplementation("net.kyori:adventure-text-serializer-plain:4.14.0")
+    // Match the Adventure API selected by the current Paper/Velocity compile classpath.
+    testImplementation(platform("net.kyori:adventure-bom:5.2.0"))
+    testImplementation("net.kyori:adventure-api")
+    testImplementation("net.kyori:adventure-nbt")
+    testImplementation("net.kyori:adventure-text-serializer-plain")
     testImplementation("org.bouncycastle:bcprov-jdk18on:1.81")
     testImplementation("org.bstats:bstats-base:3.1.0")
     testImplementation("io.netty:netty-all:4.2.2.Final")
+
+    // ArchUnit for architecture boundary tests
+    testImplementation("com.tngtech.archunit:archunit-junit5:1.4.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {

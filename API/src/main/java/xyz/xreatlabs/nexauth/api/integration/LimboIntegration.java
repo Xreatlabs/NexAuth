@@ -13,11 +13,11 @@ package xyz.xreatlabs.nexauth.api.integration;
  */
 public interface LimboIntegration<S> {
 
-    /**
-     * Creates a limbo server.
-     *
-     * @param serverName The name of the limbo server to be created.
-     * @return An instance of the created limbo server.
-     */
-    S createLimbo(String serverName);
+  /**
+   * Creates a limbo server.
+   *
+   * @param serverName The name of the limbo server to be created.
+   * @return An instance of the created limbo server.
+   */
+  S createLimbo(String serverName);
 }

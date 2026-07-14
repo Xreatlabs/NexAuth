@@ -12,76 +12,76 @@ import ua.nanit.limbo.protocol.registry.Version;
 
 public class PacketPlayerPositionAndLook implements PacketOut {
 
-    private double x;
-    private double y;
-    private double z;
-    private float yaw;
-    private float pitch;
-    private int teleportId;
+  private double x;
+  private double y;
+  private double z;
+  private float yaw;
+  private float pitch;
+  private int teleportId;
 
-    public PacketPlayerPositionAndLook() {
+  public PacketPlayerPositionAndLook() {}
+
+  public PacketPlayerPositionAndLook(
+      double x, double y, double z, float yaw, float pitch, int teleportId) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.yaw = yaw;
+    this.pitch = pitch;
+    this.teleportId = teleportId;
+  }
+
+  @Override
+  public void encode(ByteMessage msg, Version version) {
+    if (version.moreOrEqual(Version.V1_21_2)) {
+      encodeModern(msg, version);
+      return;
     }
 
-    public PacketPlayerPositionAndLook(double x, double y, double z, float yaw, float pitch, int teleportId) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
-        this.teleportId = teleportId;
+    encodeLegacy(msg, version);
+  }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
+
+  private void encodeLegacy(ByteMessage msg, Version version) {
+    msg.writeDouble(x);
+    msg.writeDouble(y + (version.less(Version.V1_8) ? 1.62F : 0));
+    msg.writeDouble(z);
+    msg.writeFloat(yaw);
+    msg.writeFloat(pitch);
+
+    if (version.moreOrEqual(Version.V1_8)) {
+      msg.writeByte(0x08);
+    } else {
+      msg.writeBoolean(true);
     }
 
-    @Override
-    public void encode(ByteMessage msg, Version version) {
-        if (version.moreOrEqual(Version.V1_21_2)) {
-            encodeModern(msg, version);
-            return;
-        }
-
-        encodeLegacy(msg, version);
+    if (version.moreOrEqual(Version.V1_9)) {
+      msg.writeVarInt(teleportId);
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
+    if (version.fromTo(Version.V1_17, Version.V1_19_3)) {
+      msg.writeBoolean(false); // Dismount vehicle
     }
+  }
 
-    private void encodeLegacy(ByteMessage msg, Version version) {
-        msg.writeDouble(x);
-        msg.writeDouble(y + (version.less(Version.V1_8) ? 1.62F : 0));
-        msg.writeDouble(z);
-        msg.writeFloat(yaw);
-        msg.writeFloat(pitch);
+  private void encodeModern(ByteMessage msg, Version version) {
+    msg.writeVarInt(teleportId);
 
-        if (version.moreOrEqual(Version.V1_8)) {
-            msg.writeByte(0x08);
-        } else {
-            msg.writeBoolean(true);
-        }
+    msg.writeDouble(x);
+    msg.writeDouble(y);
+    msg.writeDouble(z);
 
-        if (version.moreOrEqual(Version.V1_9)) {
-            msg.writeVarInt(teleportId);
-        }
+    msg.writeDouble(0);
+    msg.writeDouble(0);
+    msg.writeDouble(0);
 
-        if (version.fromTo(Version.V1_17, Version.V1_19_3)) {
-            msg.writeBoolean(false); // Dismount vehicle
-        }
-    }
+    msg.writeFloat(yaw);
+    msg.writeFloat(pitch);
 
-    private void encodeModern(ByteMessage msg, Version version) {
-        msg.writeVarInt(teleportId);
-
-        msg.writeDouble(x);
-        msg.writeDouble(y);
-        msg.writeDouble(z);
-
-        msg.writeDouble(0);
-        msg.writeDouble(0);
-        msg.writeDouble(0);
-
-        msg.writeFloat(yaw);
-        msg.writeFloat(pitch);
-
-        msg.writeInt(0x08);
-    }
+    msg.writeInt(0x08);
+  }
 }

@@ -6,18 +6,20 @@
 
 package xyz.xreatlabs.nexauth.common.util;
 
+import java.util.Collection;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.LibraryManager;
 import xyz.xreatlabs.nexauth.api.Logger;
 
-import java.util.Collection;
-
 public class DependencyUtil {
 
-    public static void downloadDependencies(Logger logger, LibraryManager libraryManager, Collection<String> customRepositories, Collection<Library> customDependencies) {
-        logger.info("Loading libraries...");
+  public static void downloadDependencies(
+      Logger logger,
+      LibraryManager libraryManager,
+      Collection<String> customRepositories,
+      Collection<Library> customDependencies) {
+    logger.info("Loading libraries...");
 
-        libraryManager.configureFromJSON();
-    }
-
+    libraryManager.configureFromJSON();
+  }
 }

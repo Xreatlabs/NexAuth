@@ -12,17 +12,19 @@ import xyz.xreatlabs.nexauth.api.database.User;
 import xyz.xreatlabs.nexauth.api.event.events.AuthenticatedEvent;
 import xyz.xreatlabs.nexauth.common.event.AuthenticPlayerBasedEvent;
 
-public class AuthenticAuthenticatedEvent<P, S> extends AuthenticPlayerBasedEvent<P, S> implements AuthenticatedEvent<P, S> {
+public class AuthenticAuthenticatedEvent<P, S> extends AuthenticPlayerBasedEvent<P, S>
+    implements AuthenticatedEvent<P, S> {
 
-    private final AuthenticationReason reason;
+  private final AuthenticationReason reason;
 
-    public AuthenticAuthenticatedEvent(@Nullable User user, P player, NexAuthPlugin<P, S> plugin, AuthenticationReason reason) {
-        super(user, player, plugin);
-        this.reason = reason;
-    }
+  public AuthenticAuthenticatedEvent(
+      @Nullable User user, P player, NexAuthPlugin<P, S> plugin, AuthenticationReason reason) {
+    super(user, player, plugin);
+    this.reason = reason;
+  }
 
-    @Override
-    public AuthenticationReason getReason() {
-        return reason;
-    }
+  @Override
+  public AuthenticationReason getReason() {
+    return reason;
+  }
 }

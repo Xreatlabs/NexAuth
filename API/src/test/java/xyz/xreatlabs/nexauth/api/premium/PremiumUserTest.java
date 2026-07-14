@@ -6,22 +6,21 @@
 
 package xyz.xreatlabs.nexauth.api.premium;
 
-import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
+
 class PremiumUserTest {
 
-    @Test
-    void storesPremiumIdentityData() {
-        var uuid = UUID.randomUUID();
-        var user = new PremiumUser(uuid, "Kartvya69", false);
+  @Test
+  void storesPremiumIdentityData() {
+    var uuid = UUID.randomUUID();
+    var user = new PremiumUser(uuid, "Kartvya69", false);
 
-        assertEquals(uuid, user.uuid());
-        assertEquals("Kartvya69", user.name());
-        assertFalse(user.reliable());
-    }
+    assertEquals(uuid, user.uuid());
+    assertEquals("Kartvya69", user.name());
+    assertFalse(user.reliable());
+  }
 }

@@ -7,81 +7,79 @@
 package ua.nanit.limbo.configuration;
 
 import java.net.SocketAddress;
-
 import ua.nanit.limbo.server.data.BossBar;
 import ua.nanit.limbo.server.data.InfoForwarding;
 import ua.nanit.limbo.server.data.PingData;
 import ua.nanit.limbo.server.data.Title;
 
 public interface LimboConfig {
-    SocketAddress getAddress();
+  SocketAddress getAddress();
 
-    int getMaxPlayers();
+  int getMaxPlayers();
 
-    PingData getPingData();
+  PingData getPingData();
 
-    String getDimensionType();
+  String getDimensionType();
 
-    int getGameMode();
+  int getGameMode();
 
-    boolean isSecureProfile();
+  boolean isSecureProfile();
 
-    InfoForwarding getInfoForwarding();
+  InfoForwarding getInfoForwarding();
 
-    long getReadTimeout();
+  long getReadTimeout();
 
-    int getDebugLevel();
+  int getDebugLevel();
 
-    boolean isUseBrandName();
+  boolean isUseBrandName();
 
-    boolean isUseJoinMessage();
+  boolean isUseJoinMessage();
 
-    boolean isUseBossBar();
+  boolean isUseBossBar();
 
-    boolean isUseTitle();
+  boolean isUseTitle();
 
-    boolean isUsePlayerList();
+  boolean isUsePlayerList();
 
-    boolean isUseHeaderAndFooter();
+  boolean isUseHeaderAndFooter();
 
-    String getBrandName();
+  String getBrandName();
 
-    String getJoinMessage();
+  String getJoinMessage();
 
-    BossBar getBossBar();
+  BossBar getBossBar();
 
-    Title getTitle();
+  Title getTitle();
 
-    String getPlayerListUsername();
+  String getPlayerListUsername();
 
-    String getPlayerListHeader();
+  String getPlayerListHeader();
 
-    String getPlayerListFooter();
+  String getPlayerListFooter();
 
-    boolean isUseEpoll();
+  boolean isUseEpoll();
 
-    int getBossGroupSize();
+  int getBossGroupSize();
 
-    int getWorkerGroupSize();
+  int getWorkerGroupSize();
 
-    default boolean isUseTrafficLimits() {
-        return false;
-    }
+  default boolean isUseTrafficLimits() {
+    return false;
+  }
 
-    default int getMaxPacketSize() {
-        return -1;
-    }
+  default int getMaxPacketSize() {
+    return -1;
+  }
 
-    default int getMaxPacketsPerSec() {
-        return -1;
-    }
+  default int getMaxPacketsPerSec() {
+    return -1;
+  }
 
-    default int getMaxBytesPerSec() {
-        return -1;
-    }
+  default int getMaxBytesPerSec() {
+    return -1;
+  }
 
-    double getInterval();
+  double getInterval();
 
-    double getMaxPacketRate();
-
+  double getMaxPacketRate();
 }

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Pre-commit hook: runs Spotless format check and SpotBugs static analysis.
+# Install with: git config core.hooksPath .githooks
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+echo "[pre-commit] Running Spotless format check..."
+JAVA_HOME="${JAVA_HOME:-/usr/lib/jvm/java-21-openjdk-amd64}" ./gradlew spotlessCheck --quiet || {
+    echo "[pre-commit] Spotless check failed. Run './gradlew spotlessApply' to fix formatting, then re-stage."
+    exit 1
+}
+
+echo "[pre-commit] Running SpotBugs static analysis..."
+JAVA_HOME="${JAVA_HOME:-/usr/lib/jvm/java-21-openjdk-amd64}" ./gradlew spotbugsMain --quiet || {
+    echo "[pre-commit] SpotBugs found issues. Check reports in build/reports/spotbugs/."
+    exit 1
+}
+
+echo "[pre-commit] All checks passed."

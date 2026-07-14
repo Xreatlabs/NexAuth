@@ -12,8 +12,10 @@ import xyz.xreatlabs.nexauth.api.database.User;
 import xyz.xreatlabs.nexauth.api.event.events.PremiumLoginSwitchEvent;
 import xyz.xreatlabs.nexauth.common.event.AuthenticPlayerBasedEvent;
 
-public class AuthenticPremiumLoginSwitchEvent<P, S> extends AuthenticPlayerBasedEvent<P, S> implements PremiumLoginSwitchEvent<P, S> {
-    public AuthenticPremiumLoginSwitchEvent(@Nullable User user, P player, NexAuthPlugin<P, S> plugin) {
-        super(user, player, plugin);
-    }
+public class AuthenticPremiumLoginSwitchEvent<P, S> extends AuthenticPlayerBasedEvent<P, S>
+    implements PremiumLoginSwitchEvent<P, S> {
+  public AuthenticPremiumLoginSwitchEvent(
+      @Nullable User user, P player, NexAuthPlugin<P, S> plugin) {
+    super(user, player, plugin);
+  }
 }

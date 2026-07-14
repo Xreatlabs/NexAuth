@@ -7,19 +7,19 @@
 package xyz.xreatlabs.nexauth.common.reliability;
 
 public enum FailurePolicyMode {
-    HARD_FAIL,
-    RETRY_THEN_DISABLE,
-    DEGRADE;
+  HARD_FAIL,
+  RETRY_THEN_DISABLE,
+  DEGRADE;
 
-    public static FailurePolicyMode parse(String value) {
-        if (value == null) {
-            return HARD_FAIL;
-        }
-
-        try {
-            return FailurePolicyMode.valueOf(value.trim().toUpperCase());
-        } catch (IllegalArgumentException ignored) {
-            return HARD_FAIL;
-        }
+  public static FailurePolicyMode parse(String value) {
+    if (value == null) {
+      return HARD_FAIL;
     }
+
+    try {
+      return FailurePolicyMode.valueOf(value.trim().toUpperCase());
+    } catch (IllegalArgumentException ignored) {
+      return HARD_FAIL;
+    }
+  }
 }

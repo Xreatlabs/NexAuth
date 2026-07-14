@@ -11,40 +11,41 @@ import java.util.Set;
 
 public abstract class LogFilter {
 
-    private static final Set<String> PROTECTED_COMMANDS;
+  private static final Set<String> PROTECTED_COMMANDS;
 
-    static {
-        PROTECTED_COMMANDS = new HashSet<>();
+  static {
+    PROTECTED_COMMANDS = new HashSet<>();
 
-        PROTECTED_COMMANDS.add("login");
-        PROTECTED_COMMANDS.add("l");
-        PROTECTED_COMMANDS.add("log");
-        PROTECTED_COMMANDS.add("register");
-        PROTECTED_COMMANDS.add("reg");
-        PROTECTED_COMMANDS.add("premium");
-        PROTECTED_COMMANDS.add("autologin");
-        PROTECTED_COMMANDS.add("2faconfirm");
-        PROTECTED_COMMANDS.add("changepassword");
-        PROTECTED_COMMANDS.add("changepass");
-        PROTECTED_COMMANDS.add("passch");
-        PROTECTED_COMMANDS.add("passwd");
-        PROTECTED_COMMANDS.add("confirmpasswordreset");
-        PROTECTED_COMMANDS.add("setemail");
-        PROTECTED_COMMANDS.add("nexauth user register");
-        PROTECTED_COMMANDS.add("nexauth user pass-change");
+    PROTECTED_COMMANDS.add("login");
+    PROTECTED_COMMANDS.add("l");
+    PROTECTED_COMMANDS.add("log");
+    PROTECTED_COMMANDS.add("register");
+    PROTECTED_COMMANDS.add("reg");
+    PROTECTED_COMMANDS.add("premium");
+    PROTECTED_COMMANDS.add("autologin");
+    PROTECTED_COMMANDS.add("2faconfirm");
+    PROTECTED_COMMANDS.add("changepassword");
+    PROTECTED_COMMANDS.add("changepass");
+    PROTECTED_COMMANDS.add("passch");
+    PROTECTED_COMMANDS.add("passwd");
+    PROTECTED_COMMANDS.add("confirmpasswordreset");
+    PROTECTED_COMMANDS.add("setemail");
+    PROTECTED_COMMANDS.add("nexauth user register");
+    PROTECTED_COMMANDS.add("nexauth user pass-change");
+  }
+
+  protected boolean checkMessage(String message) {
+    if (!message.contains("issued server command: /")
+        && !message.contains("executed command /")
+        && !message.contains("executed command: /")
+        && !message.contains("Duplicate key name")) return true;
+
+    for (String command : PROTECTED_COMMANDS) {
+      if (message.contains(command)) return false;
     }
 
-    protected boolean checkMessage(String message) {
-        if (!message.contains("issued server command: /") && !message.contains("executed command /") && !message.contains("executed command: /") && !message.contains("Duplicate key name"))
-            return true;
+    return true;
+  }
 
-        for (String command : PROTECTED_COMMANDS) {
-            if (message.contains(command)) return false;
-        }
-
-        return true;
-    }
-
-    public abstract void inject();
-
+  public abstract void inject();
 }

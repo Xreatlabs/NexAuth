@@ -12,8 +12,8 @@ import xyz.xreatlabs.nexauth.common.config.MessageKeys;
 import xyz.xreatlabs.nexauth.common.config.migrate.ConfigurationMigrator;
 
 public class ThirdMessagesMigrator implements ConfigurationMigrator {
-    @Override
-    public void migrate(ConfigurateHelper helper, Logger logger) {
-        rename("kick-no-server", MessageKeys.KICK_NO_LOBBY, helper);
-    }
+  @Override
+  public void migrate(ConfigurateHelper helper, Logger logger) {
+    rename("kick-no-server", MessageKeys.KICK_NO_LOBBY, helper);
+  }
 }

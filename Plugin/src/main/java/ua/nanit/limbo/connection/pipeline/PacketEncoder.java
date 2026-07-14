@@ -18,51 +18,54 @@ import ua.nanit.limbo.server.Log;
 
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
-    private State.PacketRegistry registry;
-    private Version version;
+  private State.PacketRegistry registry;
+  private Version version;
 
-    public PacketEncoder() {
-        updateVersion(Version.getMin());
-        updateState(State.HANDSHAKING);
+  public PacketEncoder() {
+    updateVersion(Version.getMin());
+    updateState(State.HANDSHAKING);
+  }
+
+  @Override
+  protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws Exception {
+    if (registry == null) return;
+
+    ByteMessage msg = new ByteMessage(out);
+    int packetId;
+
+    if (packet instanceof PacketSnapshot) {
+      packetId = registry.getPacketId(((PacketSnapshot) packet).getPacketClass());
+    } else {
+      packetId = registry.getPacketId(packet.getClass());
     }
 
-    @Override
-    protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws Exception {
-        if (registry == null) return;
-
-        ByteMessage msg = new ByteMessage(out);
-        int packetId;
-
-        if (packet instanceof PacketSnapshot) {
-            packetId = registry.getPacketId(((PacketSnapshot)packet).getPacketClass());
-        } else {
-            packetId = registry.getPacketId(packet.getClass());
-        }
-
-        if (packetId == -1) {
-            Log.warning("Undefined packet class: %s[0x%s] (%d bytes)", packet.getClass().getName(), Integer.toHexString(packetId), msg.readableBytes());
-            return;
-        }
-
-        msg.writeVarInt(packetId);
-
-        try {
-            packet.encode(msg, version);
-
-            if (Log.isDebug()) {
-                Log.debug("Sending %s[0x%s] packet (%d bytes)", packet.toString(), Integer.toHexString(packetId), msg.readableBytes());
-            }
-        } catch (Exception e) {
-            Log.error("Cannot encode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
-        }
+    if (packetId == -1) {
+      Log.warning(
+          "Undefined packet class: %s[0x%s] (%d bytes)",
+          packet.getClass().getName(), Integer.toHexString(packetId), msg.readableBytes());
+      return;
     }
 
-    public void updateVersion(Version version) {
-        this.version = version;
-    }
+    msg.writeVarInt(packetId);
 
-    public void updateState(State state) {
-        this.registry = state.clientBound.getRegistry(version);
-    }
+    try {
+      packet.encode(msg, version);
 
+      if (Log.isDebug()) {
+        Log.debug(
+            "Sending %s[0x%s] packet (%d bytes)",
+            packet.toString(), Integer.toHexString(packetId), msg.readableBytes());
+      }
+    } catch (Exception e) {
+      Log.error("Cannot encode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
+    }
+  }
+
+  public void updateVersion(Version version) {
+    this.version = version;
+  }
+
+  public void updateState(State state) {
+    this.registry = state.clientBound.getRegistry(version);
+  }
 }

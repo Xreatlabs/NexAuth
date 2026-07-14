@@ -8,6 +8,9 @@ package xyz.xreatlabs.nexauth.common.database.connector;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLTransientConnectionException;
 import xyz.xreatlabs.nexauth.api.database.connector.MySQLDatabaseConnector;
 import xyz.xreatlabs.nexauth.api.util.ThrowableFunction;
 import xyz.xreatlabs.nexauth.common.AuthenticNexAuth;
@@ -15,143 +18,135 @@ import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
 import xyz.xreatlabs.nexauth.common.config.ConfigurationKeys;
 import xyz.xreatlabs.nexauth.common.config.key.ConfigurationKey;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.SQLTransientConnectionException;
+public class AuthenticMySQLDatabaseConnector
+    extends AuthenticDatabaseConnector<SQLException, Connection> implements MySQLDatabaseConnector {
 
-public class AuthenticMySQLDatabaseConnector extends AuthenticDatabaseConnector<SQLException, Connection> implements MySQLDatabaseConnector {
+  private final HikariConfig hikariConfig;
+  private HikariDataSource dataSource;
 
-    private final HikariConfig hikariConfig;
-    private HikariDataSource dataSource;
+  public AuthenticMySQLDatabaseConnector(AuthenticNexAuth<?, ?> plugin, String prefix) {
+    super(plugin, prefix);
 
-    public AuthenticMySQLDatabaseConnector(AuthenticNexAuth<?, ?> plugin, String prefix) {
-        super(plugin, prefix);
+    this.hikariConfig = new HikariConfig();
 
-        this.hikariConfig = new HikariConfig();
+    hikariConfig.setPoolName("NexAuth MySQL Pool");
+    hikariConfig.setDriverClassName("xyz.xreatlabs.nexauth.lib.mariadb.jdbc.Driver");
+    hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
+    hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+    hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+    hikariConfig.setUsername(get(Configuration.USER));
+    hikariConfig.setPassword(get(Configuration.PASSWORD));
+    hikariConfig.setJdbcUrl(
+        get(Configuration.JDBC_URL)
+            .replace("%host%", get(Configuration.HOST))
+            .replace("%port%", String.valueOf(get(Configuration.PORT)))
+            .replace("%database%", get(Configuration.NAME)));
+    hikariConfig.setMaxLifetime(get(Configuration.MAX_LIFE_TIME));
+  }
 
-        hikariConfig.setPoolName("NexAuth MySQL Pool");
-        hikariConfig.setDriverClassName("xyz.xreatlabs.nexauth.lib.mariadb.jdbc.Driver");
-        hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
-        hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
-        hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        hikariConfig.setUsername(get(Configuration.USER));
-        hikariConfig.setPassword(get(Configuration.PASSWORD));
-        hikariConfig.setJdbcUrl(get(Configuration.JDBC_URL)
-                .replace("%host%", get(Configuration.HOST))
-                .replace("%port%", String.valueOf(get(Configuration.PORT)))
-                .replace("%database%", get(Configuration.NAME))
-        );
-        hikariConfig.setMaxLifetime(get(Configuration.MAX_LIFE_TIME));
-    }
+  @Override
+  public void connect() throws SQLException {
+    dataSource = new HikariDataSource(hikariConfig);
+    obtainInterface().close(); // Verify connection
+    connected = true;
+  }
 
-    @Override
-    public void connect() throws SQLException {
-        dataSource = new HikariDataSource(hikariConfig);
-        obtainInterface().close(); //Verify connection
-        connected = true;
-    }
+  @Override
+  public void disconnect() throws SQLException {
+    connected = false;
+    dataSource.close();
+  }
 
-    @Override
-    public void disconnect() throws SQLException {
-        connected = false;
-        dataSource.close();
-    }
+  @Override
+  public Connection obtainInterface() throws SQLException, IllegalStateException {
+    if (!connected()) throw new IllegalStateException("Not connected to the database!");
+    return dataSource.getConnection();
+  }
 
-    @Override
-    public Connection obtainInterface() throws SQLException, IllegalStateException {
-        if (!connected()) throw new IllegalStateException("Not connected to the database!");
-        return dataSource.getConnection();
-    }
+  @Override
+  public <V> V runQuery(ThrowableFunction<Connection, V, SQLException> function)
+      throws IllegalStateException {
+    try {
+      try (var connection = obtainInterface()) {
+        return function.apply(connection);
+      }
+    } catch (SQLTransientConnectionException e) {
+      var retries =
+          Math.max(0, plugin.getConfiguration().get(ConfigurationKeys.DATABASE_TRANSIENT_RETRIES));
+      var delay =
+          Math.max(
+              0,
+              plugin.getConfiguration().get(ConfigurationKeys.DATABASE_TRANSIENT_RETRY_DELAY_MS));
 
-    @Override
-    public <V> V runQuery(ThrowableFunction<Connection, V, SQLException> function) throws IllegalStateException {
+      for (int attempt = 0; attempt < retries; attempt++) {
         try {
-            try (var connection = obtainInterface()) {
-                return function.apply(connection);
-            }
-        } catch (SQLTransientConnectionException e) {
-            var retries = Math.max(0, plugin.getConfiguration().get(ConfigurationKeys.DATABASE_TRANSIENT_RETRIES));
-            var delay = Math.max(0, plugin.getConfiguration().get(ConfigurationKeys.DATABASE_TRANSIENT_RETRY_DELAY_MS));
+          if (delay > 0) {
+            Thread.sleep(delay);
+          }
 
-            for (int attempt = 0; attempt < retries; attempt++) {
-                try {
-                    if (delay > 0) {
-                        Thread.sleep(delay);
-                    }
-
-                    try (var connection = obtainInterface()) {
-                        return function.apply(connection);
-                    }
-                } catch (InterruptedException ignored) {
-                    Thread.currentThread().interrupt();
-                    break;
-                } catch (SQLTransientConnectionException ignored) {
-                } catch (SQLException sqlException) {
-                    throw new RuntimeException(sqlException);
-                }
-            }
-
-            plugin.handleFailurePolicy(
-                    "!! LOST CONNECTION TO THE DATABASE, FAILURE POLICY TRIGGERED !!",
-                    e,
-                    1,
-                    () -> plugin.getLogger().error("Database operations are unavailable due to transient connection failures")
-            );
-            return null;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+          try (var connection = obtainInterface()) {
+            return function.apply(connection);
+          }
+        } catch (InterruptedException ignored) {
+          Thread.currentThread().interrupt();
+          break;
+        } catch (SQLTransientConnectionException ignored) {
+        } catch (SQLException sqlException) {
+          throw new RuntimeException(sqlException);
         }
+      }
+
+      plugin.handleFailurePolicy(
+          "!! LOST CONNECTION TO THE DATABASE, FAILURE POLICY TRIGGERED !!",
+          e,
+          1,
+          () ->
+              plugin
+                  .getLogger()
+                  .error(
+                      "Database operations are unavailable due to transient connection failures"));
+      return null;
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    public static final class Configuration {
+  public static final class Configuration {
 
-        public static final ConfigurationKey<String> HOST = new ConfigurationKey<>(
-                "host",
-                "localhost",
-                "The host of the database.",
-                ConfigurateHelper::getString
-        );
+    public static final ConfigurationKey<String> HOST =
+        new ConfigurationKey<>(
+            "host", "localhost", "The host of the database.", ConfigurateHelper::getString);
 
-        public static final ConfigurationKey<String> NAME = new ConfigurationKey<>(
-                "database",
-                "nexauth",
-                "The name of the database.",
-                ConfigurateHelper::getString
-        );
+    public static final ConfigurationKey<String> NAME =
+        new ConfigurationKey<>(
+            "database", "nexauth", "The name of the database.", ConfigurateHelper::getString);
 
-        public static final ConfigurationKey<String> PASSWORD = new ConfigurationKey<>(
-                "password",
-                "",
-                "The password of the database.",
-                ConfigurateHelper::getString
-        );
+    public static final ConfigurationKey<String> PASSWORD =
+        new ConfigurationKey<>(
+            "password", "", "The password of the database.", ConfigurateHelper::getString);
 
-        public static final ConfigurationKey<Integer> PORT = new ConfigurationKey<>(
-                "port",
-                3306,
-                "The port of the database.",
-                ConfigurateHelper::getInt
-        );
+    public static final ConfigurationKey<Integer> PORT =
+        new ConfigurationKey<>(
+            "port", 3306, "The port of the database.", ConfigurateHelper::getInt);
 
-        public static final ConfigurationKey<String> USER = new ConfigurationKey<>(
-                "user",
-                "root",
-                "The user of the database.",
-                ConfigurateHelper::getString
-        );
+    public static final ConfigurationKey<String> USER =
+        new ConfigurationKey<>(
+            "user", "root", "The user of the database.", ConfigurateHelper::getString);
 
-        public static final ConfigurationKey<Integer> MAX_LIFE_TIME = new ConfigurationKey<>(
-                "max-life-time",
-                600000,
-                "The maximum lifetime of a database connection in milliseconds. Don't touch this if you don't know what you're doing.",
-                ConfigurateHelper::getInt
-        );
+    public static final ConfigurationKey<Integer> MAX_LIFE_TIME =
+        new ConfigurationKey<>(
+            "max-life-time",
+            600000,
+            "The maximum lifetime of a database connection in milliseconds. Don't touch this if you"
+                + " don't know what you're doing.",
+            ConfigurateHelper::getInt);
 
-        public static final ConfigurationKey<String> JDBC_URL = new ConfigurationKey<>(
-                "jdbc-url",
-                "jdbc:mariadb://%host%:%port%/%database%?autoReconnect=true&zeroDateTimeBehavior=convertToNull",
-                "The JDBC URL of the database. Don't touch this if you don't know what you're doing. (Using jdbc:mariadb also works for pure mysql)",
-                ConfigurateHelper::getString
-        );
-    }
+    public static final ConfigurationKey<String> JDBC_URL =
+        new ConfigurationKey<>(
+            "jdbc-url",
+            "jdbc:mariadb://%host%:%port%/%database%?autoReconnect=true&zeroDateTimeBehavior=convertToNull",
+            "The JDBC URL of the database. Don't touch this if you don't know what you're doing."
+                + " (Using jdbc:mariadb also works for pure mysql)",
+            ConfigurateHelper::getString);
+  }
 }

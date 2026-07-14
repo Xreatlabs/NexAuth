@@ -10,14 +10,13 @@ import java.io.IOException;
 
 final class PaperSessionVerifier {
 
-    private PaperSessionVerifier() {
-    }
+  private PaperSessionVerifier() {}
 
-    static boolean isJoinedResponse(int responseCode) throws IOException {
-        return switch (responseCode) {
-            case 200 -> true;
-            case 204 -> false;
-            default -> throw new IOException("Unexpected Mojang session response: HTTP " + responseCode);
-        };
-    }
+  static boolean isJoinedResponse(int responseCode) throws IOException {
+    return switch (responseCode) {
+      case 200 -> true;
+      case 204 -> false;
+      default -> throw new IOException("Unexpected Mojang session response: HTTP " + responseCode);
+    };
+  }
 }

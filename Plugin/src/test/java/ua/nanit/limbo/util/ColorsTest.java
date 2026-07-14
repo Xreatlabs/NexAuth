@@ -6,20 +6,20 @@
 
 package ua.nanit.limbo.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.junit.jupiter.api.Test;
+
 class ColorsTest {
 
-    @Test
-    void replacesAmpersandColorCodes() {
-        assertEquals("§aHello §bWorld", Colors.of("&aHello &bWorld"));
-    }
+  @Test
+  void replacesAmpersandColorCodes() {
+    assertEquals("§aHello §bWorld", Colors.of("&aHello &bWorld"));
+  }
 
-    @Test
-    void preservesNull() {
-        assertNull(Colors.of(null));
-    }
+  @Test
+  void preservesNull() {
+    assertNull(Colors.of(null));
+  }
 }

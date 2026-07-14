@@ -7,6 +7,7 @@
 package ua.nanit.limbo.connection;
 
 import io.netty.buffer.Unpooled;
+import java.util.concurrent.ThreadLocalRandom;
 import ua.nanit.limbo.LimboConstants;
 import ua.nanit.limbo.protocol.packets.PacketHandshake;
 import ua.nanit.limbo.protocol.packets.configuration.PacketFinishConfiguration;
@@ -22,113 +23,110 @@ import ua.nanit.limbo.server.LimboServer;
 import ua.nanit.limbo.server.Log;
 import ua.nanit.limbo.util.UuidUtil;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class PacketHandler {
 
-    private final LimboServer server;
+  private final LimboServer server;
 
-    public PacketHandler(LimboServer server) {
-        this.server = server;
+  public PacketHandler(LimboServer server) {
+    this.server = server;
+  }
+
+  public void handle(ClientConnection conn, PacketHandshake packet) {
+    conn.updateVersion(packet.getVersion());
+    conn.updateState(packet.getNextState());
+
+    Log.debug("Pinged from %s [%s]", conn.getAddress(), conn.getClientVersion().toString());
+
+    if (server.getConfig().getInfoForwarding().isLegacy()) {
+      String[] split = packet.getHost().split("\00");
+
+      if (split.length == 3 || split.length == 4) {
+        conn.setAddress(split[1]);
+        conn.getGameProfile().setUuid(UuidUtil.fromString(split[2]));
+      } else {
+        conn.disconnectLogin(
+            "You've enabled player info forwarding. You need to connect with proxy");
+      }
+    } else if (server.getConfig().getInfoForwarding().isBungeeGuard()) {
+      if (!conn.checkBungeeGuardHandshake(packet.getHost())) {
+        conn.disconnectLogin("Invalid BungeeGuard token or handshake format");
+      }
+    }
+  }
+
+  public void handle(ClientConnection conn, PacketStatusRequest packet) {
+    conn.sendPacket(new PacketStatusResponse(server));
+  }
+
+  public void handle(ClientConnection conn, PacketStatusPing packet) {
+    conn.sendPacketAndClose(packet);
+  }
+
+  public void handle(ClientConnection conn, PacketLoginStart packet) {
+    if (server.getConfig().getMaxPlayers() > 0
+        && server.getConnections().getCount() >= server.getConfig().getMaxPlayers()) {
+      conn.disconnectLogin("Too many players connected");
+      return;
     }
 
-    public void handle(ClientConnection conn, PacketHandshake packet) {
-        conn.updateVersion(packet.getVersion());
-        conn.updateState(packet.getNextState());
-
-        Log.debug("Pinged from %s [%s]", conn.getAddress(),
-                conn.getClientVersion().toString());
-
-        if (server.getConfig().getInfoForwarding().isLegacy()) {
-            String[] split = packet.getHost().split("\00");
-
-            if (split.length == 3 || split.length == 4) {
-                conn.setAddress(split[1]);
-                conn.getGameProfile().setUuid(UuidUtil.fromString(split[2]));
-            } else {
-                conn.disconnectLogin("You've enabled player info forwarding. You need to connect with proxy");
-            }
-        } else if (server.getConfig().getInfoForwarding().isBungeeGuard()) {
-            if (!conn.checkBungeeGuardHandshake(packet.getHost())) {
-                conn.disconnectLogin("Invalid BungeeGuard token or handshake format");
-            }
-        }
+    if (!conn.getClientVersion().isSupported()) {
+      conn.disconnectLogin("Unsupported client version");
+      return;
     }
 
-    public void handle(ClientConnection conn, PacketStatusRequest packet) {
-        conn.sendPacket(new PacketStatusResponse(server));
+    if (server.getConfig().getInfoForwarding().isModern()) {
+      int loginId = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
+      PacketLoginPluginRequest request = new PacketLoginPluginRequest();
+
+      request.setMessageId(loginId);
+      request.setChannel(LimboConstants.VELOCITY_INFO_CHANNEL);
+      request.setData(Unpooled.EMPTY_BUFFER);
+
+      conn.setVelocityLoginMessageId(loginId);
+      conn.sendPacket(request);
+      return;
     }
 
-    public void handle(ClientConnection conn, PacketStatusPing packet) {
-        conn.sendPacketAndClose(packet);
+    if (!server.getConfig().getInfoForwarding().isModern()) {
+      conn.getGameProfile().setUsername(packet.getUsername());
+      conn.getGameProfile().setUuid(UuidUtil.getOfflineModeUuid(packet.getUsername()));
     }
 
-    public void handle(ClientConnection conn, PacketLoginStart packet) {
-        if (server.getConfig().getMaxPlayers() > 0 &&
-                server.getConnections().getCount() >= server.getConfig().getMaxPlayers()) {
-            conn.disconnectLogin("Too many players connected");
-            return;
-        }
+    conn.fireLoginSuccess();
+  }
 
-        if (!conn.getClientVersion().isSupported()) {
-            conn.disconnectLogin("Unsupported client version");
-            return;
-        }
+  public void handle(ClientConnection conn, PacketLoginPluginResponse packet) {
+    if (server.getConfig().getInfoForwarding().isModern()
+        && packet.getMessageId() == conn.getVelocityLoginMessageId()) {
 
-        if (server.getConfig().getInfoForwarding().isModern()) {
-            int loginId = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
-            PacketLoginPluginRequest request = new PacketLoginPluginRequest();
+      if (!packet.isSuccessful() || packet.getData() == null) {
+        conn.disconnectLogin("You need to connect with Velocity");
+        return;
+      }
 
-            request.setMessageId(loginId);
-            request.setChannel(LimboConstants.VELOCITY_INFO_CHANNEL);
-            request.setData(Unpooled.EMPTY_BUFFER);
+      if (!conn.checkVelocityKeyIntegrity(packet.getData())) {
+        conn.disconnectLogin("Can't verify forwarded player info");
+        return;
+      }
 
-            conn.setVelocityLoginMessageId(loginId);
-            conn.sendPacket(request);
-            return;
-        }
+      // Order is important
+      conn.setAddress(packet.getData().readString());
+      conn.getGameProfile().setUuid(packet.getData().readUuid());
+      conn.getGameProfile().setUsername(packet.getData().readString());
 
-        if (!server.getConfig().getInfoForwarding().isModern()) {
-            conn.getGameProfile().setUsername(packet.getUsername());
-            conn.getGameProfile().setUuid(UuidUtil.getOfflineModeUuid(packet.getUsername()));
-        }
-
-        conn.fireLoginSuccess();
+      conn.fireLoginSuccess();
     }
+  }
 
-    public void handle(ClientConnection conn, PacketLoginPluginResponse packet) {
-        if (server.getConfig().getInfoForwarding().isModern()
-                && packet.getMessageId() == conn.getVelocityLoginMessageId()) {
+  public void handle(ClientConnection conn, PacketLoginAcknowledged packet) {
+    conn.onLoginAcknowledgedReceived();
+  }
 
-            if (!packet.isSuccessful() || packet.getData() == null) {
-                conn.disconnectLogin("You need to connect with Velocity");
-                return;
-            }
+  public void handle(ClientConnection conn, PacketFinishConfiguration packet) {
+    conn.spawnPlayer();
+  }
 
-            if (!conn.checkVelocityKeyIntegrity(packet.getData())) {
-                conn.disconnectLogin("Can't verify forwarded player info");
-                return;
-            }
-
-            // Order is important
-            conn.setAddress(packet.getData().readString());
-            conn.getGameProfile().setUuid(packet.getData().readUuid());
-            conn.getGameProfile().setUsername(packet.getData().readString());
-
-            conn.fireLoginSuccess();
-        }
-    }
-
-    public void handle(ClientConnection conn, PacketLoginAcknowledged packet) {
-        conn.onLoginAcknowledgedReceived();
-    }
-
-    public void handle(ClientConnection conn, PacketFinishConfiguration packet) {
-        conn.spawnPlayer();
-    }
-
-    public void handle(ClientConnection conn, PacketKnownPacks packet) {
-        conn.onKnownPacksReceived();
-    }
-
+  public void handle(ClientConnection conn, PacketKnownPacks packet) {
+    conn.onKnownPacksReceived();
+  }
 }

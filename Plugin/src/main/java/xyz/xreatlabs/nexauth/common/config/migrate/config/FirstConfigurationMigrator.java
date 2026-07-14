@@ -6,17 +6,16 @@
 
 package xyz.xreatlabs.nexauth.common.config.migrate.config;
 
+import java.util.List;
 import xyz.xreatlabs.nexauth.api.Logger;
 import xyz.xreatlabs.nexauth.common.config.ConfigurateHelper;
 import xyz.xreatlabs.nexauth.common.config.migrate.ConfigurationMigrator;
 
-import java.util.List;
-
 public class FirstConfigurationMigrator implements ConfigurationMigrator {
-    @Override
-    public void migrate(ConfigurateHelper helper, Logger logger) {
-        var limbo = helper.getString("limbo");
+  @Override
+  public void migrate(ConfigurateHelper helper, Logger logger) {
+    var limbo = helper.getString("limbo");
 
-        helper.set("limbo", List.of(limbo));
-    }
+    helper.set("limbo", List.of(limbo));
+  }
 }

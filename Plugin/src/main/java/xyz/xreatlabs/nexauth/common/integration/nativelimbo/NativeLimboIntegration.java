@@ -6,42 +6,44 @@
 
 package xyz.xreatlabs.nexauth.common.integration.nativelimbo;
 
-import ua.nanit.limbo.server.LimboServer;
-import ua.nanit.limbo.server.data.InfoForwarding;
-import xyz.xreatlabs.nexauth.api.integration.LimboIntegration;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.util.Optional;
+import ua.nanit.limbo.server.LimboServer;
+import ua.nanit.limbo.server.data.InfoForwarding;
+import xyz.xreatlabs.nexauth.api.integration.LimboIntegration;
 
 public abstract class NativeLimboIntegration<S> implements LimboIntegration<S> {
 
-    protected static final InfoForwardingFactory FORWARDING_FACTORY = new InfoForwardingFactory();
-    private final int portMin;
-    private final int portMax;
+  protected static final InfoForwardingFactory FORWARDING_FACTORY = new InfoForwardingFactory();
+  private final int portMin;
+  private final int portMax;
 
-    public NativeLimboIntegration(String portRange) {
-        this.portMin = Integer.parseInt(portRange.split("-")[0]);
-        this.portMax = Integer.parseInt(portRange.split("-")[1]);
+  public NativeLimboIntegration(String portRange) {
+    this.portMin = Integer.parseInt(portRange.split("-")[0]);
+    this.portMax = Integer.parseInt(portRange.split("-")[1]);
+  }
+
+  protected LimboServer createLimboServer(SocketAddress address) {
+    return new LimboServer(
+        new NativeLimboConfig(address, createForwarding()),
+        new DummyCommandHandler(),
+        classLoader());
+  }
+
+  protected abstract InfoForwarding createForwarding();
+
+  protected abstract ClassLoader classLoader();
+
+  protected Optional<InetSocketAddress> findLocalAvailableAddress() {
+    for (int port = portMin; port <= portMax; port++) {
+      try (ServerSocket ignored = new ServerSocket(port)) {
+        return Optional.of(new InetSocketAddress(port));
+      } catch (IOException ignored) {
+      }
     }
-
-    protected LimboServer createLimboServer(SocketAddress address) {
-        return new LimboServer(new NativeLimboConfig(address, createForwarding()), new DummyCommandHandler(), classLoader());
-    }
-
-    protected abstract InfoForwarding createForwarding();
-
-    protected abstract ClassLoader classLoader();
-
-    protected Optional<InetSocketAddress> findLocalAvailableAddress() {
-        for (int port = portMin; port <= portMax; port++) {
-            try (ServerSocket ignored = new ServerSocket(port)) {
-                return Optional.of(new InetSocketAddress(port));
-            } catch (IOException ignored) {
-            }
-        }
-        return Optional.empty();
-    }
+    return Optional.empty();
+  }
 }

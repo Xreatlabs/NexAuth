@@ -13,16 +13,21 @@ import xyz.xreatlabs.nexauth.api.database.User;
 import xyz.xreatlabs.nexauth.api.event.events.PasswordChangeEvent;
 import xyz.xreatlabs.nexauth.common.event.AuthenticPlayerBasedEvent;
 
-public class AuthenticPasswordChangeEvent<P, S> extends AuthenticPlayerBasedEvent<P, S> implements PasswordChangeEvent<P, S> {
-    private final HashedPassword oldPassword;
+public class AuthenticPasswordChangeEvent<P, S> extends AuthenticPlayerBasedEvent<P, S>
+    implements PasswordChangeEvent<P, S> {
+  private final HashedPassword oldPassword;
 
-    public AuthenticPasswordChangeEvent(@Nullable User user, @Nullable P player, NexAuthPlugin<P, S> plugin, HashedPassword oldPassword) {
-        super(user, player, plugin);
-        this.oldPassword = oldPassword;
-    }
+  public AuthenticPasswordChangeEvent(
+      @Nullable User user,
+      @Nullable P player,
+      NexAuthPlugin<P, S> plugin,
+      HashedPassword oldPassword) {
+    super(user, player, plugin);
+    this.oldPassword = oldPassword;
+  }
 
-    @Override
-    public HashedPassword getOldPassword() {
-        return oldPassword;
-    }
+  @Override
+  public HashedPassword getOldPassword() {
+    return oldPassword;
+  }
 }
