@@ -210,8 +210,8 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
     //compileOnly "com.comphenix.protocol:ProtocolLib:5.1.0"
     libby("com.github.retrooper:packetevents-spigot:2.13.0")
+    libby("com.github.retrooper:packetevents-api:2.13.0")
     compileOnly("io.netty:netty-all:4.2.2.Final")
-    libby("io.netty:netty-all:4.2.2.Final")
     compileOnly("com.mojang:datafixerupper:5.0.28") //I hate this so much
     compileOnly("org.apache.logging.log4j:log4j-core:2.23.1")
 
@@ -234,6 +234,10 @@ dependencies {
     testImplementation("org.bouncycastle:bcprov-jdk18on:1.81")
     testImplementation("org.bstats:bstats-base:3.1.0")
     testImplementation("io.netty:netty-all:4.2.2.Final")
+
+    // packetevents reaches tests only through the libby->compileOnly chain, which the test
+    // runtime classpath does not see; redeclare it like every other test-used libby dep.
+    testImplementation("com.github.retrooper:packetevents-api:2.13.0")
 
     // ArchUnit for architecture boundary tests
     testImplementation("com.tngtech.archunit:archunit-junit5:1.4.1")
