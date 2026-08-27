@@ -6,6 +6,9 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 
 ## [Unreleased]
 
+### Changed
+- Rewrote the Velocity embedded limbo as a purpose-built version-dynamic implementation, replacing the vendored NanoLimbo tree.
+
 ## [0.0.1-beta4] - 2026-05-27
 
 ### Added
