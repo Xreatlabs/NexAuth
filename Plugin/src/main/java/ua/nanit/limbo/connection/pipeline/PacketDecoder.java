@@ -49,7 +49,10 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
       throw new DecoderException("Cannot decode packet 0x" + Integer.toHexString(packetId), e);
     }
 
-    if (buf.isReadable()) {
+    // Only enforce strict length checks for known versions. Unknown (newer) protocols
+    // may carry fields we cannot parse; let the handler disconnect the client cleanly
+    // with "Unsupported client version" instead of dying on a DecoderException here.
+    if (buf.isReadable() && version.isSupported()) {
       throw new DecoderException(
           "Packet 0x"
               + Integer.toHexString(packetId)

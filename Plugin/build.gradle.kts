@@ -191,7 +191,11 @@ dependencies {
     libby("com.github.kyngs:LegacyMessage:0.2.0")
 
     //Geyser
-    compileOnly("org.geysermc.floodgate:api:2.2.4-SNAPSHOT")
+    // Exclude transitive Geyser common: its mavenLocal jar bundles an old un-relocated gson
+    // that shadows the real one on the compile classpath and breaks compilation.
+    compileOnly("org.geysermc.floodgate:api:2.2.4-SNAPSHOT") {
+        exclude(group = "org.geysermc.geyser")
+    }
     //LuckPerms
     compileOnly("net.luckperms:api:5.5")
 
