@@ -23,7 +23,7 @@ Velocity may use:
 
 - `VelocityNexAuth` for lifecycle and platform integration.
 - `VelocityListeners` and `Blockers` for login/auth flow.
-- `VelocityNativeLimboIntegration` for local limbo integration.
+- `LimboIntegrationVelocity` for local limbo integration.
 - `VelocityRedisBungeeIntegration` for optional RedisBungee-compatible multi-proxy presence checks. The name is historical and belongs to the RedisBungee API, not Bungee platform support.
 
 ### Paper Mode
@@ -51,9 +51,9 @@ This package owns configuration, database providers, commands, metrics, doctor/s
 
 The embedded limbo/protocol server lives in:
 
-- `Plugin/src/main/java/ua/nanit/limbo/`
+- `Plugin/src/main/java/xyz/xreatlabs/nexauth/velocity/limbo/`
 
-This code handles protocol-level compatibility. Packet mappings for new Minecraft versions belong under `ua/nanit/limbo/protocol/registry` and packet implementations under `ua/nanit/limbo/protocol/packets`.
+This code handles protocol-level compatibility. Per-version packet ids resolve through the packetevents-api mapping tables via `PacketRegistry`, the single seam to swap if a packetevents bump breaks `PacketType.prepare()`.
 
 ## Build and Test Commands
 
@@ -127,7 +127,7 @@ Mineflayer smoke scripts live under `tools/test-env/bot/`.
 - Shared behavior belongs in `common/` only when it is truly platform-neutral.
 - Do not put generated server files, downloaded jars, logs, worlds, or `node_modules` into git.
 - Do not delete ignored `run/` runtime files unless the task is specifically about cleaning the local smoke environment.
-- If changing protocol compatibility, add or update focused tests under `Plugin/src/test/java/ua/nanit/limbo/`.
+- If changing protocol compatibility, add or update focused tests under `Plugin/src/test/java/xyz/xreatlabs/nexauth/velocity/limbo/`.
 - If changing auth flow, run unit tests and at least one relevant smoke test.
 
 ## Current Compatibility Notes

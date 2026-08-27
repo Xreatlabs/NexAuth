@@ -19,7 +19,7 @@ NexAuth began as a LibreLogin fork and now focuses on current Paper and Velocity
 - SQLite, MySQL/MariaDB, and PostgreSQL storage support.
 - Geyser/Floodgate support for Bedrock players.
 - Paper inventory hiding for unauthenticated players.
-- Velocity proxy flow with NexLimbo-compatible limbo integration.
+- Velocity proxy flow with a built-in lightweight limbo for unauthenticated players.
 - Operator diagnostics through status/doctor tooling.
 
 ## Supported Platforms
@@ -92,7 +92,7 @@ The matrix checks protocol/API boundary versions from Minecraft `1.20` through t
 - `Plugin/src/main/java/xyz/xreatlabs/nexauth/velocity/` - Velocity platform adapter.
 - `Plugin/src/main/java/xyz/xreatlabs/nexauth/paper/` - Paper/Purpur platform adapter.
 - `Plugin/src/main/java/xyz/xreatlabs/nexauth/common/` - platform-neutral authentication, config, database, commands, metrics, and diagnostics.
-- `Plugin/src/main/java/ua/nanit/limbo/` - embedded limbo protocol/server implementation.
+- `Plugin/src/main/java/xyz/xreatlabs/nexauth/velocity/limbo/` - embedded limbo server (Velocity only; packet IDs resolved via PacketEvents).
 - `tools/test-env/` - reproducible local Velocity/Paper/mineflayer smoke environment.
 - `run/` - ignored generated runtime area used by local smoke tests.
 
